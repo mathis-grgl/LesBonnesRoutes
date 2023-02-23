@@ -24,20 +24,29 @@ DROP TABLE IF EXISTS NOTIF_RECUE;
 DROP TRIGGER IF EXISTS TRIGGER_PASSAGER;
 DROP TRIGGER IF EXISTS TRIGGER_CONDUCTEUR;
 DROP TRIGGER IF EXISTS TRIGGER_TYPE_COMPTE;
+DROP TRIGGER IF EXISTS MAJ_NOTE_INSERT;
+DROP TRIGGER IF EXISTS MAJ_NOTE_UPDATE;
+DROP TRIGGER IF EXISTS TRIGGER_IS_CONDUCTEUR;
+DROP TRIGGER IF EXISTS TRIGGER_NB_PLACES;
+DROP TRIGGER IF EXISTS TRIGGER_NB_PLACES_RESTANTES_INCORRECT;
+DROP TRIGGER IF EXISTS TRIGGER_TRAJET_COMPLET;
+DROP TRIGGER IF EXISTS ADD_AMI_GROUPE;
+DROP TRIGGER IF EXISTS REMOVE_AMI_GROUPE;
 
 
 CREATE TABLE IF NOT EXISTS COMPTE(
 	idCompte INTEGER PRIMARY KEY AUTOINCREMENT,
 	nomCompte TEXT NOT NULL,
 	prenomCompte TEXT NOT NULL,
-	email TEXT NOT NULL,
+	email TEXT UNIQUE NOT NULL,
 	genre TEXT NOT NULL,
 	voiture INTEGER NOT NULL,
 	telephone INTEGER NOT NULL,
 	mdp TEXT NOT NULL,
 	notificationMail INTEGER NOT NULL,
 	typeCompte TEXT NOT NULL,
-	noteCompte INTEGER NULL
+	noteCompte REAL NULL,
+	nomPhoto TEXT NULL
 );
 
 
@@ -63,7 +72,6 @@ CREATE TABLE IF NOT EXISTS CONDUCTEUR(
 CREATE TRIGGER IF NOT EXISTS TRIGGER_TYPE_COMPTE BEFORE INSERT ON COMPTE
 WHEN NEW.typeCompte != 'client' AND NEW.typeCompte != 'admin'
 BEGIN
-	/*print error*/
 	SELECT RAISE(FAIL, 'erreur : le type du compte ne peut pas etre different de client ou admin');
 END;
 
@@ -108,14 +116,29 @@ CREATE TRIGGER IF NOT EXISTS TRIGGER_IS_CONDUCTEUR BEFORE INSERT ON TRAJET
 BEGIN
 	SELECT
       CASE
-		WHEN (SELECT idCompte FROM CONDUCTEUR WHERE idCompte= NEW.idConducteur) ISNULL THEN
+		WHEN (SELECT idCompte FROM CONDUCTEUR WHERE idCompte = NEW.idConducteur) ISNULL THEN
    	  		RAISE (ABORT, 'Erreur : Le conducteur ne possede pas de voiture')
        	END;
 	
 END;
 
+CREATE TRIGGER IF NOT EXISTS TRIGGER_NB_PLACES BEFORE INSERT ON TRAJET
+WHEN NEW.nbPlaces < 1
+BEGIN 
+	SELECT RAISE(ABORT, 'Erreur : Le nombres de places ne peut pas etre < 1');
+END;
 
+CREATE TRIGGER IF NOT EXISTS TRIGGER_NB_PLACES_RESTANTES_INCORRECT BEFORE UPDATE ON TRAJET
+WHEN NEW.nbPlacesRestantes < 0
+BEGIN
+	SELECT RAISE(ABORT, 'Erreur : Le nombres de places restantes ne peut pas etre < 0');
+END;
 
+CREATE TRIGGER IF NOT EXISTS TRIGGER_TRAJET_COMPLET AFTER UPDATE ON TRAJET
+WHEN NEW.nbPlacesRestantes = 0
+BEGIN
+	UPDATE TRAJET SET statusTrajet = 'Complet' WHERE idTrajet = NEW.idTrajet;
+END;
 
 CREATE TABLE IF NOT EXISTS TRAJET_EN_COURS_PASSAGER(
 	idCompte INTEGER,
@@ -148,7 +171,7 @@ CREATE TABLE IF NOT EXISTS TRAJET_PUBLIC(
 
 CREATE TABLE IF NOT EXISTS GROUPE(
 	idGroupe INTEGER PRIMARY KEY AUTOINCREMENT,
-	nomGroupe TEXT NOT NULL,
+	nomGroupe TEXT UNIQUE NOT NULL,
 	nbPersonnes INTEGER NOT NULL
 );
 
@@ -157,8 +180,23 @@ CREATE TABLE IF NOT EXISTS AMI_GROUPE(
 	idGroupe INTEGER,
 	PRIMARY KEY(idCompte, idGroupe),
 	FOREIGN KEY(idCompte) REFERENCES COMPTE(idCompte),
-	FOREIGN KEY(idGroupe) REFERENCES GROUPE(idGroupe)
+	FOREIGN KEY(idGroupe) REFERENCES GROUPE(idGroupe),
+	UNIQUE(idCompte, idGroupe)
 );
+
+CREATE TRIGGER ADD_AMI_GROUPE AFTER INSERT ON AMI_GROUPE
+BEGIN
+	UPDATE GROUPE SET nbPersonnes = (SELECT COUNT(*) FROM AMI_GROUPE WHERE idGroupe = NEW.idGroupe)
+		WHERE idGroupe = NEW.idGroupe;
+END;
+
+CREATE TRIGGER REMOVE_AMI_GROUPE AFTER DELETE ON AMI_GROUPE
+BEGIN
+	UPDATE GROUPE SET nbPersonnes = (SELECT COUNT(*) FROM AMI_GROUPE WHERE idGroupe = old.idGroupe)
+		WHERE idGroupe = old.idGroupe;
+END;
+
+
 
 CREATE TABLE IF NOT EXISTS TRAJET_PRIVE(
 	idTrajet INTEGER PRIMARY KEY,
@@ -195,8 +233,21 @@ CREATE TABLE IF NOT EXISTS NOTE(
 	FOREIGN KEY(idNote) REFERENCES NOTE(idNote),
 	FOREIGN KEY(idTrajet) REFERENCES TRAJET(idTrajet),
 	FOREIGN KEY(idCompteNotant) REFERENCES COMPTE(idCompte),
-	FOREIGN KEY(idCompteNote) REFERENCES COMPTE(idCompte)
+	FOREIGN KEY(idCompteNote) REFERENCES COMPTE(idCompte),
+	CHECK(note >= 0 AND note <=5)
 );
+
+CREATE TRIGGER MAJ_NOTE_INSERT AFTER INSERT ON NOTE
+BEGIN
+	UPDATE COMPTE SET noteCompte = (SELECT AVG(note) FROM NOTE WHERE idCompteNote = NEW.idCompteNote)
+	WHERE idCompte = NEW.idCompteNote;
+END;
+
+CREATE TRIGGER MAJ_NOTE_UPDATE AFTER UPDATE ON NOTE
+BEGIN
+	UPDATE COMPTE SET noteCompte = (SELECT AVG(note) FROM NOTE WHERE idCompteNote = NEW.idCompteNote)
+	WHERE idCompte = NEW.idCompteNote;
+END;
 
 CREATE TABLE IF NOT EXISTS NOTIFICATION(
 	idNotification INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -228,16 +279,16 @@ CREATE TABLE IF NOT EXISTS NOTIF_RECUE(
 );
 
 
-INSERT INTO COMPTE(nomCompte, prenomCompte, email, genre, voiture, telephone, mdp, notificationMail, typeCompte, noteCompte)
-    VALUES ('DURAND', 'Olivier', 'olivier@mail.com', 'homme', 1, 0606060606, 'mdpOlivier', 0, 'client', 4);
-INSERT INTO COMPTE(nomCompte, prenomCompte, email, genre, voiture, telephone, mdp, notificationMail, typeCompte, noteCompte)
-    VALUES ('FRANCOIS', 'Marie', 'marie@mail.com', 'femme', 1, 0606060606, 'mdpMarie', 0, 'client', 5);
+INSERT INTO COMPTE(nomCompte, prenomCompte, email, genre, voiture, telephone, mdp, notificationMail, typeCompte)
+    VALUES ('DURAND', 'Olivier', 'olivier@mail.com', 'homme', 1, 0606060606, 'mdpOlivier', 0, 'client');
+INSERT INTO COMPTE(nomCompte, prenomCompte, email, genre, voiture, telephone, mdp, notificationMail, typeCompte)
+    VALUES ('FRANCOIS', 'Marie', 'marie@mail.com', 'femme', 1, 0606060606, 'mdpMarie', 0, 'client');
 INSERT INTO COMPTE(nomCompte, prenomCompte, email, genre, voiture, telephone, mdp, notificationMail, typeCompte)
     VALUES ('LEGRAND', 'Paul', 'paul@mail.com', 'homme', 0, 0606060606, 'mdpPaul', 1, 'client');
-INSERT INTO COMPTE(nomCompte, prenomCompte, email, genre, voiture, telephone, mdp, notificationMail, typeCompte, noteCompte)
-    VALUES ('PIERRE', 'Harry', 'harry@mail.com', 'non genre', 1, 0606060606, 'mdpHarry', 1, 'client', 3);
-INSERT INTO COMPTE(nomCompte, prenomCompte, email, genre, voiture, telephone, mdp, notificationMail, typeCompte, noteCompte)
-    VALUES ('DIDIER', 'Sophie', 'sophie@mail.com', 'femme', 0, 0606060606, 'mdpSophie', 1, 'client', 5);
+INSERT INTO COMPTE(nomCompte, prenomCompte, email, genre, voiture, telephone, mdp, notificationMail, typeCompte)
+    VALUES ('PIERRE', 'Harry', 'harry@mail.com', 'non genre', 1, 0606060606, 'mdpHarry', 1, 'client');
+INSERT INTO COMPTE(nomCompte, prenomCompte, email, genre, voiture, telephone, mdp, notificationMail, typeCompte)
+    VALUES ('DIDIER', 'Sophie', 'sophie@mail.com', 'femme', 0, 0606060606, 'mdpSophie', 1, 'client');
 
 INSERT INTO TRAJET(idConducteur, heureDepart, dateDepart, nbPlaces, prix, nbPlacesRestantes, statusTrajet, commentaires, precisionRdv, villeDepart, villeArrivee)
     VALUES (4, '10h30', '14/03/2023', 5, 7, 3, 'a pourvoir', 'Non fumeur', 'Devant le Leclerc', 30, 27);
@@ -249,6 +300,8 @@ INSERT INTO TRAJET(idConducteur, heureDepart, dateDepart, nbPlaces, prix, nbPlac
    VALUES (4, '12h00', '01/01/2023', 5, 10, 3, 'termine', 'non fumeur', 'Devant le Leclerc', 30, 27);
 INSERT INTO TRAJET(idConducteur, heureDepart, dateDepart, nbPlaces, prix, nbPlacesRestantes, statusTrajet, commentaires, precisionRdv, villeDepart, villeArrivee)
    VALUES (4, '14h00', '02/01/2023', 5, 10, 3, 'termine', 'non fumeur', 'A cote de l’Eglise', 27, 30);
+
+UPDATE TRAJET SET nbPlacesRestantes = 0 WHERE idTrajet = 1; /* Test trajet complet */
 
 
 INSERT INTO TRAJET_PUBLIC VALUES (1);
@@ -278,10 +331,10 @@ INSERT INTO HISTORIQUE_TRAJET VALUES(4, 5);
 INSERT INTO HISTORIQUE_TRAJET VALUES(3, 5);
 INSERT INTO HISTORIQUE_TRAJET VALUES(5, 5);
 
-INSERT INTO NOTE(idTrajet, idCompteNotant, idCompteNote) VALUES (4, 4, 1);
-INSERT INTO NOTE(idTrajet, idCompteNotant, idCompteNote) VALUES (4, 2, 4);
-INSERT INTO NOTE(idTrajet, idCompteNotant, idCompteNote) VALUES (5, 3, 5);
-INSERT INTO NOTE(idTrajet, idCompteNotant, idCompteNote) VALUES (5, 5, 4);
+INSERT INTO NOTE(idTrajet, idCompteNotant, idCompteNote, note) VALUES (4, 4, 1, 4);
+INSERT INTO NOTE(idTrajet, idCompteNotant, idCompteNote, note) VALUES (4, 2, 4, 3);
+INSERT INTO NOTE(idTrajet, idCompteNotant, idCompteNote, note) VALUES (5, 3, 5, 5);
+INSERT INTO NOTE(idTrajet, idCompteNotant, idCompteNote, note) VALUES (5, 5, 4, 1);
 
 INSERT INTO VILLE(nomVille, codePostal) VALUES('Aix-en-Provence', 13100);
 INSERT INTO VILLE(nomVille, codePostal) VALUES('Ajaccio', 20000);
