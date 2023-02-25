@@ -1,3 +1,7 @@
+if test -d "build"; then
+  rm -rf build
+fi
+
 mkdir build
 cp -R backend build
 
