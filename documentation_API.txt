@@ -1,0 +1,210 @@
+1- Création d’un compte utilisateur (inscription)
+    PUT api/v1/user
+        HEAD: /
+        BODY: mail, password, nom, prenom, tel
+
+        reponses: 
+            201 (created) compte crée
+            400 (bad request) information éronnées ou manquante
+            409 (conflict) le compte existe déjà
+
+        reponse_content: token d'authentification
+
+2- Modification d’un compte utilisateur
+    PATCH api/v1/user/{user_id}
+        HEAD: auth_token
+        BODY: [champ(s) a modifier], password
+
+        reponses:
+            200 (ok)
+            400 (bad request) information éronnées ou manquante
+            401 (unauthorized) token invalide ou expiré
+
+        reponse_content: [champs modifiés sauf password], nouveau token de connection (si nouveau mot de passe)
+
+3- Suppression d’un compte utilisateur
+    DELETE api/v1/user/{user_id}
+        HEAD: auth_token
+        BODY: /
+
+        reponses:
+            204 (no content)
+            401 (unauthorized) token invalide ou expiré 
+            403 (forbidden) le token n'est pas admin et le compte a supprimer n'est pas celui de l'utilisateur
+
+        reponse_content: /
+
+4- Se connecter
+    POST api/v1/user/connect
+        HEAD: /
+        BODY: mail + password
+        
+        reponses:
+            200 (ok)
+            401 (unauthorized) mail ou mot de passe invalide
+
+        reponse_content: token d'authentification
+
+6- Demande de récupération d’un mot de passe oublié
+    AUCUNE IDEE
+
+7- Recherche d’un trajet
+    POST api/v1/route/search
+        HEAD: auth_token
+        BODY: information sur le trajet
+
+        reponses:
+            200 (ok)
+            401 (unauthorized) token invalide ou expiré
+
+        reponse_content: liste de trajet (si il en existe)
+
+8- Création d’un trajet
+    POST api/v1/route/new
+        HEAD: auth_token
+        BODY: les critères
+
+        200 (ok)
+        401 (unauthorized) token invalide ou expiré
+
+9- Création d’un trajet privé
+    [voir cas 8]
+
+10- Annuler un trajet
+    POST api/v1/route/{route_id} <- pas sûr
+        HEAD: auth_token
+        BODY: /
+
+        reponses:
+            204 (no content)
+            401 (unauthorized) token invalide ou expiré
+            403 (forbidden) le trajet ne peux plus être annulé (moins de 24h avant le depart), la personne n'est pas le créateur du 
+        
+        reponse_content: /
+
+11- Accéder à son profil
+    GET api/v1/user/{user_id}
+        HEAD: auth_token
+        BODY: /
+
+        reponses:
+            200 (ok)
+            401 (unauthorized) token invalide ou expiré
+
+        reponse_content: détails du compte
+
+12- Consultation des trajets créés
+    GET api/v1/user/{user_id}/routes
+        HEAD: auth_token
+        BODY: /
+
+        reponses:
+            200 (ok)
+            401 (unauthorized) token invalide ou expiré
+
+        reponse_content: liste de trajets crée
+
+13- Consultation des trajets effectués
+    GET api/v1/user/{user_id}/past <- pas sûr
+        HEAD: auth_token
+        BODY: /
+
+        reponses:
+            200 (ok)
+            401 (unauthorized) token invalide ou expiré
+
+        reponse_content: liste des trajets passé
+
+14- Cacher(supprimer) des trajets effectués <- DELETE ou PATCH ?
+    DELETE api/v1/user/{user_id}/routes
+        HEAD: auth_token
+        BODY: liste d'ID de trajet
+
+        reponses:
+            200 (ok)
+            401 (unauthorized) token invalide ou expiré
+
+        reponse_content: nouvelle liste des trajets a afficher 
+
+15- Ajout d’un commentaire sur le trajet (avec texte et étoile)
+    POST api/v1/user/{user_id}/note
+        HEAD: auth_token
+        BODY: ID de l'utilisateur cible
+
+        reponses:
+            200 (ok)
+            400 (bad request) donnée non conformes (note non comprise entre 0 et 5, commentaire de plus de 1000 caracteres, id user invalide)
+            401 (unauthorized) token invalide ou expiré
+
+        reponse_content: liste mise a jour des notes et commentaire + nouvelle moyenne
+
+16- Participer à un trajet
+    POST api/v1/route/{route_id}/add
+        HEAD: auth_token
+        BODY: /
+
+        reponses:
+            200 (ok)
+            401 (unauthorized) token invalide ou expiré
+            403 (forbidden) le trajet est privé ou complet
+
+        reponse_content: le trajet modifiés
+
+17- Annuler sa participation à un trajet
+    POST api/v1/route/{route_id}/cancel
+        HEAD: auth_token
+        BODY: /
+
+        reponses:
+            200 (ok)
+            401 (unauthorized) token invalide ou expiré
+            403 (forbidden) le trajet est dans moins de 24h
+
+18- Accepter un utilisateur à son trajet
+19- Refuser un utilisateur à son trajet
+
+20- Rechercher un utilisateur
+    POST api/v1/user
+        HEAD: auth_token
+        BODY: criteres de recherche
+
+        reponses:
+            200 (ok)
+            401 (unauthorized) token invalide ou expiré
+
+        reponse_content: liste d'utilisateur
+
+21- Creer un groupe
+    PUT api/v1/group
+        HEAD: auth_token
+        BODY: liste d'ID d'utilisateur
+
+        reponses:
+            200 (ok)
+            401 (unauthorized) token invalide ou expiré
+
+        reponse_content: objet groupe
+
+22- Ajouter un utilisateur à un groupe
+    POST api/v1/group/{group_id}
+        HEAD: auth_token
+        BODY: id du groupe id de la personne
+
+        reponses:
+            200 (ok)
+            401 (unauthorized) token invalide ou expiré
+            403 (forbidden) l'utilisateur n'existe pas / est déjà dans le groupe / l'utilisateur n'a pas les droits pour ajouter quelqu'un dans ce groupe
+
+        reponse_content: objet groupe
+
+23- Suppression d’un utilisateur d’un groupe
+    DELETE api/v1/group/{group_id}/{user_id}
+        HEAD: auth_token
+        BODY: id du groupe id de la personne
+
+        reponses:
+            200 (ok)
+            401 (unauthorized) token invalide ou expiré
+            403 (forbidden) l'utilisateur n'existe pas / n'est pas dans le groupe / l'utilisateur n'a pas les droits pour supprimer quelqu'un dans ce groupe
+
+        reponse_content: objet groupe
