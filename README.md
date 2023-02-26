@@ -14,8 +14,8 @@ Branche principale du développement de Les Bonnes Routes. Un site web de covoit
 - Jinja2 3.1.2
 
 ```bash
-python3.10 -m pip install flask==2.2.3
-python3.10 -m pip install jinja2==3.1.2
+python3.11 -m pip install flask==2.2.3
+python3.11 -m pip install jinja2==3.1.2
 ```
 
 ## Installation
