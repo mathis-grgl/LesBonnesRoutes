@@ -62,7 +62,7 @@ li .icon {
 
 li .title {
   text-transform: uppercase;
-  font-size: 28px;
+  font-size: 20px;
   font-weight: 700;
   letter-spacing: 2px;
   transform: rotateY(30deg) skewY(-24deg) translateY(0px);
@@ -70,7 +70,7 @@ li .title {
   pointer-events: none;
 }
 
-li .icon  {
+li .icon {
   display: grid;
   place-items: center;
   font-size: 80px;
@@ -94,7 +94,7 @@ li .icon  {
 }
 
 .base:hover + .title + .icon {
-  transform: rotateY(30deg) skewY(-24deg) translateY(-160px);
+  transform: rotateY(30deg) skewY(-24deg) translateY(-130px);
   color: var(--color);
   filter: drop-shadow(0 0 3px var(--color));
   animation: wave 1s ease-in-out infinite;
@@ -102,7 +102,7 @@ li .icon  {
 
 .base:hover + .title {
   color: var(--color);
-  transform: rotateY(30deg) skewY(-24deg) translateY(-90px);
+  transform: rotateY(30deg) skewY(-24deg) translateY(-50px);
   text-shadow: 0 0 3px var(--color);
   transition-delay: 0.1s;
   opacity: 1;
