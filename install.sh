@@ -19,3 +19,4 @@ cd ..
 cd frontend
 
 python3 render_contact.py > ../build/frontend/contact.html
+python3 render_deconnexion.py > ../build/frontend/deconnexion.html
