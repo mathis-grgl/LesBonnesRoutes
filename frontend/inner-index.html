@@ -17,6 +17,8 @@
   </section>
   <!-- END section -->
 
+  <link rel="stylesheet" href="css/index.css">
+
   <section class="section bg-light pb-0"  >
     <div class="container">
      
@@ -61,21 +63,34 @@
                     </div>
                   </div>
                   <div class="col-md-6 mb-3 mb-md-0">
-                    <label for="children" class="font-weight-bold text-black">Prix max</label>
+                    <label for="children" class="font-weight-bold text-black">Prix</label>
                     <div class="field-icon-wrap">
-                      <div class="icon"><span class="ion-ios-arrow-down"></span></div>
-                      <select name="" id="children" class="form-control">
-                        <option value="">1</option>
-                        <option value="">2</option>
-                        <option value="">3</option>
-                        <option value="">4+</option>
-                      </select>
+                      <div class="icon"><span class="ion-ios-arrow-right"></span></div>
+                      <div class="range_container">
+                        <button onclick="showSection(event)" class="form-control">Prix</button>
+                        <section id="slidersSection" run="dialog" hidden>
+                          <div class="sliders_control">
+                            <input id="fromSlider" type="range" value="10" min="0" max="100"/>
+                            <input id="toSlider" type="range" value="40" min="0" max="100"/>
+                          </div>
+                          <div class="form_control">
+                            <div class="form_control_container">
+                              <div class="form_control_container__time">Min</div>
+                              <input class="form_control_container__time__input" type="number" id="fromInput" value="10" min="0" max="500"/>
+                            </div>
+                            <div class="form_control_container">
+                              <div class="form_control_container__time">Max</div>
+                              <input class="form_control_container__time__input" type="number" id="toInput" value="40" min="0" max="500"/>
+                            </div>
+                          </div>
+                        </section>
+                    </div>                
                     </div>
                   </div>
                 </div>
               </div>
               <div class="col-md-6 col-lg-3 align-self-end">
-                <button class="btn btn-success btn-block text-white">Rechercher</button>
+                <button class="btn btn-success btn-block text-white" style="margin-top: 15px;">Rechercher</button>
               </div>
             </div>
           </form>
@@ -85,3 +100,5 @@
       </div>
     </div>
   </section>
+
+  <script src="js/index.js"></script>
