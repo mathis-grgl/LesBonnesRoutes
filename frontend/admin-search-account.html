@@ -1,220 +1,320 @@
-<!DOCTYPE HTML>
-<html>
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Les Bonnes Routes</title>
-    <link rel="icon" type="image/png" href="images/logo.png">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="" />
-    <meta name="keywords" content="" />
-    <meta name="author" content="" />
-    <link rel="stylesheet" type="text/css"
-        href="//fonts.googleapis.com/css?family=|Roboto+Sans:400,700|Playfair+Display:400,700">
-
-    <link rel="stylesheet" href="css/required/bootstrap.min.css">
-    <link rel="stylesheet" href="css/required/animate.css">
-    <link rel="stylesheet" href="css/required/owl.carousel.min.css">
-    <link rel="stylesheet" href="css/required/aos.css">
-    <link rel="stylesheet" href="css/required/bootstrap-datepicker.css">
-    <link rel="stylesheet" href="css/required/jquery.timepicker.css">
-    <link rel="stylesheet" href="css/required/fancybox.min.css">
-    <link rel="stylesheet" href="css/logo.css">
-
-
-
-    <link rel="stylesheet" href="fonts/ionicons/css/ionicons.min.css">
-    <link rel="stylesheet" href="fonts/fontawesome/css/font-awesome.min.css">
-
-    <!-- Theme Style -->
-    <link rel="stylesheet" href="css/required/style.css">
-    <!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.13.3/css/dataTables.bootstrap5.min.css"> -->
-    <script src="https://cdn.datatables.net/1.13.3/js/dataTables.bootstrap5.min.js"></script>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.3/css/dataTables.bootstrap5.min.css">
 </head>
-
 <body>
 
-    <header class="site-header js-site-header">
-        <div class="container-fluid">
-            <div class="row align-items-center">
-                <div class="col-6 col-lg-4 site-logo" data-aos="fade">
-                    <ul class="ullbr">
-                        <a href="index.html">
-                            <li style="--color: #ef436b" class = "lilbr">
-                                <span class="base"></span>
-                                <span class="title">Les Bonnes Routes</span>
-                                <span class="icon">
-                                        <img src="images/logo.png" alt="logo" class = "imglbr"> 
-                                </span>
-                            </li>
-                        </a>
-                    </ul>
-                    
 
-                </div>
-                <div class="col-6 col-lg-8">
-
-
-                    <div class="site-menu-toggle js-site-menu-toggle" data-aos="fade">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
-                    <!-- END menu-toggle -->
-
-                    <div class="site-navbar js-site-navbar">
-                        <nav role="navigation">
-                            <div class="container">
-                                <div class="row full-height align-items-center">
-                                    <div class="col-md-6 mx-auto">
-                                        <ul class="list-unstyled menu">
-                                            <li class="active"><a href="index.html">Page d'accueil</a></li>
-                                            <li><a href="rooms.html" >Trajets</a></li>
-                                            <li><a href="about.html" >Se connecter / S'inscrire</a></li>
-                                            <li><a href="events.html" >Profil</a></li>
-                                            <li><a href="contact.html">Contact</a></li>
-                                            <li><a href="reservation.html">À propos de nous</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </nav>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
-    <!-- END head -->
-
-    <section class="site-hero overlay" data-stellar-background-ratio="0.5">
-      <div class="container" style="display:relative !important; top: 15vw !important; left: 45vw !important;">
-          <!-- Contenu de la page -->
-          
-        <div class="row site-hero-inner justify-content-center align-items-center">
-          <div class="col-md-10 text-center" data-aos="fade-up">
-            <h1 class="heading">Recherche de compte utilisateur</h1>
-            <!-- todo: appel à l'API python pour obtenir les utilisateurs -->
-            <form class="form center" action="/" method="get">
-              <fieldset>    
-                <div class="input-group">
-                  <input id="oSaisie" name="oSaisie" type="text" class="form-control" aria-label="Saisie d'un nom de compte'" required="required">
-                  <div class="input-group-append">
-                    <button class="btn btn-primary" type="submit">Recherche</button>
-                  </div>
-                </div>
-              </fieldset> 
-            </form>
-
-            <br/>
-
-            <table id="accountTable" class="table table-striped dataTa" style="width:100%;color:white;">
-              <thead>
-                <tr style="font-weight: bold;">
-                  <td>Photo</td>
-                  <td>Nom d'utilisateur</td>
-                  <td>Genre</td>
-                  <td>Email</td>
-                  <td>Note</td>
-                  <td>Action</td>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>/</td>
-                  <td>Georgel Mathis</td>
-                  <td>Masculin</td>
-                  <td>mathis.georgel@gmail.com</td>
-                  <td>4.5/5</td>
-                  <td style="color:red;">Supprimer</td>
-                </tr>
-                <tr>
-                  <td>/</td>
-                  <td>Gehin Sandy</td>
-                  <td>Masculin</td>
-                  <td>sandy.gehin@gmail.com</td>
-                  <td>4.2/5</td>
-                  <td style="color:red;">Supprimer</td>
-                </tr>
-                <tr>
-                  <td>/</td>
-                  <td>Cognito Quentin</td>
-                  <td>Masculin</td>
-                  <td>quentin.cognito@gmail.com</td>
-                  <td>2/5</td>
-                  <td style="color:red;">Supprimer</td>
-                </tr>
-              </tbody>
-            </table>
-
-            <script>
-              $(document).ready(function () {
-                $('#accountTable').DataTable();
-              });
-            </script>
-
-          </div>
-        </div>
-      </div>
-    </section>
-    <!-- END section -->
+  <table id="accountTable" class="table table-striped" style="width:100%">
+    <thead>
+      <tr>
+        <th>Photo</th>
+        <th>Nom de l'utilisateur</th>
+        <th>Genre</th>
+        <th>E-mail</th>
+        <th>Note</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>/</td>
+        <td>Georgel Mathis</td>
+        <td>Masculin</td>
+        <td>mathis.georgel@gmail.com</td>
+        <td>4/5</td>
+        <td>Supprimer</td>
+      </tr>
+      
+      <tr>
+        <td>/</td>
+        <td>Gehin Sandy</td>
+        <td>Masculin</td>
+        <td>sandy.gehin@gmail.com</td>
+        <td>4.2/5</td>
+        <td>Supprimer</td>
+      </tr>
+      <tr>
+        <td>/</td>
+        <td>Cognito Quentin</td>
+        <td>Masculin</td>
+        <td>quentin.cognito@gmail.com</td>
+        <td>2/5</td>
+        <td>Supprimer</td>
+      </tr>
+    </tbody>
+    <!-- <tfoot>
+      <tr>
+        <th>Photo</th>
+        <th>Nom de l'utilisateur</th>
+        <th>Genre</th>
+        <th>E-mail</th>
+        <th>Note</th>
+        <th>Action</th>
+        </tr>
+    </tfoot> -->
+  </table>
 
 
+  <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+  <script src="https://cdn.datatables.net/1.13.3/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.3/js/dataTables.bootstrap5.min.js"></script>
 
-    <footer class="section footer-section">
-        <div class="container">
-            <div class="row mb-4">
-                <div class="col-md-3 mb-5">
-                    <ul class="list-unstyled link">
-                        <li><a href="#">À propos de nous</a></li>
-                        <!-- <li><a href="#">Terms &amp; Conditions</a></li>
-                        <li><a href="#">Privacy Policy</a></li> -->
-                        <li><a href="#">Trajets</a></li>
-                    </ul>
-                </div>
+  <script>
+    var table = new DataTable('#accountTable', {
+      language: {
+        "emptyTable": "Aucune donnée disponible dans le tableau",
+        "loadingRecords": "Chargement...",
+        "processing": "Traitement...",
+        "select": {
+            "rows": {
+                "_": "%d lignes sélectionnées",
+                "1": "1 ligne sélectionnée"
+            },
+            "cells": {
+                "1": "1 cellule sélectionnée",
+                "_": "%d cellules sélectionnées"
+            },
+            "columns": {
+                "1": "1 colonne sélectionnée",
+                "_": "%d colonnes sélectionnées"
+            }
+        },
+        "autoFill": {
+            "cancel": "Annuler",
+            "fill": "Remplir toutes les cellules avec <i>%d<\/i>",
+            "fillHorizontal": "Remplir les cellules horizontalement",
+            "fillVertical": "Remplir les cellules verticalement"
+        },
+        "searchBuilder": {
+            "conditions": {
+                "date": {
+                    "after": "Après le",
+                    "before": "Avant le",
+                    "between": "Entre",
+                    "empty": "Vide",
+                    "not": "Différent de",
+                    "notBetween": "Pas entre",
+                    "notEmpty": "Non vide",
+                    "equals": "Égal à"
+                },
+                "number": {
+                    "between": "Entre",
+                    "empty": "Vide",
+                    "gt": "Supérieur à",
+                    "gte": "Supérieur ou égal à",
+                    "lt": "Inférieur à",
+                    "lte": "Inférieur ou égal à",
+                    "not": "Différent de",
+                    "notBetween": "Pas entre",
+                    "notEmpty": "Non vide",
+                    "equals": "Égal à"
+                },
+                "string": {
+                    "contains": "Contient",
+                    "empty": "Vide",
+                    "endsWith": "Se termine par",
+                    "not": "Différent de",
+                    "notEmpty": "Non vide",
+                    "startsWith": "Commence par",
+                    "equals": "Égal à",
+                    "notContains": "Ne contient pas",
+                    "notEndsWith": "Ne termine pas par",
+                    "notStartsWith": "Ne commence pas par"
+                },
+                "array": {
+                    "empty": "Vide",
+                    "contains": "Contient",
+                    "not": "Différent de",
+                    "notEmpty": "Non vide",
+                    "without": "Sans",
+                    "equals": "Égal à"
+                }
+            },
+            "add": "Ajouter une condition",
+            "button": {
+                "0": "Recherche avancée",
+                "_": "Recherche avancée (%d)"
+            },
+            "clearAll": "Effacer tout",
+            "condition": "Condition",
+            "data": "Donnée",
+            "deleteTitle": "Supprimer la règle de filtrage",
+            "logicAnd": "Et",
+            "logicOr": "Ou",
+            "title": {
+                "0": "Recherche avancée",
+                "_": "Recherche avancée (%d)"
+            },
+            "value": "Valeur",
+            "leftTitle": "Désindenter le critère",
+            "rightTitle": "Indenter le critère"
+        },
+        "searchPanes": {
+            "clearMessage": "Effacer tout",
+            "count": "{total}",
+            "title": "Filtres actifs - %d",
+            "collapse": {
+                "0": "Volet de recherche",
+                "_": "Volet de recherche (%d)"
+            },
+            "countFiltered": "{shown} ({total})",
+            "emptyPanes": "Pas de volet de recherche",
+            "loadMessage": "Chargement du volet de recherche...",
+            "collapseMessage": "Réduire tout",
+            "showMessage": "Montrer tout"
+        },
+        "buttons": {
+            "collection": "Collection",
+            "colvis": "Visibilité colonnes",
+            "colvisRestore": "Rétablir visibilité",
+            "copy": "Copier",
+            "copySuccess": {
+                "1": "1 ligne copiée dans le presse-papier",
+                "_": "%d lignes copiées dans le presse-papier"
+            },
+            "copyTitle": "Copier dans le presse-papier",
+            "csv": "CSV",
+            "excel": "Excel",
+            "pageLength": {
+                "-1": "Afficher toutes les lignes",
+                "_": "Afficher %d lignes",
+                "1": "Afficher 1 ligne"
+            },
+            "pdf": "PDF",
+            "print": "Imprimer",
+            "copyKeys": "Appuyez sur ctrl ou u2318 + C pour copier les données du tableau dans votre presse-papier.",
+            "createState": "Créer un état",
+            "removeAllStates": "Supprimer tous les états",
+            "removeState": "Supprimer",
+            "renameState": "Renommer",
+            "savedStates": "États sauvegardés",
+            "stateRestore": "État %d",
+            "updateState": "Mettre à jour"
+        },
+        "decimal": ",",
+        "datetime": {
+            "previous": "Précédent",
+            "next": "Suivant",
+            "hours": "Heures",
+            "minutes": "Minutes",
+            "seconds": "Secondes",
+            "unknown": "-",
+            "amPm": [
+                "am",
+                "pm"
+            ],
+            "months": {
+                "0": "Janvier",
+                "2": "Mars",
+                "3": "Avril",
+                "4": "Mai",
+                "5": "Juin",
+                "6": "Juillet",
+                "8": "Septembre",
+                "9": "Octobre",
+                "10": "Novembre",
+                "1": "Février",
+                "11": "Décembre",
+                "7": "Août"
+            },
+            "weekdays": [
+                "Dim",
+                "Lun",
+                "Mar",
+                "Mer",
+                "Jeu",
+                "Ven",
+                "Sam"
+            ]
+        },
+        "editor": {
+            "close": "Fermer",
+            "create": {
+                "title": "Créer une nouvelle entrée",
+                "button": "Nouveau",
+                "submit": "Créer"
+            },
+            "edit": {
+                "button": "Editer",
+                "title": "Editer Entrée",
+                "submit": "Mettre à jour"
+            },
+            "remove": {
+                "button": "Supprimer",
+                "title": "Supprimer",
+                "submit": "Supprimer",
+                "confirm": {
+                    "_": "Êtes-vous sûr de vouloir supprimer %d lignes ?",
+                    "1": "Êtes-vous sûr de vouloir supprimer 1 ligne ?"
+                }
+            },
+            "multi": {
+                "title": "Valeurs multiples",
+                "info": "Les éléments sélectionnés contiennent différentes valeurs pour cette entrée. Pour modifier et définir tous les éléments de cette entrée à la même valeur, cliquez ou tapez ici, sinon ils conserveront leurs valeurs individuelles.",
+                "restore": "Annuler les modifications",
+                "noMulti": "Ce champ peut être modifié individuellement, mais ne fait pas partie d'un groupe. "
+            },
+            "error": {
+                "system": "Une erreur système s'est produite (<a target=\"\\\" rel=\"nofollow\" href=\"\\\">Plus d'information<\/a>)."
+            }
+        },
+        "stateRestore": {
+            "removeSubmit": "Supprimer",
+            "creationModal": {
+                "button": "Créer",
+                "order": "Tri",
+                "paging": "Pagination",
+                "scroller": "Position du défilement",
+                "search": "Recherche",
+                "select": "Sélection",
+                "columns": {
+                    "search": "Recherche par colonne",
+                    "visible": "Visibilité des colonnes"
+                },
+                "name": "Nom :",
+                "searchBuilder": "Recherche avancée",
+                "title": "Créer un nouvel état",
+                "toggleLabel": "Inclus :"
+            },
+            "renameButton": "Renommer",
+            "duplicateError": "Il existe déjà un état avec ce nom.",
+            "emptyError": "Le nom ne peut pas être vide.",
+            "emptyStates": "Aucun état sauvegardé",
+            "removeConfirm": "Voulez vous vraiment supprimer %s ?",
+            "removeError": "Échec de la suppression de l'état.",
+            "removeJoiner": "et",
+            "removeTitle": "Supprimer l'état",
+            "renameLabel": "Nouveau nom pour %s :",
+            "renameTitle": "Renommer l'état"
+        },
+        "info": "Affichage de _START_ à _END_ sur _TOTAL_ lignes",
+        "infoEmpty": "Affichage de 0 à 0 sur 0 lignes",
+        "infoFiltered": "(filtrées depuis un total de _MAX_ lignes)",
+        "lengthMenu": "Afficher _MENU_ lignes",
+        "paginate": {
+            "first": "Première",
+            "last": "Dernière",
+            "next": "Suivante",
+            "previous": "Précédente"
+        },
+        "zeroRecords": "Aucune entrée correspondante trouvée",
+        "aria": {
+            "sortAscending": " : activer pour trier la colonne par ordre croissant",
+            "sortDescending": " : activer pour trier la colonne par ordre décroissant"
+        },
+        "infoThousands": " ",
+        "search": "Rechercher :",
+        "thousands": " "
+      },
+    });
+  </script>
 
-                <div class="col-md-3 mb-5 pr-md-5 contact-info">
-                    <!-- <li>198 West 21th Street, <br> Suite 721 New York NY 10016</li> -->
-                    <p><span class="d-block"><span class="ion-ios-location h5 mr-3 text-primary"></span>Adresse:</span>
-                        <span> Campus <br> Boulevard des Aiguillettes, 54506 Vandœuvre-lès-Nancy</span></p>
-                    <p><span class="d-block"><span
-                                class="ion-ios-telephone h5 mr-3 text-primary"></span>Téléphone:</span> <span> 03 72 74
-                            50 00</span></p>
-                    <p><span class="d-block"><span class="ion-ios-email h5 mr-3 text-primary"></span>Email:</span>
-                        <span> contact@univ-lorraine.fr</span></p>
-                </div>
-
-            </div>
-            <div class="row pt-5">
-                <p class="col-md-6 text-left">
-                    <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                    Copyright &copy;
-                    <script>document.write(new Date().getFullYear());</script> All rights reserved
-                    <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                </p>
-
-            
-            </div>
-        </div>
-    </footer>
-
-    <script src="js/required/jquery-3.3.1.min.js"></script>
-    <!-- <script src="js/required/jquery-migrate-3.0.1.min.js"></script> -->
-    <!-- <script src="js/required/popper.min.js"></script> -->
-    <!-- <script src="js/required/bootstrap.min.js"></script> -->
-    <!-- <script src="js/required/owl.carousel.min.js"></script> -->
-    <!-- <script src="js/required/jquery.stellar.min.js"></script> -->
-    <!-- <script src="js/required/jquery.fancybox.min.js"></script> -->
-
-
-    <script src="js/required/aos.js"></script>
-
-    <!-- <script src="js/required/bootstrap-datepicker.js"></script>  -->
-    <!-- <script src="js/required/jquery.timepicker.min.js"></script>  -->
-
-
-
-    <script src="js/required/main.js"></script>
 </body>
-
 </html>
