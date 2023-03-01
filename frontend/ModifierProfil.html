@@ -71,7 +71,8 @@
                                         <ul class="list-unstyled menu">
                                             <li class="active"><a href="index.html">Page d'accueil</a></li>
                                             <li><a href="rooms.html">Trajets</a></li>
-                                            <li><a href="about.html">Se connecter / S'inscrire</a></li>
+                                            <li><a href="deconnexion.html" id="logout-button">Se déconnecter</a></li>
+                                            <!-- <li><a role="button" id="logout-button" >Se déconnecter</a></li> -->
                                             <li><a href="events.html">Profil</a></li>
                                             <li><a href="contact.html">Contact</a></li>
                                             <li><a href="reservation.html">À propos de nous</a></li>
@@ -148,15 +149,16 @@
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    <form method="post" action="#">
+                                    <form id="update-form">
                                         <h6 class="heading-small text-muted mb-4">Information de l'utilisateur</h6>
                                         <div class="pl-lg-4">
                                             <div class="row">
                                                 <div class="col-lg-6">
                                                     <div class="form-group focused">
-                                                        <label class="form-control-label" for="input-username">Numéro de
+                                                        <label class="form-control-label" for="input-telephone">Numéro
+                                                            de
                                                             téléphone</label>
-                                                        <input type="text" id="input-phone"
+                                                        <input type="text" id="input-phone" name="telephone"
                                                             class="form-control form-control-alternative"
                                                             placeholder="Numéro de téléphone" value="">
                                                     </div>
@@ -165,7 +167,7 @@
                                                     <div class="form-group">
                                                         <label class="form-control-label" for="input-email">Email
                                                             address</label>
-                                                        <input type="email" id="input-email"
+                                                        <input type="email" id="input-email" name="email"
                                                             class="form-control form-control-alternative"
                                                             placeholder="lbr@example.com">
                                                     </div>
@@ -176,7 +178,7 @@
                                                     <div class="form-group focused">
                                                         <label class="form-control-label"
                                                             for="input-first-name">Prénom</label>
-                                                        <input type="text" id="input-first-name"
+                                                        <input type="text" id="input-first-name" name="prenom"
                                                             class="form-control form-control-alternative"
                                                             placeholder="Prénom" value="">
                                                     </div>
@@ -185,7 +187,7 @@
                                                     <div class="form-group focused">
                                                         <label class="form-control-label" for="input-last-name">Nom de
                                                             famille</label>
-                                                        <input type="text" id="input-last-name"
+                                                        <input type="text" id="input-last-name" name="nom"
                                                             class="form-control form-control-alternative"
                                                             placeholder="Nom de famille" value="">
                                                     </div>
@@ -199,12 +201,15 @@
                                                         <input type="password" name="logpass"
                                                             class="form-control form-control-alternative"
                                                             placeholder="********" id="logpass" autocomplete="off">
+                                                        <small id= "small">Le mot de passe doit contenir au moins 8 caractères, dont
+                                                            une majuscule, une minuscule, un chiffre et un caractère
+                                                            spécial (@$!%*?&).</small>
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-6">
                                                     <div class="form-group focused">
                                                         <label class="form-control-label"
-                                                            for="input-last-name">Confirmer votre nouveau mot de
+                                                            for="input-last-name">Confirmer nouveau mot de
                                                             passe</label>
                                                         <input type="password" name="logpassconfirm"
                                                             class="form-control form-control-alternative"
@@ -217,7 +222,7 @@
                                                     <div class="form-group focused">
                                                         <label class="form-control-label"
                                                             for="input-address">Adresse</label>
-                                                        <input id="input-address"
+                                                        <input id="input-address" name="adresse"
                                                             class="form-control form-control-alternative"
                                                             placeholder="Votre adresse" value="" type="text">
                                                     </div>
@@ -225,7 +230,7 @@
                                                 <div class="col-lg-6">
                                                     <div class="form-group focused">
                                                         <label class="form-control-label" for="input-city">Ville</label>
-                                                        <input type="text" id="input-city"
+                                                        <input type="text" id="input-city" name="ville"
                                                             class="form-control form-control-alternative"
                                                             placeholder="Ville" value="">
                                                     </div>
@@ -236,7 +241,7 @@
                                                     <div class="form-group focused">
                                                         <label class="form-control-label"
                                                             for="input-country">Pays</label>
-                                                        <input type="text" id="input-country"
+                                                        <input type="text" id="input-country" name="pays"
                                                             class="form-control form-control-alternative"
                                                             placeholder="Pays" value="">
                                                     </div>
@@ -245,7 +250,7 @@
                                                     <div class="form-group">
                                                         <label class="form-control-label" for="input-country">
                                                             Code Postal</label>
-                                                        <input type="number" id="input-postal-code"
+                                                        <input type="text" id="input-postal-code" name="codepostal"
                                                             class="form-control form-control-alternative"
                                                             placeholder="Code postal">
                                                     </div>
@@ -261,11 +266,12 @@
                                                     <div class="form-group focused">
                                                         <label class="form-control-label" for="input-genre">Votre
                                                             genre</label>
-                                                        <select name="sexe" onchange="" style="width: auto;"
+                                                        <select id="sexe" onchange="" style="width: auto;"
                                                             required="required">
                                                             <option value="0"></option>
                                                             <option value="1">Homme</option>
                                                             <option value="2">Femme</option>
+                                                            <option value="3">Autre</option>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -273,8 +279,8 @@
                                             <div class="row">
                                                 <div class="col-lg-4">
                                                     <div class="form-group focused">
-                                                        <label class="form-control-label"
-                                                            for="input-voiture">Possédez-vous
+                                                        <label class="form-control-label" for="input-voiture"
+                                                            id="labelvoiture">Possédez-vous
                                                             une voiture ? </label>
                                                         <input type="radio" id="Choice1" name="voiture" value="oui">
                                                         <label for="contactChoice1">Oui</label>
@@ -285,7 +291,8 @@
                                                 </div>
                                                 <div class="col-lg-4">
                                                     <div class="form-group focused">
-                                                        <label class="form-control-label" for="input-notif">Recevoir les
+                                                        <label class="form-control-label" for="input-notif"
+                                                            id="labelnotif">Recevoir les
                                                             notifications par mail ? </label>
                                                         <input type="radio" id="Choice3" name="notif" value="oui">
                                                         <label for="contactChoice1">Oui</label>
@@ -305,8 +312,8 @@
                                             </div>
                                         </div>
                                         <hr class="my-4">
-                                        <input type="submit" value="Modifier mes informations" class="btn btn-info" onclick="alert('Vos informations ont été modifiées.')">
-                                        </form>
+                                        <input type="submit" value="Modifier mes informations" class="btn btn-info">
+                                    </form>
 
                                 </div>
                             </div>
@@ -381,6 +388,10 @@
 
 
     <script src="js/required/main.js"></script>
+    <script src="js/editProfil.js"></script>
+    <script src="js/deconnexion.js"></script>
+
+
 </body>
 
 </html>
