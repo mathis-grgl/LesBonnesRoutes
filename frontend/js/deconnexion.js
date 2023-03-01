@@ -1,5 +1,8 @@
 const logoutButton = document.getElementById('logout-button');
 
+
+
+
 logoutButton.addEventListener('click', (event) => {
   // Gérer la déconnexion de l'utilisateur
   event.preventDefault();
@@ -14,3 +17,7 @@ logoutButton.addEventListener('click', (event) => {
 
 
 });
+
+
+
+
