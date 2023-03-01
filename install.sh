@@ -6,7 +6,7 @@ mkdir build
 cp -R backend build
 
 cd build
-python3 backend/install_db.py
+python3.11 backend/install_db.py
 
 mkdir frontend
 cp -R ../frontend/css frontend
@@ -18,6 +18,7 @@ cd ..
 
 cd frontend
 
-python3 render_contact.py > ../build/frontend/contact.html
-python3 render_deconnexion.py > ../build/frontend/deconnexion.html
-python3 render_editprofil.py > ../build/frontend/modifierProfil.html
+python3.11 render_contact.py > ../build/frontend/contact.html
+python3.11 render_deconnexion.py > ../build/frontend/deconnexion.html
+python3.11 render_editprofil.py > ../build/frontend/ModifierProfil.html
+python3.11 render_privacy.py > ../build/frontend/privacy.html
