@@ -1,0 +1,115 @@
+.accueil{
+    width: 100%;
+}
+
+ul {
+  display: flex;
+  justify-content: space-between;
+  width: auto;
+  align-items: center;
+  list-style-type: none;
+}
+
+ul li {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 200px;
+  height: 200px;
+}
+
+li .base {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 8px solid var(--color);
+  border-left: 8px solid transparent;
+  animation: spin 8s linear infinite;
+  filter: drop-shadow(0 0 10px var(--color));
+}
+
+@keyframes spin {
+  0% {
+    transform: rotateX(60deg) rotateZ(0);
+  }
+  100% {
+    transform: rotateX(60deg) rotateZ(-360deg);
+  }
+}
+
+li .base::after {
+  position: absolute;
+  content: "";
+  width: 30px;
+  height: 30px;
+  top: 9px;
+  left: 9px;
+  border-radius: 50%;
+  background-color: var(--color);
+}
+
+li .base,
+li .title,
+li .icon {
+  position: absolute;
+  color: #b5b5b5;
+  transform: rotateX(60deg) rotateZ(-45deg);
+  cursor: pointer;
+  transition: 0.5s ease-in-out;
+}
+
+li .title {
+  text-transform: uppercase;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  transform: rotateY(30deg) skewY(-24deg) translateY(0px);
+  opacity: 0;
+  pointer-events: none;
+}
+
+li .icon {
+  display: flex;
+  place-items: center;
+  font-size: 80px;
+  height: 50%;
+  pointer-events: none;
+  left: 30%;
+}
+
+.img{
+    height: 80%;
+    width: 80%;
+}
+
+@keyframes wave {
+  0%,
+  100% {
+    margin-bottom: 0;
+  }
+  50% {
+    margin-bottom: 15px;
+  }
+}
+
+.base:hover {
+  filter: drop-shadow(0 0 10px var(--color));
+  animation-play-state: paused;
+}
+
+.base:hover + .title + .icon {
+  transform: rotateY(30deg) skewY(-24deg) translateY(-160px);
+  color: var(--color);
+  filter: drop-shadow(0 0 3px var(--color));
+  animation: wave 1s ease-in-out infinite;
+}
+
+.base:hover + .title {
+  color: var(--color);
+  transform: rotateY(30deg) skewY(-24deg) translateY(-90px);
+  text-shadow: 0 0 3px var(--color);
+  transition-delay: 0.1s;
+  opacity: 1;
+  animation: wave 1s ease-in-out infinite;
+}
