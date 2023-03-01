@@ -22,3 +22,4 @@ python3.11 render_contact.py > ../build/frontend/contact.html
 python3.11 render_deconnexion.py > ../build/frontend/deconnexion.html
 python3.11 render_editprofil.py > ../build/frontend/ModifierProfil.html
 python3.11 render_privacy.py > ../build/frontend/privacy.html
+python3.11 render_terms.py > ../build/frontend/terms.html
