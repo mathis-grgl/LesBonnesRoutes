@@ -26,3 +26,4 @@ python3.11 render_privacy.py > ../build/frontend/privacy.html
 cp login_signup.html ../build/frontend/login_signup.html
 python3.11 render_terms.py > ../build/frontend/terms.html
 python3.11 render_account.py > ../build/frontend/account.html
+python3.11 render_about.py > ../build/frontend/about.html
