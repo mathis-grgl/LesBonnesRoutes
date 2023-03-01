@@ -1,3 +1,4 @@
+#!/bin/bash
 if test -d "build"; then
   rm -rf build
 fi
@@ -22,4 +23,5 @@ python3.11 render_contact.py > ../build/frontend/contact.html
 python3.11 render_deconnexion.py > ../build/frontend/deconnexion.html
 python3.11 render_editprofil.py > ../build/frontend/ModifierProfil.html
 python3.11 render_privacy.py > ../build/frontend/privacy.html
+cp login_signup.html ../build/frontend/login_signup.html
 python3.11 render_terms.py > ../build/frontend/terms.html
