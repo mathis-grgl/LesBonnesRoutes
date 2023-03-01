@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connexion/inscription</title>
+  <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet" />
+  <link rel="stylesheet" href="css/login_signup.css">
+  <link rel="stylesheet" href="css/login_signup_button.css">
+</head>
+
+<div class="accueil">
+  <ul>
+    <li style="--color: #67ac5b">
+      <span class="base"></span>
+      <span class="title">Accueil</span>
+      <span class="icon">
+        <ion-content>
+          <img src="images/logo.png" class="img">
+        </ion-content>>
+      </span>
+    </li>
+  </ul>
+</div>
+
+<body>
+  <div class="container emailSending" name="email-sending">
+    <p></p>
+  </div>
+
+  <div class="container" id="container">
+
+    <div class="form-container register-container">
+      <form action="#">
+        <h1>Inscription</h1>
+        <input type="text" placeholder="Nom" name="name-sign" oninput="checkValue('name-sign')">
+        <input type="text" placeholder="Prenom" name="last-name-sign" oninput="checkValue('last-name-sign')">
+        <div class="content">Genre : *
+          <input type="radio" name="gender-sign" value="homme">Homme
+          <input type="radio" name="gender-sign" value="femme">Femme
+          <input type="radio" name="gender-sign" value="autre">Autre
+        </div>        
+        <input type="email" placeholder="Email" name="email-sign" oninput="checkValue('email-sign')">
+        <input type="text" placeholder="Télephone" name="phone-sign" oninput="checkValue('phone-sign')">
+        <div class="content">
+          <div class="checkbox">
+            <input type="checkbox" name="checkbox-licence-sign" id="checkbox" oninput="checkValue('checkbox-licence-sign')">
+            <label>Permis *</label>
+          </div>
+        </div>
+        <!--<label for="file">Photo :</label>-->
+        <input type="file" id="file" name="file-sign" accept="image/jpeg, image/png">
+        <input type="password" placeholder="Mot de passe" name="password-sign" oninput="checkValue('password-sign')">
+        <button>S'inscrire</button>
+      </form>
+    </div>
+
+    <div class="form-container login-container">
+      <form action="#">
+        <h1>Connexion</h1>
+        <input type="email" placeholder="Email" name="email-log" oninput="checkValue('email-log')">
+        <input type="password" placeholder="Mot de passe" name="password-log" oninput="checkValue('password-log')">
+        <div class="content">
+          <div class="checkbox">
+            <input type="checkbox" name="checkbox-remember-log" id="checkbox" oninput="checkValue('checkbox-remember-log')">
+            <label>Se souvenir</label>
+          </div>
+          <div class="pass-link">
+            <a href="#" onclick="sendEmail()">Mot de passe oublié ?</a>
+          </div>
+        </div>
+        <button>Se connecter</button>
+      </form>
+    </div>
+
+    <div class="overlay-container">
+      <div class="overlay">
+        <div class="overlay-panel overlay-left">
+          <h1 class="title">Bonjour <br> l'ami</h1>
+          <p>Si vous avez un compte, connectez vous ici.</p>
+          <button class="ghost" id="login">Connexion
+            <i class="lni lni-arrow-left login"></i>
+          </button>
+        </div>
+        <div class="overlay-panel overlay-right">
+          <h1 class="title">Commencez<br>à co-voiturer</h1>
+          <p>Si vous n'avez pas de compte, rejoignez nous et co-voiturez.</p>
+          <button class="ghost" id="register">S'inscrire
+            <i class="lni lni-arrow-right register"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="js/login_signup.js"></script>
+  <script src="https://smtpjs.com/v3/smtp.js"></script>
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+</body>
+</html>
