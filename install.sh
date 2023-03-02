@@ -7,7 +7,7 @@ mkdir build
 cp -R backend build
 
 cd build
-python3.11 backend/install_db/install_db.py
+python3.10 backend/install_db/install_db.py
 
 mkdir frontend
 cp -R ../frontend/css frontend
