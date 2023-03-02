@@ -4,30 +4,30 @@ from jinja2 import Environment, FileSystemLoader
 # MODIFIER CES 2 LISTES POUR RENDRE LES DIFFÉRENTES PAGES
 # SI UNE SEULE PAGE NE 'COMPILE' PAS, LE PROGRAMME NE FAIT PAS LES AUTRES
 
+# Déclaration de la liste des pages à rendre
+liste_pages_a_rendre = [
+    "about",
+    "account",
+    "admin-search-account",
+    "contact",
+    "deconnexion",
+    "editprofil",
+    "index",
+    "privacy",
+    "terms",
+]
+
+# Déclaration de la liste des pages à copier simplement
+liste_pages_a_copier = [
+    "admin-account",
+    "login_signup",
+]
+
+# Crée un environnement Jinja2 avec le dossier des templates
+env = Environment(loader=FileSystemLoader('.'))
+
+
 if len(sys.argv) == 2 and sys.argv[1] == "backend":
-    # Déclaration de la liste des pages à rendre
-    liste_pages_a_rendre = [
-        "about",
-        "account",
-        "admin-search-account",
-        "contact",
-        "deconnexion",
-        "editprofil",
-        "index",
-        "privacy",
-        "terms",
-    ]
-
-    # Déclaration de la liste des pages à copier simplement
-    liste_pages_a_copier = [
-        "admin-account",
-        "login_signup",
-    ]
-
-
-    # Crée un environnement Jinja2 avec le dossier des templates
-    env = Environment(loader=FileSystemLoader('.'))
-
     # (Re-)Création du dossier build du site
     if os.path.exists('build'):
         shutil.rmtree('build')
