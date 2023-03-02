@@ -4,7 +4,7 @@ from jinja2 import Environment, FileSystemLoader
 env = Environment(loader=FileSystemLoader('.'))
 
 # Charge le template 'contact.html'
-template = env.get_template('ModifierProfil.html')
+template = env.get_template('modifierProfil.html')
 
 # Render le template avec les paramètres souhaités
 output = template.render()

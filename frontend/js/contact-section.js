@@ -6,7 +6,11 @@ submitButton.addEventListener('click', function(event) {
   // handle the submit event here
   event.preventDefault(); // prevent the form from submitting
   
-  fetch('https://jsonplaceholder.typicode.com/todos/1')
+  fetch('/ping/')
       .then(response => response.json())
-      .then(json => console.log(json));
-});
+      .then(json => console.log(json))
+      .catch(() => {
+        console.error('On a pas pu se co bordelllllll');
+      })
+
+    });
