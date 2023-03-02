@@ -1,0 +1,1 @@
+python3 backend/install_db/install_db.py
