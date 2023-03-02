@@ -21,7 +21,7 @@ $gray-900: #212529 !default;
 $black:    #000 !default;
 
 $grays: () !default;
-// stylelint-disable-next-line scss/dollar-variable-default
+// stylelint-disable-next-line static/sstatic/css/dollar-variable-default
 $grays: map-merge(
   (
     "100": $gray-100,
@@ -50,7 +50,7 @@ $teal:    #20c997 !default;
 $cyan:    #17a2b8 !default;
 
 $colors: () !default;
-// stylelint-disable-next-line scss/dollar-variable-default
+// stylelint-disable-next-line static/sstatic/css/dollar-variable-default
 $colors: map-merge(
   (
     "blue":       $blue,
@@ -80,7 +80,7 @@ $light:         $gray-100 !default;
 $dark:          $gray-800 !default;
 
 $theme-colors: () !default;
-// stylelint-disable-next-line scss/dollar-variable-default
+// stylelint-disable-next-line static/sstatic/css/dollar-variable-default
 $theme-colors: map-merge(
   (
     "primary":    $primary,
@@ -127,7 +127,7 @@ $enable-print-styles:       true !default;
 
 $spacer: 1rem !default;
 $spacers: () !default;
-// stylelint-disable-next-line scss/dollar-variable-default
+// stylelint-disable-next-line static/sstatic/css/dollar-variable-default
 $spacers: map-merge(
   (
     0: 0,
@@ -142,7 +142,7 @@ $spacers: map-merge(
 
 // This variable affects the `.h-*` and `.w-*` classes.
 $sizes: () !default;
-// stylelint-disable-next-line scss/dollar-variable-default
+// stylelint-disable-next-line static/sstatic/css/dollar-variable-default
 $sizes: map-merge(
   (
     25: 25%,
