@@ -1,5 +1,6 @@
 import uuid
 import json
+import sqlite3
 
 import flask
 from flask import abort, request, jsonify
@@ -27,6 +28,15 @@ def edit_user(user_id):
 @app.route("/ping/", methods=["POST"])
 def ping():
     return jsonify("pong")
+
+@app.route('/trajets')
+def get_trajets():
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    c.execute("SELECT * FROM COMPTE")
+    rows = c.fetchall()
+    conn.close()
+    return jsonify(rows)
 
 if __name__ == "__main__":
     app.run()
