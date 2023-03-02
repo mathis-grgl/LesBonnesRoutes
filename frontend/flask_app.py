@@ -67,5 +67,27 @@ def get_trajets():
     conn.close()
     return jsonify(trajets)
 
+
+
+@app.route('/users')
+def get_users():
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    c.execute("SELECT * FROM COMPTE")
+    rows = c.fetchall()
+
+    # Récupération des noms de colonnes
+    col_names = [desc[0] for desc in c.description]
+
+    # Création d'une liste de dictionnaires contenant les données
+    users = []
+    for row in rows:
+        user = {col_names[i]: row[i] for i in range(len(col_names))}
+        users.append(user)
+
+    conn.close()
+    return jsonify(users)
+
+
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=8080, threaded=True)
