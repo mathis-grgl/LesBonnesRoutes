@@ -1,7 +1,7 @@
 
 # A very simple Flask Hello World app for you to get started with...
 
-from flask import Flask, render_template
+from flask import Flask, render_template, jsonify
 import sqlite3
 
 # Création d'un nouveau path pour le backend
@@ -45,6 +45,16 @@ def account():
 @app.route('/about.html')
 def about():
     return render_template('about.html')
+
+@app.route('/trajets')
+def get_trajets():
+    conn = sqlite3.connect('../database.db')
+    c = conn.cursor()
+    c.execute("SELECT * FROM TRAJET")
+    rows = c.fetchall()
+    conn.close()
+    print(jsonify(rows))
+    return jsonify(rows)
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=8080, threaded=True)

@@ -1,3 +1,22 @@
+
+
+fetch('/trajets')
+  .then(response => {
+    if (!response.ok) {
+      throw new Error("Erreur lors de l'appel à la fonction get_trajets: " + response.statusText);
+    }
+    return response.json();
+  })
+  .then(data => {
+    // Gérer les données de réponse ici
+    console.log(data);
+  })
+  .catch(error => {
+    // Gérer les erreurs ici
+    console.log(error.message);
+  });
+
+
 function showSection(event) {
     event.preventDefault(); // Prevent the default behavior of the button click
     var section = document.getElementById("slidersSection");
