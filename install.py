@@ -7,7 +7,7 @@ from jinja2 import Environment, FileSystemLoader
 # Déclaration de la liste des pages à rendre
 liste_pages_a_rendre = [
     "about",
-    "account",
+    # "account",
     "admin-search-account",
     "contact",
     "deconnexion",
@@ -41,6 +41,8 @@ if len(sys.argv) == 2 and sys.argv[1] == "backend":
     exec(open("./build/backend/install_db/install_db.py").read())
 else:
     # Copie des fichiers sources du frontend
+    if os.path.exists('./build/static'):
+        shutil.rmtree('./build/static')
     shutil.copytree('./frontend/static', './build/static')
 
     os.chdir('./frontend')
