@@ -69,42 +69,56 @@ $('#update-form').submit(function (event) {
     // On récupère les mot de passes
     let inputmdp = $('input[name="logpass"]')
     let mdp = inputmdp.val();
-    console.log(mdp);
+    console.log("Voici le mdp : " + mdp.trim().length);
 
     const regexmdp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+    let inputmdpconfirm = $('input[name="logpassconfirm"]');
+    let mdpconfirm = inputmdpconfirm.val();
+    console.log("Voici le mdp de confirm : " + mdpconfirm.trim().length);
+
+    
+    if (mdp.trim().length == 0 || mdpconfirm.trim().length == 0) {
+        console.log('on ne fait rien.')
+    } else {
+        if (!mdp.match(regexmdp) || !mdpconfirm.match(regexmdp)) {
+            // alert('Les deux mdp ne sont pas pareils.');
+            console.log("on rentre ici !")
+            inputmdpconfirm.css('border', '2px solid red');
+            inputmdpconfirm.val('');
+            inputmdpconfirm.attr('placeholder', 'Mot de passe invalide');
+            $('input[name="logpass"]').val('');
+            $('input[name="logpass"]').attr('placeholder', 'Mot de passe invalide');
+            $('input[name="logpass"]').css('border', '2px solid red');
+            $('#small').css('font-weight', 'bold');
+            $('#small').css('text-decoration', 'underline');
+            valide = false;
+
+        }
+
+        if (mdp !== mdpconfirm) {
+            inputmdpconfirm.css('border', '2px solid red');
+            inputmdpconfirm.val('');
+            inputmdpconfirm.attr('placeholder', 'Différent du premier mot de passe');
+            $('input[name="logpass"]').val('');
+            $('input[name="logpass"]').attr('placeholder', 'Mot de passe invalide');
+            $('input[name="logpass"]').css('border', '2px solid red');
+            $('#small').css('font-weight', 'bold');
+            $('#small').css('text-decoration', 'underline');
+            valide = false;
+        }
+
+    }
 
     
 
 
-    let inputmdpconfirm = $('input[name="logpassconfirm"]');
-    let mdpconfirm = inputmdpconfirm.val();
-    console.log(mdpconfirm);
 
-    if (!mdp.match(regexmdp) || !mdpconfirm.match(regexmdp)) {
-        // alert('Les deux mdp ne sont pas pareils.');
-        inputmdpconfirm.css('border', '2px solid red');
-        inputmdpconfirm.val('');
-        inputmdpconfirm.attr('placeholder', 'Mot de passe invalide');
-        $('input[name="logpass"]').val('');
-        $('input[name="logpass"]').attr('placeholder', 'Mot de passe invalide');
-        $('input[name="logpass"]').css('border', '2px solid red');
-        $('#small').css('font-weight', 'bold');
-        $('#small').css('text-decoration', 'underline');
-        valide = false;
+    
 
-    }
 
-    if (mdp !== mdpconfirm){
-        inputmdpconfirm.css('border', '2px solid red');
-        inputmdpconfirm.val('');
-        inputmdpconfirm.attr('placeholder', 'Différent du premier mot de passe');
-        $('input[name="logpass"]').val('');
-        $('input[name="logpass"]').attr('placeholder', 'Mot de passe invalide');
-        $('input[name="logpass"]').css('border', '2px solid red');
-        $('#small').css('font-weight', 'bold');
-        $('#small').css('text-decoration', 'underline');
-        valide = false;
-    }
+
+    
 
 
 
@@ -184,23 +198,28 @@ $('#update-form').submit(function (event) {
         notif = 0;
 
     } else if (notif === undefined) {
-        valide = 0;
+        valide = false;
         $('label[for="Choice1"], label[for="Choice2"], #labelnotif').css('color', 'red');
     }
 
     console.log('Nouvelle info pour la notif : ' + notif);
 
     let inputimage = $('input[name="poster"]').prop('files');
-    let image = inputimage[0];
-    console.log(image.name);
-    console.log(image.size + " octets");
+    if (inputimage && inputimage.length > 0) {
+        let image = inputimage[0];
 
-    console.log(image.type);
+        console.log(image.name);
+        console.log(image.size + " octets");
+
+        console.log(image.type);
+
+    }
+
 
 
     if (!valide) {
         alert("Le formulaire n'est pas bon. Veuillez vérifier vos informations.")
-    }else{
+    } else {
         // mettre ici le code pour update les données.
     }
 
