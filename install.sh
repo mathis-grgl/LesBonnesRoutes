@@ -21,7 +21,7 @@ cd frontend
 
 python3.10 render_contact.py > ../build/frontend/contact.html
 python3.10 render_deconnexion.py > ../build/frontend/deconnexion.html
-python3.10 render_editprofil.py > ../build/frontend/modify.html
+python3.10 render_editprofil.py > ../build/frontend/editprofil.html
 python3.10 render_privacy.py > ../build/frontend/privacy.html
 python3.10 render_terms.py > ../build/frontend/terms.html
 python3.10 render_account.py > ../build/frontend/account.html
