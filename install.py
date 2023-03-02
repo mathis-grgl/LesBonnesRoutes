@@ -3,6 +3,7 @@ from jinja2 import Environment, FileSystemLoader
 
 # MODIFIER CES 2 LISTES POUR RENDRE LES DIFFÉRENTES PAGES
 # SI UNE SEULE PAGE NE 'COMPILE' PAS, LE PROGRAMME NE FAIT PAS LES AUTRES
+
 # Déclaration de la liste des pages à rendre
 liste_pages_a_rendre = [
     "about",
