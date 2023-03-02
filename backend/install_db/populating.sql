@@ -1,15 +1,15 @@
 BEGIN;
 
 INSERT INTO COMPTE(nomCompte, prenomCompte, email, genre, voiture, telephone, mdp, notificationMail)
-    VALUES ('DURAND', 'Olivier', 'olivier@mail.com', 'homme', 1, 0606060606, 'mdpOlivier', 0);
+    VALUES ('DURAND', 'Olivier', 'olivier@mail.com', 'homme', 1, '0606060606', 'mdpOlivier', 0);
 INSERT INTO COMPTE(nomCompte, prenomCompte, email, genre, voiture, telephone, mdp, notificationMail)
-    VALUES ('FRANCOIS', 'Marie', 'marie@mail.com', 'femme', 1, 0606060606, 'mdpMarie', 0);
+    VALUES ('FRANCOIS', 'Marie', 'marie@mail.com', 'femme', 1, '0606060606', 'mdpMarie', 0);
 INSERT INTO COMPTE(nomCompte, prenomCompte, email, genre, voiture, telephone, mdp, notificationMail)
-    VALUES ('LEGRAND', 'Paul', 'paul@mail.com', 'homme', 0, 0606060606, 'mdpPaul', 1);
+    VALUES ('LEGRAND', 'Paul', 'paul@mail.com', 'homme', 0, '0606060606', 'mdpPaul', 1);
 INSERT INTO COMPTE(nomCompte, prenomCompte, email, genre, voiture, telephone, mdp, notificationMail)
-    VALUES ('PIERRE', 'Harry', 'harry@mail.com', 'autre', 1, 0606060606, 'mdpHarry', 1);
+    VALUES ('PIERRE', 'Harry', 'harry@mail.com', 'autre', 1, '0606060606', 'mdpHarry', 1);
 INSERT INTO COMPTE(nomCompte, prenomCompte, email, genre, voiture, telephone, mdp, notificationMail)
-    VALUES ('DIDIER', 'Sophie', 'sophie@mail.com', 'femme', 0, 0606060606, 'mdpSophie', 1);
+    VALUES ('DIDIER', 'Sophie', 'sophie@mail.com', 'femme', 0, '0606060606', 'mdpSophie', 1);
 
 INSERT INTO TRAJET(idConducteur, heureDepart, dateDepart, nbPlaces, prix, nbPlacesRestantes, statusTrajet, commentaires, precisionRdv, villeDepart, villeArrivee)
     VALUES (4, '10h30', '14/03/2023', 5, 7, 3, 'a pourvoir', 'Non fumeur', 'Devant le Leclerc', 30, 27);
