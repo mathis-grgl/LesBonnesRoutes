@@ -71,7 +71,7 @@ def get_trajets():
 
 @app.route('/users')
 def get_users():
-    conn = sqlite3.connect('database.db')
+    conn = sqlite3.connect('../database.db')
     c = conn.cursor()
     c.execute("SELECT * FROM COMPTE")
     rows = c.fetchall()
@@ -102,7 +102,7 @@ def create_compte():
     notificationMail = request.form.get('notificationMail')
 
     # Vérifier si le compte existe déjà dans la base de données
-    conn = sqlite3.connect('database.db')
+    conn = sqlite3.connect('../database.db')
     c = conn.cursor()
     c.execute("SELECT * FROM COMPTE WHERE email = ?", (email,))
     compte = c.fetchone()
