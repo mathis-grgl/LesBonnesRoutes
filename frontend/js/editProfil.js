@@ -73,39 +73,52 @@ $('#update-form').submit(function (event) {
 
     const regexmdp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-
-
-
     let inputmdpconfirm = $('input[name="logpassconfirm"]');
     let mdpconfirm = inputmdpconfirm.val();
     console.log("Voici le mdp de confirm : " + mdpconfirm.trim().length);
 
-    if (!mdp.match(regexmdp) || !mdpconfirm.match(regexmdp)) {
-        // alert('Les deux mdp ne sont pas pareils.');
-        console.log("on rentre ici !")
-        inputmdpconfirm.css('border', '2px solid red');
-        inputmdpconfirm.val('');
-        inputmdpconfirm.attr('placeholder', 'Mot de passe invalide');
-        $('input[name="logpass"]').val('');
-        $('input[name="logpass"]').attr('placeholder', 'Mot de passe invalide');
-        $('input[name="logpass"]').css('border', '2px solid red');
-        $('#small').css('font-weight', 'bold');
-        $('#small').css('text-decoration', 'underline');
-        valide = false;
+    
+    if (mdp.trim().length == 0 || mdpconfirm.trim().length == 0) {
+        console.log('on ne fait rien.')
+    } else {
+        if (!mdp.match(regexmdp) || !mdpconfirm.match(regexmdp)) {
+            // alert('Les deux mdp ne sont pas pareils.');
+            console.log("on rentre ici !")
+            inputmdpconfirm.css('border', '2px solid red');
+            inputmdpconfirm.val('');
+            inputmdpconfirm.attr('placeholder', 'Mot de passe invalide');
+            $('input[name="logpass"]').val('');
+            $('input[name="logpass"]').attr('placeholder', 'Mot de passe invalide');
+            $('input[name="logpass"]').css('border', '2px solid red');
+            $('#small').css('font-weight', 'bold');
+            $('#small').css('text-decoration', 'underline');
+            valide = false;
+
+        }
+
+        if (mdp !== mdpconfirm) {
+            inputmdpconfirm.css('border', '2px solid red');
+            inputmdpconfirm.val('');
+            inputmdpconfirm.attr('placeholder', 'Différent du premier mot de passe');
+            $('input[name="logpass"]').val('');
+            $('input[name="logpass"]').attr('placeholder', 'Mot de passe invalide');
+            $('input[name="logpass"]').css('border', '2px solid red');
+            $('#small').css('font-weight', 'bold');
+            $('#small').css('text-decoration', 'underline');
+            valide = false;
+        }
 
     }
 
-    if (mdp !== mdpconfirm) {
-        inputmdpconfirm.css('border', '2px solid red');
-        inputmdpconfirm.val('');
-        inputmdpconfirm.attr('placeholder', 'Différent du premier mot de passe');
-        $('input[name="logpass"]').val('');
-        $('input[name="logpass"]').attr('placeholder', 'Mot de passe invalide');
-        $('input[name="logpass"]').css('border', '2px solid red');
-        $('#small').css('font-weight', 'bold');
-        $('#small').css('text-decoration', 'underline');
-        valide = false;
-    }
+    
+
+
+
+    
+
+
+
+    
 
 
 
