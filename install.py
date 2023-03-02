@@ -41,9 +41,9 @@ if len(sys.argv) == 2 and sys.argv[1] == "backend":
     exec(open("./build/backend/install_db/install_db.py").read())
 else:
     # Copie des fichiers sources du frontend
-    if os.path.exists('./build/frontend/static'):
-        shutil.rmtree('./build/frontend/static')
-    shutil.copytree('./frontend/static', './build/frontend/static')
+    if os.path.exists('./build/static'):
+        shutil.rmtree('./build/static')
+    shutil.copytree('./frontend/static', './build/static')
 
     os.chdir('./frontend')
 
@@ -53,7 +53,7 @@ else:
         print("Rendu de la page '" + page + "'...")
 
         page_path = page
-        new_page_path = "../build/frontend/" + page
+        new_page_path = "../build/" + page
 
         # Charge le template "'page'.html"
         template = env.get_template(page_path)
@@ -72,7 +72,7 @@ else:
         print("Copie de la page '" + page + "'...")
 
         page_path = page
-        new_page_path = "../build/frontend/" + page
+        new_page_path = "../build/" + page
 
         shutil.copy(page_path, new_page_path)
         
