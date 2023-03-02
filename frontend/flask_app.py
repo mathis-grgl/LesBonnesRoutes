@@ -53,8 +53,19 @@ def get_trajets():
     c.execute("SELECT * FROM TRAJET")
     rows = c.fetchall()
     conn.close()
-    print(jsonify(rows))
-    return jsonify(rows)
+    print(jsonify(rows))   
+    
+    # Récupération des noms de colonnes
+    col_names = [desc[0] for desc in c.description]
+
+    # Création d'une liste de dictionnaires contenant les données
+    trajets = []
+    for row in rows:
+        trajet = {col_names[i]: row[i] for i in range(len(col_names))}
+        trajets.append(trajet)
+
+    conn.close()
+    return jsonify(trajets)
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=8080, threaded=True)
