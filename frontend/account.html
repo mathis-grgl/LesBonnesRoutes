@@ -3,8 +3,9 @@
     <head>
         {% set title='Compte' %}
         {% include 'head.html' %}
+        <link rel="stylesheet" href="css/account.css">
     </head>
-    <body>
+    <body onload="applyData()">
         {% include 'header.html' %}
 
         {% set section_name='Compte' %}
@@ -16,4 +17,5 @@
         
         {% include 'scripts-required.html' %}
     </body>
+    <script src="js/account.js"></script>
 </html>
