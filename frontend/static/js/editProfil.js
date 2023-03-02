@@ -15,8 +15,54 @@ fetch('/users')
     let user = data[0];
     let nom = user.nomCompte;
     let prenom = user.prenomCompte;
+    let tel = user.telephone;
+    let genre = user.genre;
+    let email = user.email;
+    let mdp = user.mdp;
+    let voiture = user.voiture;
+    let notif = user.notificationMail;
     console.log(nom + ' ' + prenom);
-    $('#nomUser').text(nom + ' ' + prenom);
+    // $('#nomUser').text(nom + ' ' + prenom);
+    $("#nomUser").html(nom + " " + prenom).css({
+        "font-family": "Arial, sans-serif",
+        "font-size": "1.2rem",
+        "font-weight": "bold",
+        "color": "#333",
+        "padding": "10px",
+        "border": "1px solid #ccc",
+        "border-radius": "5px",
+        "background-color": "#f7f7f7"
+      });
+      $('input[name="telephone"]').val(tel);
+      $('input[name="nom"]').val(nom);
+      $('input[name="prenom"]').val(prenom);
+      $('input[name="logpass"]').val(mdp);
+      $('input[name="logpassconfirm"]').val(mdp);
+      $('input[name="email"]').val(email);
+      
+
+      if(voiture == 1){
+        $('#Choice1').prop('checked', true);
+      }else if (voiture == 0){
+        $('#Choice2').prop('checked', true);
+      }
+
+      if(notif == 1){
+        $('#Choice3').prop('checked', true);
+      }else if (notif == 0){
+        $('#Choice4').prop('checked', true);
+      }
+
+      if (genre == "homme"){
+        $('#sexe').val(1);
+      }else if(genre == "femme"){
+        $('#sexe').val(2);
+      }else if(genre == "autre"){
+        $('#sexe').val(3);
+      }else{
+        $('#sexe').val(0);
+      }
+    
 
   })
   .catch(error => {
