@@ -7,7 +7,7 @@ from jinja2 import Environment, FileSystemLoader
 # Déclaration de la liste des pages à rendre
 liste_pages_a_rendre = [
     "about",
-    #"account",
+    #"account", #problème de compilation avec cette page
     "contact",
     "deconnexion",
     "editprofil",
@@ -22,14 +22,13 @@ liste_pages_a_copier = [
 ]
 
 
-
 # Crée un environnement Jinja2 avec le dossier des templates
 env = Environment(loader=FileSystemLoader('.'))
 
 # (Re-)Création du dossier build du site
 shutil.rmtree('build')
 os.makedirs('build')
-print("Création du dossier build terminée\n")
+print("(Re-)Création du dossier build terminée\n")
 
 # Copie du dossier backend dans le dossier build
 shutil.copytree('backend', './build/backend')
@@ -46,6 +45,7 @@ shutil.copytree('./frontend/js', './build/frontend/js')
 shutil.copytree('./frontend/scss', './build/frontend/scss')
 
 os.chdir('./frontend')
+
 
 print("> Rendu des pages en cours...\n")
 
@@ -85,6 +85,7 @@ for page in liste_pages_a_copier:
     print("\tCopie terminée.\n")
 
 print("Fin de copie des pages.\n")
+
 
 # Fin du programme
 print('-'*32 + "\n\tRendu complet !" + "\n" + '-'*32)
