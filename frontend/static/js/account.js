@@ -52,11 +52,11 @@ function onDelete() {
         //accéder à la base de données.
         //requete pour supprimer le compte.
         //fermer la base de données.
-        window.location.href = "index.html";
+        window.location.href = "/";
     }
 }
 
 function onModify() {
-    window.location.href = "modify.html";
+    window.location.href = "editprofil.html";
 }
 

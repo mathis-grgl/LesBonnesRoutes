@@ -22,9 +22,9 @@ def contact():
 def deconnexion():
     return render_template('deconnexion.html')
 
-@app.route('/ModifierProfil.html')
+@app.route('/editprofil.html')
 def ModifierProfil():
-    return render_template('ModifierProfil.html')
+    return render_template('editprofil.html')
 
 @app.route('/privacy.html')
 def privacy():

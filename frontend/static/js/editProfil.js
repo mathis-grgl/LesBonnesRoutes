@@ -1,6 +1,28 @@
+let nomuser = $('#nomUser').text();
+console.log("Voici le nom de l'user " + nomuser);
 
 
+fetch('/users')
+  .then(response => {
+    if (!response.ok) {
+      throw new Error("Erreur lors de l'appel à la fonction get_users: " + response.statusText);
+    }
+    return response.json();
+  })
+  .then(data => {
+    // Gérer les données de réponse ici
+    console.log(data);
+    let user = data[0];
+    let nom = user.nomCompte;
+    let prenom = user.prenomCompte;
+    console.log(nom + ' ' + prenom);
+    $('#nomUser').text(nom + ' ' + prenom);
 
+  })
+  .catch(error => {
+    // Gérer les erreurs ici
+    console.log(error.message);
+  });
 $('#update-form').submit(function (event) {
     event.preventDefault();
 
