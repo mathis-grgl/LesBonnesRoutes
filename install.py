@@ -8,6 +8,7 @@ from jinja2 import Environment, FileSystemLoader
 liste_pages_a_rendre = [
     "about",
     #"account", #problème de compilation avec cette page
+    "admin-search-account",
     "contact",
     "deconnexion",
     "editprofil",
@@ -18,6 +19,7 @@ liste_pages_a_rendre = [
 
 # Déclaration de la liste des pages à copier simplement
 liste_pages_a_copier = [
+    "admin-account",
     "login_signup",
 ]
 
