@@ -7,7 +7,7 @@ fi
 mkdir build
 cp -R backend build
 
-# Copie du fichier install_db.py
+# Exécution du fichier install_db.py
 cd build
 python backend/install_db/install_db.py
 
