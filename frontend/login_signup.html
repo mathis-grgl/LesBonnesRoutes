@@ -47,14 +47,14 @@
         <input type="text" placeholder="Télephone" name="phone-sign" oninput="checkValue('phone-sign')">
         <div class="content">
           <div class="checkbox">
-            <input type="checkbox" name="checkbox-licence-sign" id="checkbox" oninput="checkValue('checkbox-licence-sign')">
+            <input type="checkbox" name="checkbox-licence-sign" id="checkbox-sign" oninput="checkValue('checkbox-licence-sign')">
             <label>Permis *</label>
           </div>
         </div>
         <!--<label for="file">Photo :</label>-->
         <input type="file" id="file" name="file-sign" accept="image/jpeg, image/png">
         <input type="password" placeholder="Mot de passe" name="password-sign" oninput="checkValue('password-sign')">
-        <button>S'inscrire</button>
+        <button onclick="signIn()">S'inscrire</button>
       </form>
     </div>
 
@@ -65,7 +65,7 @@
         <input type="password" placeholder="Mot de passe" name="password-log" oninput="checkValue('password-log')">
         <div class="content">
           <div class="checkbox">
-            <input type="checkbox" name="checkbox-remember-log" id="checkbox" oninput="checkValue('checkbox-remember-log')">
+            <input type="checkbox" name="checkbox-remember-log" id="checkbox-log" oninput="checkValue('checkbox-remember-log')">
             <label>Se souvenir</label>
           </div>
           <div class="pass-link">

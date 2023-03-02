@@ -55,12 +55,41 @@ function displayMessage(res){
 }
 
 
+function signIn(){
+  const url = 'http://127.0.0.1:5000/api/v1/user';
+
+  if (checkValue("name-sign") && checkValue("last-name-sign") && checkValue("email-sign") && checkValue("phone-sign") && checkValue("checkbox-licence-sign") && checkValue("password-sign")){
+    let data = {
+      nom: document.querySelector("input[name='name-sign']"),
+      prenom: document.querySelector("input[name='last-name-sign']"),
+      mail: document.querySelector("input[name='email-sign']"),
+      tel: document.querySelector("input[name='phone-sign']"),
+      password: document.querySelector("input[name='password-sign']")
+    }
+
+    let fetchData = {
+      method: 'PUT',
+      body: data,
+      headers: new Headers()
+    }
+
+    fetch(url, fetchData)
+    .then(function(response) {
+      return response.json();
+    })
+    .then(function(data) {
+      console.log(data); // afficher la réponse du serveur
+    });
+  }
+}
+
+
 function checkValue(val){
   var variable;
   var regex;
+  var bool = false;
 
   switch(val){
-    
     case "email-log":
       variable = document.querySelector("input[name=" + val + "]");
       regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -68,12 +97,16 @@ function checkValue(val){
         variable.style.setProperty("border", "1px solid #ff0000");
       } else {
         variable.style.setProperty("border", "1px solid #000000");
+        bool = true
       }    
+      break;
     
     case "password-log":
+      break;
         
 
     case "checkbox-remember-log":
+      break;
 
 
     case "name-sign":
@@ -83,7 +116,9 @@ function checkValue(val){
         variable.style.setProperty("border", "1px solid #ff0000");
       } else {
         variable.style.setProperty("border", "1px solid #000000");
+        bool = true;
       }
+      break;
 
     case "last-name-sign":
       variable = document.querySelector("input[name=" + val + "]");
@@ -92,7 +127,9 @@ function checkValue(val){
         variable.style.setProperty("border", "1px solid #ff0000");
       } else {
         variable.style.setProperty("border", "1px solid #000000");
+        bool = true;
       }
+      break;
 
     case "email-sign":
       variable = document.querySelector("input[name=" + val + "]");
@@ -101,7 +138,9 @@ function checkValue(val){
         variable.style.setProperty("border", "1px solid #ff0000");
       } else {
         variable.style.setProperty("border", "1px solid #000000");
+        bool = true;
       }
+      break;
 
     case "phone-sign":
       variable = document.querySelector("input[name=" + val + "]");
@@ -110,9 +149,15 @@ function checkValue(val){
         variable.style.setProperty("border", "1px solid #ff0000");
       } else {
         variable.style.setProperty("border", "1px solid #000000");
+        bool = true;
       }
+      break
 
     case "checkbox-licence-sign":
+      if (document.querySelector("input[name=" + val + "]").checked){
+        bool = true;
+      }
+      break;
 
     case "password-sign":
       variable = document.querySelector("input[name=" + val + "]");
@@ -121,7 +166,12 @@ function checkValue(val){
         variable.style.setProperty("border", "1px solid #ff0000");
       } else {
         variable.style.setProperty("border", "1px solid #000000");
-      }  
+        bool = true;
+      }
+      break;
 
   }
+  
+  console.log(val + " : " + bool);
+  return bool;
 }
