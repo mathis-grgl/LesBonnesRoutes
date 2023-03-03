@@ -28,7 +28,7 @@ def contact():
 def deconnexion():
     return render_template('deconnexion.html')
 
-@app.route('/account/modifier')
+@app.route('/modifier')
 def ModifierProfil():
     return render_template('editprofil.html')
 
