@@ -40,9 +40,9 @@ $('#formcontact').submit(function (event) {
 
 function displayMessage(res) {
     if (res) {
-        alert('Email envoyé.');
+        $('#okok').text("L'email a été envoyé.");
     } else {
-        alert('Email pas envoyé.');
+        $('#okok').text("L'email n'a pas été envoyé.");
         //   emailSending.innerHTML = "Le mail de récupération n'a pas été envoyé, vérifiez bien votre email et réessayez."
         //   emailSending.style.display = "flex";
         //   emailSending.style.backgroundColor = "#ff5140";
