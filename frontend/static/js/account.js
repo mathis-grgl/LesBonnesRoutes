@@ -57,6 +57,6 @@ function onDelete() {
 }
 
 function onModify() {
-    location.replace('/account/modifier');;
+    location.replace('./account/modifier');;
 }
 
