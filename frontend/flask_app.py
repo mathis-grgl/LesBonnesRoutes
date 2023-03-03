@@ -2,7 +2,6 @@
 # A very simple Flask Hello World app for you to get started with...
 
 from flask import Flask, render_template, jsonify, request
-from flask_mail import Mail, Message
 import sqlite3
 import secrets
 
@@ -12,14 +11,6 @@ sys.path.append('..')
 
 app = Flask(__name__, template_folder=".")
 
-app.config['MAIL_SERVER'] = 'smtp.elasticemail.com'
-app.config['MAIL_PORT'] = 2525
-app.config['MAIL_USERNAME'] = 'sandygehin2@gmail.com'
-app.config['MAIL_PASSWORD'] = '820DA5C445081CE2534D0AF842122D336A11'
-app.config['MAIL_USE_TLS'] = False
-app.config['MAIL_USE_SSL'] = True
-
-mail = Mail(app)
 
 # Pages
 
