@@ -42,7 +42,7 @@ document.querySelectorAll(".logoutButton").forEach((button) => {
                             // Supprime la session utilisateur
                             sessionStorage.removeItem('user');
                             console.log("On se déconnecte.");
-                            location.replace('./deconnexion.html');
+                            location.replace('./deconnexion');
 
                             setTimeout(() => {
                                 button.classList.remove("clicked");

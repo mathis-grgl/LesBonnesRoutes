@@ -57,6 +57,6 @@ function onDelete() {
 }
 
 function onModify() {
-    window.location.href = "editprofil.html";
+    location.replace('/account/modifier');;
 }
 
