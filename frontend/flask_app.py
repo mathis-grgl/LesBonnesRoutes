@@ -11,7 +11,7 @@ sys.path.append('..')
 app = Flask(__name__, template_folder=".")
 
 #Pages
-@app.route('/admin-search-account.html')
+@app.route('/admin-search-account')
 def admin_account():
     return render_template('admin-search-account.html')
 
@@ -19,35 +19,35 @@ def admin_account():
 def index():
     return render_template('index.html')
 
-@app.route('/contact.html')
+@app.route('/contact')
 def contact():
     return render_template('contact.html')
 
-@app.route('/deconnexion.html')
+@app.route('/deconnexion')
 def deconnexion():
     return render_template('deconnexion.html')
 
-@app.route('/editprofil.html')
+@app.route('/editprofil')
 def ModifierProfil():
     return render_template('editprofil.html')
 
-@app.route('/privacy.html')
+@app.route('/privacy')
 def privacy():
     return render_template('privacy.html')
 
-@app.route('/login_signup.html')
+@app.route('/login_signup')
 def login_signup():
     return render_template('login_signup.html')
 
-@app.route('/terms.html')
+@app.route('/terms')
 def terms():
     return render_template('terms.html')
 
-@app.route('/account.html')
+@app.route('/account')
 def account():
     return render_template('account.html')
 
-@app.route('/about.html')
+@app.route('/about')
 def about():
     return render_template('about.html')
 
