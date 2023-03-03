@@ -2,6 +2,7 @@
 # A very simple Flask Hello World app for you to get started with...
 
 from flask import Flask, render_template, jsonify, request
+from flask_mail import Mail, Message
 import sqlite3
 import secrets
 
@@ -11,57 +12,76 @@ sys.path.append('..')
 
 app = Flask(__name__, template_folder=".")
 
-#Pages
+app.config['MAIL_SERVER'] = 'smtp.elasticemail.com'
+app.config['MAIL_PORT'] = 2525
+app.config['MAIL_USERNAME'] = 'sandygehin2@gmail.com'
+app.config['MAIL_PASSWORD'] = '820DA5C445081CE2534D0AF842122D336A11'
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+
+mail = Mail(app)
+
+# Pages
+
+
 @app.route('/admin-search-account')
 def admin_account():
     return render_template('admin-search-account.html')
+
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
+
 @app.route('/contact')
 def contact():
     return render_template('contact.html')
+
 
 @app.route('/deconnexion')
 def deconnexion():
     return render_template('deconnexion.html')
 
+
 @app.route('/modifier')
 def ModifierProfil():
     return render_template('editprofil.html')
+
 
 @app.route('/privacy')
 def privacy():
     return render_template('privacy.html')
 
+
 @app.route('/login_signup')
 def login_signup():
     return render_template('login_signup.html')
+
 
 @app.route('/terms')
 def terms():
     return render_template('terms.html')
 
+
 @app.route('/account')
 def account():
     return render_template('account.html')
+
 
 @app.route('/about')
 def about():
     return render_template('about.html')
 
 
-
-#Requetes
+# Requetes
 @app.route('/trajets')
 def get_trajets():
     conn = sqlite3.connect('../database.db')
     c = conn.cursor()
     c.execute("SELECT * FROM TRAJET")
     rows = c.fetchall()
-    
+
     # Récupération des noms de colonnes
     col_names = [desc[0] for desc in c.description]
 
@@ -79,10 +99,6 @@ def get_trajets():
 
     conn.close()
     return jsonify(trajets)
-
-
-
-
 
 
 @app.route('/users')
@@ -134,7 +150,8 @@ def create_compte():
         return jsonify({'message': 'Informations manquantes'}), 400
 
     # Insérer le compte dans la base de données
-    c.execute("INSERT INTO COMPTE (nomCompte, prenomCompte, email, genre, voiture, telephone, mdp, notificationMail) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (nom, prenom, email, genre, voiture, telephone, mdp, notificationMail))
+    c.execute("INSERT INTO COMPTE (nomCompte, prenomCompte, email, genre, voiture, telephone, mdp, notificationMail) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+              (nom, prenom, email, genre, voiture, telephone, mdp, notificationMail))
     conn.commit()
     conn.close()
 
@@ -149,14 +166,16 @@ def connectCompte(idCompte):
 
     conn = sqlite3.connect('../database.db')
     c = conn.cursor()
-    c.execute("SELECT idCompte FROM COMPTE WHERE email = ? AND mdp = ?", (email, mdp))
+    c.execute(
+        "SELECT idCompte FROM COMPTE WHERE email = ? AND mdp = ?", (email, mdp))
     compte = c.fetchone()
     conn.close()
 
     if compte:
         # Création du token
-        token = secrets.token_hex(16) # generate a random token with 16 bytes
-        c.execute("INSERT INTO TOKEN VALUES (?, ?, ?)", (idCompte, token, "exp"))
+        token = secrets.token_hex(16)  # generate a random token with 16 bytes
+        c.execute("INSERT INTO TOKEN VALUES (?, ?, ?)",
+                  (idCompte, token, "exp"))
         conn.commit()
 
         # Retour de la réponse avec code 200 et le token
@@ -164,7 +183,6 @@ def connectCompte(idCompte):
     else:
         # Retour de la réponse avec code 401 et un message d'erreur
         return jsonify({'message': 'Email ou mot de passe incorrect.'}), 401
-        
 
 
 if __name__ == '__main__':
