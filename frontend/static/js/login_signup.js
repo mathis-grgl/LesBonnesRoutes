@@ -26,7 +26,7 @@ function sendEmail(){
       Username : "sandygehin2@gmail.com",
       Password : "820DA5C445081CE2534D0AF842122D336A11",
       To : emailLog.value,
-      From : "yoferrari3@gmail.com",
+      From : "noreply@lesbonnesrout.es",
       Subject : subject,
       Body : message
     }).then(
@@ -59,28 +59,61 @@ function signIn(){
   const url = 'http://127.0.0.1:5000/api/v1/user';
 
   if (checkValue("name-sign") && checkValue("last-name-sign") && checkValue("email-sign") && checkValue("phone-sign") && checkValue("checkbox-licence-sign") && checkValue("password-sign")){
-    let data = {
-      nom: document.querySelector("input[name='name-sign']"),
-      prenom: document.querySelector("input[name='last-name-sign']"),
-      mail: document.querySelector("input[name='email-sign']"),
-      tel: document.querySelector("input[name='phone-sign']"),
-      password: document.querySelector("input[name='password-sign']")
-    }
-
-    let fetchData = {
-      method: 'PUT',
-      body: data,
-      headers: new Headers()
-    }
-
-    fetch(url, fetchData)
-    .then(function(response) {
-      return response.json();
+    event.preventDefault(); // Prevent the default behavior of the button click
+    fetch('/createCompte', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        'email-log': document.querySelector("input[name='email-log']").value,
+        'password-log': document.querySelector("input[name='password-log']").value
+      })
     })
-    .then(function(data) {
-      console.log(data); // afficher la réponse du serveur
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error('Erreur : ' + response.status);
+      }
+    })
+    .then(data => {
+      console.log('ID du compte : ' + data.idCompte);
+      console.log('Token : ' + data.token);
+    })
+    .catch(error => {
+      console.error('Erreur : ' + error.message);
     });
   }
+}
+
+
+function connect(){
+  event.preventDefault(); // Prevent the default behavior of the button click
+  fetch('/connectCompte', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      'email-log': document.querySelector("input[name='email-log']").value,
+      'password-log': document.querySelector("input[name='password-log']").value
+    })
+  })
+  .then(response => {
+    if (response.ok) {
+      return response.json();
+    } else {
+      throw new Error('Erreur : ' + response.status);
+    }
+  })
+  .then(data => {
+    console.log('ID du compte : ' + data.idCompte);
+    console.log('Token : ' + data.token);
+  })
+  .catch(error => {
+    console.error('Erreur : ' + error.message);
+  });
 }
 
 
