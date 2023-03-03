@@ -54,37 +54,34 @@ def about():
 
 
 
-
 #Requetes
 @app.route('/trajets')
 def get_trajets():
     conn = sqlite3.connect('../database.db')
     c = conn.cursor()
-
-    # Requête pour récupérer tous les trajets avec les ID de ville
-    c.execute('''SELECT idTrajet, idVilleDepart, idVilleArrivee, dateDepart, dateArrivee, 
-                       prix, nombrePlaces, description FROM TRAJET''')
+    c.execute("SELECT * FROM TRAJET")
     rows = c.fetchall()
+    
+    # Récupération des noms de colonnes
+    col_names = [desc[0] for desc in c.description]
 
-    # Récupération des noms des villes correspondant aux ID
+    # Création d'une liste de dictionnaires contenant les données
     trajets = []
     for row in rows:
-        trajet = {'idTrajet': row[0], 'villeDepart': '', 'villeArrivee': '', 'dateDepart': row[3],
-                  'dateArrivee': row[4], 'prix': row[5], 'nombrePlaces': row[6], 'description': row[7]}
-        # Requête pour récupérer le nom de la ville de départ correspondant à l'ID
-        c.execute('''SELECT nomVille FROM VILLE WHERE idVille = ?''', (row[1],))
-        ville_depart = c.fetchone()
-        trajet['villeDepart'] = ville_depart[0] if ville_depart else ''
-
-        # Requête pour récupérer le nom de la ville d'arrivée correspondant à l'ID
-        c.execute('''SELECT nomVille FROM VILLE WHERE idVille = ?''', (row[2],))
-        ville_arrivee = c.fetchone()
-        trajet['villeArrivee'] = ville_arrivee[0] if ville_arrivee else ''
-
+        trajet = {col_names[i]: row[i] for i in range(len(col_names))}
+        
+        # Remplacement des ID des villes par leurs noms
+        c.execute("SELECT nomVille FROM VILLE WHERE idVille = ?", (row[3],))
+        nom_ville_depart = c.fetchone()[0]
+        trajet['villeDepart'] = nom_ville_depart
+        c.execute("SELECT nomVille FROM VILLE WHERE idVille = ?", (row[4],))
+        nom_ville_arrivee = c.fetchone()[0]
         trajets.append(trajet)
 
     conn.close()
     return jsonify(trajets)
+
+
 
 
 
@@ -158,7 +155,7 @@ def connectCompte(idCompte):
     conn.close()
 
     if compte:
-        # Création du token (ici, une simple concaténation de l'email et du mot de passe)
+        # Création du token
         token = secrets.token_hex(16) # generate a random token with 16 bytes
         c.execute("INSERT INTO TOKEN VALUES (?, ?, ?)", (idCompte, token, "exp"))
         conn.commit()
@@ -168,6 +165,7 @@ def connectCompte(idCompte):
     else:
         # Retour de la réponse avec code 401 et un message d'erreur
         return jsonify({'message': 'Email ou mot de passe incorrect.'}), 401
+        
 
 
 if __name__ == '__main__':
