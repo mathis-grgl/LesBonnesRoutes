@@ -10,6 +10,11 @@ sys.path.append('..')
 
 app = Flask(__name__, template_folder=".")
 
+#Pages
+@app.route('/admin-search-account.html')
+def admin_account():
+    return render_template('admin-search-account.html')
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -46,6 +51,9 @@ def account():
 def about():
     return render_template('about.html')
 
+
+
+#Requetes
 @app.route('/trajets')
 def get_trajets():
     conn = sqlite3.connect('../database.db')
