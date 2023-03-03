@@ -23,7 +23,19 @@ function applyData() {
             let voiture = user.voiture;
             let notif = user.notificationMail;
             console.log(nom + ' ' + prenom);
-            $('#prenom').text(nom + ' ' + prenom);
+            
+            switch(genre){
+                case 'homme':
+                    genre = '♂';
+                    break;
+                case 'femme':
+                    genre = '♀';
+                    break;
+                case 'Autre':
+                    break;
+
+            }
+            $('#prenom').text(nom + ' ' + prenom + ', ' + genre);
             $('#telephone').text(tel);
             $('#email').text(email);
             
@@ -98,5 +110,6 @@ function onDelete() {
 
 function onModify() {
     location.replace('/modifier');
+    history.pushState(null, null, document.URL);
 }
 
