@@ -3,6 +3,7 @@
 
 from flask import Flask, render_template, jsonify, request
 import sqlite3
+import secrets
 
 # Création d'un nouveau path pour le backend
 import sys
@@ -11,7 +12,7 @@ sys.path.append('..')
 app = Flask(__name__, template_folder=".")
 
 #Pages
-@app.route('/admin-search-account')
+@app.route('/admin-search-account.html')
 def admin_account():
     return render_template('admin-search-account.html')
 
@@ -19,35 +20,35 @@ def admin_account():
 def index():
     return render_template('index.html')
 
-@app.route('/contact')
+@app.route('/contact.html')
 def contact():
     return render_template('contact.html')
 
-@app.route('/deconnexion')
+@app.route('/deconnexion.html')
 def deconnexion():
     return render_template('deconnexion.html')
 
-@app.route('/editprofil')
+@app.route('/editprofil.html')
 def ModifierProfil():
     return render_template('editprofil.html')
 
-@app.route('/privacy')
+@app.route('/privacy.html')
 def privacy():
     return render_template('privacy.html')
 
-@app.route('/login_signup')
+@app.route('/login_signup.html')
 def login_signup():
     return render_template('login_signup.html')
 
-@app.route('/terms')
+@app.route('/terms.html')
 def terms():
     return render_template('terms.html')
 
-@app.route('/account')
+@app.route('/account.html')
 def account():
     return render_template('account.html')
 
-@app.route('/about')
+@app.route('/about.html')
 def about():
     return render_template('about.html')
 
@@ -133,6 +134,30 @@ def create_compte():
     # Envoyer une réponse avec le code HTTP 201 Created
     return jsonify({'message': 'Le compte a été créé'}), 201
 
+
+@app.route("/connectCompte, methods=['POST']")
+def connectCompte(idCompte):
+    email = request.form.get('email')
+    mdp = request.form.get('mdp')
+
+    conn = sqlite3.connect('../database.db')
+    c = conn.cursor()
+    c.execute("SELECT idCompte FROM COMPTE WHERE email = ? AND mdp = ?", (email, mdp))
+    compte = c.fetchone()
+    conn.close()
+
+    if compte:
+        # Création du token
+        token = secrets.token_hex(16) # generate a random token with 16 bytes
+        c.execute("INSERT INTO TOKEN VALUES (?, ?, ?)", (idCompte, token, "exp"))
+        conn.commit()
+
+        # Retour de la réponse avec code 200 et le token
+        return jsonify({'idCompte': compte[0], 'token': token}), 200
+    else:
+        # Retour de la réponse avec code 401 et un message d'erreur
+        return jsonify({'message': 'Email ou mot de passe incorrect.'}), 401
+        
 
 
 if __name__ == '__main__':
