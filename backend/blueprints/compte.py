@@ -63,8 +63,6 @@ def connectCompte():
     email = data.get('email-log')
     mdp = data.get('password-log')
 
-    print(data)
-
     conn = sqlite3.connect('../database.db')
     c = conn.cursor()
     c.execute(
