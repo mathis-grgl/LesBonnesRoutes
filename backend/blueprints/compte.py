@@ -9,15 +9,22 @@ compte_bp = Blueprint('compte', __name__)
 def create_compte():
     data = request.get_json()
     # Récupérer les données envoyées dans la requête
-    nom = data.get('name-sign')
-    prenom = data.get('last-name-sign')
-    email = data.get('email-sign')
-    genre = data.get('gender-sign')
-    voiture = data.get('checkbox-licence-sign')
-    telephone = data.get('phone-sign')
-    mdp = data.get('password-sign')
+    nom = data.get('nomCompte')
+    prenom = data.get('prenomCompte')
+    email = data.get('email')
+    adresse = data.get('adresse')
+    ville = data.get('ville')
+    codePostal = data.get('codePostal')
+    pays = data.get('pays')
+    genre = data.get('genre')
+    voiture = data.get('voiture')
+    telephone = data.get('telephone')
+    mdp = data.get('mdp')
     #notificationMail = data.get('notificationMail')
     notificationMail = 1
+    noteCompte = data.get('noteCompte')
+    photo = data.get('photo')
+
 
 
     # Vérifier si le compte existe déjà dans la base de données
@@ -29,16 +36,17 @@ def create_compte():
     if compte is not None:
         # Le compte existe déjà
         conn.close()
-        return jsonify({'message': 'Le compte existe déjà'}), 409
+        # On ne précise pas la raison, soucis de sécurité
+        return jsonify({'message': 'Une erreur est survenue'}), 409
 
-    if not nom or not prenom or not email or not genre or not voiture or not telephone or not mdp or not notificationMail:
+    if not nom or not prenom or not email or not adresse or not ville or not codePostal or not pays or not genre or not voiture or not telephone or not mdp or not notificationMail:
         # Il manque des informations dans la requête
         conn.close()
         return jsonify({'message': 'Informations manquantes'}), 400
 
     # Insérer le compte dans la base de données
-    c.execute("INSERT INTO COMPTE (nomCompte, prenomCompte, email, genre, voiture, telephone, mdp, notificationMail) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-              (nom, prenom, email, genre, voiture, telephone, mdp, notificationMail))
+    c.execute("INSERT INTO COMPTE (nomCompte, prenomCompte, email, adresse, ville, codePostal, pays, genre, voiture, telephone, mdp, notificationMail) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+              (nom, prenom, email, adresse, ville, codePostal, pays, genre, voiture, telephone, mdp, notificationMail))
     conn.commit()
     conn.close()
 
