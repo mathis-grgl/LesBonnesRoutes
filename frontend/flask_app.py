@@ -150,8 +150,8 @@ def create_compte():
     return jsonify({'message': 'Le compte a été créé'}), 201
 
 
-@app.route("/connectCompte, methods=['POST']")
-def connectCompte(idCompte):
+@app.route('/connectCompte', methods=['POST'])
+def connectCompte():
     email = request.form.get('email')
     mdp = request.form.get('mdp')
 
@@ -160,7 +160,7 @@ def connectCompte(idCompte):
     c.execute(
         "SELECT idCompte FROM COMPTE WHERE email = ? AND mdp = ?", (email, mdp))
     compte = c.fetchone()
-    conn.close()
+    idCompte = compte[0]
 
     if compte:
         # Création du token
@@ -168,12 +168,97 @@ def connectCompte(idCompte):
         c.execute("INSERT INTO TOKEN VALUES (?, ?, ?)",
                   (idCompte, token, "exp"))
         conn.commit()
+        conn.close()
 
         # Retour de la réponse avec code 200 et le token
-        return jsonify({'idCompte': compte[0], 'token': token}), 200
+        return jsonify({'idCompte': idCompte, 'token': token}), 200
     else:
         # Retour de la réponse avec code 401 et un message d'erreur
+        conn.close()
         return jsonify({'message': 'Email ou mot de passe incorrect.'}), 401
+
+
+
+
+@app.route('/getCompte/<str:token>', methods=['POST'])
+def getCompte(token):
+    #Verif du token + recup id
+    conn = sqlite3.connect('../database.db')
+    c = conn.cursor()
+    c.execute("SELECT idCompte FROM COMPTE WHERE token = ?"), token
+    compte = c.fetchone()
+    idCompte = compte[0]
+
+    #Le token est valide et conduit bien a un compte
+    if compte:
+        c.execute("SELECT * FROM COMPTE WHERE idCompte = ?", idCompte)
+        compte = c.fetchone()
+        conn.close()
+
+        # Récupération des noms de colonnes
+        col_names = [desc[0] for desc in c.description]
+
+        # Création d'un dictionnaire contenant les données
+        compte_dict = {col_names[i]: compte[i] for i in range(len(col_names))}
+
+        # Envoi de la réponse en JSON avec code 200 et le compte
+        return jsonify(compte_dict), 200
+    else:
+        conn.close()
+        return jsonify({'message': 'Token invalide ou expiré.'}), 401
+
+
+
+
+@app.route('/modifCompte/<str:token>', methods=['POST'])
+def modifCompte(token):
+    #Verif du token + recup id
+    conn = sqlite3.connect('../database.db')
+    c = conn.cursor()
+    c.execute("SELECT idCompte FROM COMPTE WHERE token = ?"), token
+    compte = c.fetchone()
+    idCompte = compte[0]
+
+    #Le token est valide et conduit bien a un compte
+    if compte:
+        email = request.form.get('email')
+        #On verifie l'unicite de l'email
+        c.execute("SELECT idCompte FROM COMPTE WHERE NOT(idCompte = ?)", idCompte)
+        if c.fetchone():
+            #L'adresse est deja utilisee
+            conn.close()
+            return jsonify({'message': 'L\'adresse mail est déjà utilisée.'}), 400
+
+        else:
+            tel = request.form.get('telephone')
+            prenom = request.form.get('prenom')
+            nom = request.form.get('nom')
+            mdp = request.form.get('logpass')
+            adresse = request.form.get('adresse')
+            ville = request.form.get('ville')
+            pays = request.form.get('pays')
+            codePostal = request.form.get('codepostal')
+            genre = request.form.get('sexe')
+            voiture = request.form.get('voiture')
+            notifs = request.form.get('notif')
+            poster = request.files['poster']
+            if poster != None :
+                #Il y a une photo : on l'insere dans la db
+                nomPhoto = poster.filename
+                c.execute("UPDATE COMPTE SET telephone=?, prenomCompte=?, nomCompte=?, mdp=?, adresse=?, ville=?, pays=?, codePostal=?, genre=?, voiture=?, notificationMail=?, photo=? WHERE idCompte=?",
+                    (tel, prenom, nom, mdp, adresse, ville, pays, codePostal, genre, voiture, notifs, nomPhoto, idCompte))
+                conn.commit()
+                conn.close()
+                return jsonify({'message': 'ok'}), 200
+
+    else:
+        conn.close()
+        return jsonify({'message': 'Token invalide ou expiré.'}), 401
+
+
+    
+
+    
 
 
 if __name__ == '__main__':

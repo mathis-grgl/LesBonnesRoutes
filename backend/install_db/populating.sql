@@ -111,4 +111,8 @@ INSERT INTO VILLE(nomVille, codePostal) VALUES('Vichy', 03200);
 INSERT INTO VILLE(nomVille, codePostal) VALUES('Villefranche-sur-Saône', 69400); 
 INSERT INTO VILLE(nomVille, codePostal) VALUES('Villeurbanne', 69100);
 
+
+/* Pour les test sur compte */
+INSERT INTO TOKEN VALUES (1, '9f36ad8ef1718c3c2258025e06e7eb2d', 'exp');
+
 COMMIT;
