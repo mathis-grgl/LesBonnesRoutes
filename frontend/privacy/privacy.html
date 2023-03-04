@@ -1,17 +1,16 @@
 <!DOCTYPE html>
 <html lang="fr-FR">
     <head>
-        {% set title='Accueil' %}
+        {% set title='Confidentialité' %}
         {% include 'head.html' %}
     </head>
     <body>
         {% include 'header.html' %}
 
-        {% include 'inner-index.html' %}
+        {% set section_name='Confidentialité' %}
+        {% include 'inner-page.html' %}
 
-        {% include 'index-section.html' %}
-
-        {% include 'testimonial-section.html' %}
+        {% include 'privacy/privacy-section.html' %}
 
         {% include 'bg-image-section.html' %}
 

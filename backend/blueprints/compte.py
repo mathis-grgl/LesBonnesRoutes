@@ -7,15 +7,16 @@ compte_bp = Blueprint('compte', __name__)
 #Créer un compte
 @compte_bp.route('/createCompte', methods=['POST', 'GET'])
 def create_compte():
+    data = request.get_json()
     # Récupérer les données envoyées dans la requête
-    nom = request.form.get('name-sign')
-    prenom = request.form.get('last-name-sign')
-    email = request.form.get('email-sign')
-    genre = request.form.get('gender-sign')
-    voiture = request.form.get('checkbox-licence-sign')
-    telephone = request.form.get('phone-sign')
-    mdp = request.form.get('password-sign')
-    #notificationMail = request.form.get('notificationMail')
+    nom = data.get('name-sign')
+    prenom = data.get('last-name-sign')
+    email = data.get('email-sign')
+    genre = data.get('gender-sign')
+    voiture = data.get('checkbox-licence-sign')
+    telephone = data.get('phone-sign')
+    mdp = data.get('password-sign')
+    #notificationMail = data.get('notificationMail')
     notificationMail = 1
 
 
@@ -50,8 +51,9 @@ def create_compte():
 #Se connecter à un compte avec email et mdp + creation token
 @compte_bp.route('/connectCompte', methods=['POST'])
 def connectCompte():
-    email = request.form.get('email')
-    mdp = request.form.get('mdp')
+    data = request.get_json()
+    email = data.get('email')
+    mdp = data.get('mdp')
 
     conn = sqlite3.connect('../database.db')
     c = conn.cursor()
@@ -155,7 +157,8 @@ def modifCompte(token):
 
     #Le token est valide et conduit bien a un compte
     if compte:
-        email = request.form.get('email')
+        data = request.get_json()
+        email = data.get('email')
         #On verifie l'unicite de l'email
         idCompte = int(idCompte)
         # c.execute("SELECT idCompte FROM COMPTE WHERE NOT(idCompte = ?)", idCompte)
@@ -171,16 +174,16 @@ def modifCompte(token):
             return jsonify({'message': 'L\'adresse mail est déjà utilisée.'}), 400
 
         else:
-            tel = request.form.get('telephone')
-            prenom = request.form.get('prenom')
-            nom = request.form.get('nom')
-            mdp = request.form.get('logpass')
-            adresse = request.form.get('adresse')
-            ville = request.form.get('ville')
-            pays = request.form.get('pays')
-            codePostal = request.form.get('codepostal')
-            genre = request.form.get('genre')
-            voiture = request.form.get('voiture')
+            tel = data.get('telephone')
+            prenom = data.get('prenom')
+            nom = data.get('nom')
+            mdp = data.get('mdp')
+            adresse = data.get('adresse')
+            ville = data.get('ville')
+            pays = data.get('pays')
+            codePostal = data.get('codepostal')
+            genre = data.get('genre')
+            voiture = data.get('voiture')
             
             if genre == '1':
                 genre = "homme"
@@ -198,14 +201,17 @@ def modifCompte(token):
                 voiture = True
             else:
                 voiture = False
-                
-            notifs = request.form.get('notif')
+            
+            notifs = data.get('notif')
             if notifs == 'oui' :
                 notifs = True
             else:
                 notifs = False
 
-            poster = request.files['poster']
+            # Est-ce bon ?
+            print("6")
+            poster = request.files['photo']
+            print("6")
             if poster != None :
                 #Il y a une photo : on inserer le nom dans la db
                 nomPhoto = poster.filename

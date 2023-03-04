@@ -15,52 +15,52 @@ app = Flask(__name__, template_folder=".")
 
 @app.route('/admin-search-account')
 def admin_account():
-    return render_template('admin-search-account.html')
+    return render_template('admin/search-account/admin-search-account.html')
 
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index/index.html')
 
 
 @app.route('/contact')
 def contact():
-    return render_template('contact.html')
+    return render_template('contact/contact.html')
 
 
 @app.route('/deconnexion')
 def deconnexion():
-    return render_template('deconnexion.html')
+    return render_template('deconnexion/deconnexion.html')
 
 
 @app.route('/modifier')
 def ModifierProfil():
-    return render_template('editprofil.html')
+    return render_template('modifProfil/editprofil.html')
 
 
 @app.route('/privacy')
 def privacy():
-    return render_template('privacy.html')
+    return render_template('privacy/privacy.html')
 
 
 @app.route('/login_signup')
 def login_signup():
-    return render_template('login_signup.html')
+    return render_template('login_signup/login_signup.html')
 
 
 @app.route('/terms')
 def terms():
-    return render_template('terms.html')
+    return render_template('terms/terms.html')
 
 
 @app.route('/account')
 def account():
-    return render_template('account.html')
+    return render_template('account/account.html')
 
 
 @app.route('/about')
 def about():
-    return render_template('about.html')
+    return render_template('about/about.html')
 
 
 # Requetes

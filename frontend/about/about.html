@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html lang="fr-FR">
     <head>
-        {% set title='Termes & Conditions' %}
+        {% set title='A propos' %}
         {% include 'head.html' %}
     </head>
     <body>
         {% include 'header.html' %}
 
-        {% set section_name='Termes & Conditions' %}
+        {% set section_name='A propos' %}
         {% include 'inner-page.html' %}
 
-        {% include 'terms-section.html' %}
-
+        {% include 'about/about-section.html' %}
+        {% include 'about/about-equipes.html' %}
+        
         {% include 'bg-image-section.html' %}
 
         {% include 'footer.html' %}
