@@ -8,13 +8,22 @@ import sys
 sys.path.append('..')
 
 app = Flask(__name__, template_folder=".")
-
+app.url_map.strict_slashes = False
 
 # Pages
 
+@app.route('/admin')
+def admin_index():
+    return render_template('admin/admin-index.html')
 
-@app.route('/admin-search-account')
+
+@app.route('/admin/account')
 def admin_account():
+    return render_template('admin/admin-account.html')
+
+
+@app.route('/admin/admin-search-account')
+def admin_search_account():
     return render_template('admin/search-account/admin-search-account.html')
 
 
