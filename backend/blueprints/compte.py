@@ -122,16 +122,24 @@ def modifCompte(token):
     #Verif du token + recup id
     conn = sqlite3.connect('../database.db')
     c = conn.cursor()
-    c.execute("SELECT idCompte FROM COMPTE WHERE token = ?"), token
+    c.execute("SELECT COMPTE.idCompte FROM COMPTE inner join TOKEN on COMPTE.idCompte = TOKEN.idCompte WHERE auth_token = ?", (token,))
     compte = c.fetchone()
     idCompte = compte[0]
+    print("voici l'id du compte en fonction de son token : ", idCompte)
 
     #Le token est valide et conduit bien a un compte
     if compte:
         email = request.form.get('email')
         #On verifie l'unicite de l'email
-        c.execute("SELECT idCompte FROM COMPTE WHERE NOT(idCompte = ?)", idCompte)
-        if c.fetchone():
+        idCompte = int(idCompte)
+        # c.execute("SELECT idCompte FROM COMPTE WHERE NOT(idCompte = ?)", idCompte)
+        # c.execute("SELECT idCompte, nomCompte, email FROM COMPTE WHERE NOT (idCompte = ?)", (idCompte,))
+        c.execute("SELECT COUNT(*) FROM COMPTE WHERE email = 'adresse_mail_a_verifier'")
+        test = c.fetchone()
+        print(test[0])
+
+
+        if len(test) > 1:
             #L'adresse est deja utilisee
             conn.close()
             return jsonify({'message': 'L\'adresse mail est déjà utilisée.'}), 400
@@ -145,8 +153,32 @@ def modifCompte(token):
             ville = request.form.get('ville')
             pays = request.form.get('pays')
             codePostal = request.form.get('codepostal')
-            genre = request.form.get('sexe')
+            genre = request.form.get('genre')
             voiture = request.form.get('voiture')
+            print(tel)
+            print(prenom)
+            print(nom)
+            print(mdp)
+            print(ville)
+            print(adresse)
+            print(codePostal)
+            print(genre)
+            print(voiture)
+
+
+
+            if genre == '1':
+                genre = "homme"
+            elif genre == '2':
+                genre = "femme"
+            elif genre == '3':
+                genre = "autre"
+            else:
+                genre = "pas de sexe"
+        
+
+       
+
             if voiture == 'oui' :
                 voiture = True
             else:

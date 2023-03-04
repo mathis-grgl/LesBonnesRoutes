@@ -72,6 +72,7 @@ console.log("Voici le nom de l'user " + nomuser);
 
 
 const url = 'compte/getInfoCompte/' + "9f36ad8ef1718c3c2258025e06e7eb2d";
+const token = "9f36ad8ef1718c3c2258025e06e7eb2d";
 
 fetch(url)
   .then(response => {
@@ -91,6 +92,10 @@ fetch(url)
     let mdp = data.mdp;
     let voiture = data.voiture;
     let notif = data.notificationMail;
+    let ville = data.ville;
+    let pays = data.pays;
+    let cp = data.codePostal;
+    let adresse = data.adresse;
     console.log(nom + ' ' + prenom);
     // $('#nomUser').text(nom + ' ' + prenom);
     $("#nomUser").html(nom + " " + prenom).css({
@@ -109,6 +114,13 @@ fetch(url)
     $('input[name="logpass"]').val(mdp);
     $('input[name="logpassconfirm"]').val(mdp);
     $('input[name="email"]').val(email);
+    $('input[name="ville"]').val(ville);
+    $('input[name="pays"]').val(pays);
+    $('input[name="codepostal"]').val(cp);
+    $('input[name="adresse"]').val(adresse);
+
+
+
 
 
     if (voiture == 1) {
@@ -124,13 +136,13 @@ fetch(url)
     }
 
     if (genre == "homme") {
-      $('#sexe').val(1);
+      $('#genre').val(1);
     } else if (genre == "femme") {
-      $('#sexe').val(2);
+      $('#genre').val(2);
     } else if (genre == "autre") {
-      $('#sexe').val(3);
+      $('#genre').val(3);
     } else {
-      $('#sexe').val(0);
+      $('#genre').val(0);
     }
   })
   .catch(error => {
@@ -210,13 +222,13 @@ $('#update-form').submit(function (event) {
   // On récupère les mot de passes
   let inputmdp = $('input[name="logpass"]')
   let mdp = inputmdp.val();
-  console.log("Voici le mdp : " + mdp.trim().length);
+  console.log("Voici le mdp : " + mdp);
 
   const regexmdp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
   let inputmdpconfirm = $('input[name="logpassconfirm"]');
   let mdpconfirm = inputmdpconfirm.val();
-  console.log("Voici le mdp de confirm : " + mdpconfirm.trim().length);
+  console.log("Voici le mdp de confirm : " + mdpconfirm);
 
 
   if (mdp.trim().length == 0 || mdpconfirm.trim().length == 0) {
@@ -302,9 +314,9 @@ $('#update-form').submit(function (event) {
 
 
   // On récupère le genre
-  let sexe = $('#sexe').val();
+  let sexe = $('#genre').val();
   if (sexe == 0) {
-    $('#sexe').css('border', '2px solid red');
+    $('#genre').css('border', '2px solid red');
     valide = false;
   }
   console.log(sexe);
@@ -362,6 +374,22 @@ $('#update-form').submit(function (event) {
     alert("Le formulaire n'est pas bon. Veuillez vérifier vos informations.")
   } else {
     // mettre ici le code pour update les données.
+    let modif = 'compte/modifCompte/' + token;
+    
+    let formData = new FormData($('form')[0]);
+    fetch(modif, {
+      method: 'POST',
+      body: formData
+    })
+    .then(reponse => {
+      if(reponse.ok){
+        alert("Votre compte a bien été modifié.");
+        window.location.href = '/account';
+      }else{
+        alert("Probleme dans le fetch");
+
+      }
+    })
   }
 
 
