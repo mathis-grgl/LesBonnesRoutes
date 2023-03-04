@@ -5,7 +5,7 @@ import secrets
 compte_bp = Blueprint('compte', __name__)
 
 #Créer un compte
-@compte_bp.route('/createCompte', methods=['POST', 'GET'])
+@compte_bp.route('/createCompte', methods=['POST'])
 def create_compte():
     data = request.get_json()
     # Récupérer les données envoyées dans la requête

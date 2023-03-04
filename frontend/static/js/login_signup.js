@@ -54,7 +54,7 @@ function displayMessage(res){
   }
 }
 
-
+/*
 function signIn(){
   const url = 'http://127.0.0.1:5000/api/v1/user';
 
@@ -86,6 +86,36 @@ function signIn(){
     });
   }
 }
+*/
+function signIn() {
+  const form = document.querySelector('#signup-form');
+  const url = 'http://127.0.0.1:5000/api/v1/user';
+
+  if (checkValue('name-sign') && checkValue('last-name-sign') && checkValue('email-sign') && checkValue('phone-sign') && checkValue('checkbox-licence-sign') && checkValue('password-sign') && checkValue('file-sign')) {
+    event.preventDefault(); // Prevent the default behavior of the button click
+    
+    const formData = new FormData(form);
+    fetch('/compte/createCompte', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error('Erreur : ' + response.status);
+      }
+    })
+    .then(data => {
+      console.log('ID du compte : ' + data.idCompte);
+      console.log('Token : ' + data.token);
+    })
+    .catch(error => {
+      console.error('Erreur : ' + error.message);
+    });
+  }
+}
+
 
 
 function connect(){
