@@ -77,6 +77,30 @@ def connectCompte():
 
 
 
+#Se deconnecter à un compte avec token
+@compte_bp.route('/deconnectCompte/<string:token>', methods=['POST'])
+def deconnectCompte(token):
+    conn = sqlite3.connect('../database.db')
+    c = conn.cursor()
+    c.execute("SELECT idCompte FROM TOKEN WHERE token = ?", token)
+    compte = c.fetchone()
+    idCompte = compte[0]
+
+    if compte:
+        #On supprime de la table token
+        c.execute("DELETE FROM TOKEN WHERE idCompte = ? AND token = ?", (idCompte, token))
+        conn.commit()
+        conn.close()
+
+        # Retour de la réponse avec code 200
+        return jsonify({'message': 'Le compte a bien été déconnecté.'}), 200
+    else:
+        # Retour de la réponse avec code 401 et un message d'erreur
+        conn.close()
+        return jsonify({'message': 'Token invalide ou expiré'}), 401
+
+
+
 
 
 #Recuperer les infos d'un compte avec son token
@@ -203,4 +227,3 @@ def modifCompte(token):
         return jsonify({'message': 'Token invalide ou expiré.'}), 401
 
 
-    
