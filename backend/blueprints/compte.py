@@ -70,9 +70,9 @@ def connectCompte():
     c.execute(
         "SELECT idCompte FROM COMPTE WHERE email = ? AND mdp = ?", (email, mdp))
     compte = c.fetchone()
-    idCompte = compte[0]
 
     if compte:
+        idCompte = compte[0]
         # Création du token
         token = secrets.token_hex(16)  # generate a random token with 16 bytes
         c.execute("INSERT INTO TOKEN VALUES (?, ?, ?)",
