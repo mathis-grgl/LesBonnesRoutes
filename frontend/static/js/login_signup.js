@@ -90,7 +90,7 @@ function signIn(){
 
 function connect(){
   event.preventDefault(); // Prevent the default behavior of the button click
-  fetch('/connectCompte', {
+  fetch('/compte/connectCompte', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'

@@ -60,8 +60,10 @@ def create_compte():
 @compte_bp.route('/connectCompte', methods=['POST'])
 def connectCompte():
     data = request.get_json()
-    email = data.get('email')
-    mdp = data.get('mdp')
+    email = data.get('email-log')
+    mdp = data.get('password-log')
+
+    print(data)
 
     conn = sqlite3.connect('../database.db')
     c = conn.cursor()
