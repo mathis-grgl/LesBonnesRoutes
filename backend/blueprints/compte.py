@@ -241,3 +241,20 @@ def modifCompte(token):
         return jsonify({'message': 'Token invalide ou expiré.'}), 401
 
 
+@compte_bp.route('/deleteCompte/<string:token>', methods=['DELETE'])
+def delCompte(token):
+    #On verifie le token
+    conn = sqlite3.connect('../database.db')
+    c = conn.cursor()
+    c.execute("SELECT idCompte FROM TOKEN WHERE token = ?", token)
+    compte = c.fetchone()
+
+    if not compte:
+        conn.close()
+        return jsonify({'message': 'Token invalide ou expiré.'}), 401
+    else:
+        idCompte = compte[0]
+        c.execute("DELETE FROM COMPTE WHERE idCompte = ?", idCompte)
+        conn.commit()
+        conn.close()
+        return jsonify({'message': 'Le compte a bien été supprimé'}), 200
