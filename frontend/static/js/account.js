@@ -1,9 +1,10 @@
 
 
+const url = 'compte/getInfoCompte/' + "9f36ad8ef1718c3c2258025e06e7eb2d";
 function applyData() {
     console.log("La fonction a été exécutée !");
 
-    fetch('/users')
+    fetch(url)
         .then(response => {
             if (!response.ok) {
                 throw new Error("Erreur lors de l'appel à la fonction get_users: " + response.statusText);
@@ -13,7 +14,7 @@ function applyData() {
         .then(data => {
             // Gérer les données de réponse ici
             console.log(data);
-            let user = data[0];
+            let user = data;
             let nom = user.nomCompte;
             let prenom = user.prenomCompte;
             let tel = user.telephone;
