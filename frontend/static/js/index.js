@@ -1,5 +1,5 @@
 
-fetch('/trajets')
+fetch('/admin/trajets')
   .then(response => response.json())
   .then(data => {
     const trajets = data;
