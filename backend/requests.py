@@ -120,4 +120,3 @@ def removeFriend(idGroupe: int, idCompte: int):
     cursor.executescript(sql)
 
     cursor.close()
-

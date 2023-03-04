@@ -78,3 +78,13 @@ def deleteCompte(token, idCompte):
             conn.close()
             return jsonify({'message': 'Le compte a bien été supprimé'}), 200
     
+
+
+#Recuperer toutes les villes
+@admin_bp.route('/villes', methods=['GET'])
+def getRoutes():
+    conn = sqlite3.connect('../database.db')
+    c = conn.cursor()
+    c.execute("SELECT nomVille FROM VILLE")
+    rows = c.fetchall()
+    return jsonify(rows), 200
