@@ -155,18 +155,7 @@ def modifCompte(token):
             codePostal = request.form.get('codepostal')
             genre = request.form.get('genre')
             voiture = request.form.get('voiture')
-            print(tel)
-            print(prenom)
-            print(nom)
-            print(mdp)
-            print(ville)
-            print(adresse)
-            print(codePostal)
-            print(genre)
-            print(voiture)
-
-
-
+            
             if genre == '1':
                 genre = "homme"
             elif genre == '2':
