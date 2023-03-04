@@ -14,12 +14,12 @@ app.url_map.strict_slashes = False
 
 @app.route('/admin')
 def admin_index():
-    return render_template('admin/admin-index.html')
+    return render_template('admin/index/admin-index.html')
 
 
 @app.route('/admin/account')
 def admin_account():
-    return render_template('admin/admin-account.html')
+    return render_template('admin/account/admin-account.html')
 
 
 @app.route('/admin/admin-search-account')
