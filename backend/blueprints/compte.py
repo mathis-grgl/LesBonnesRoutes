@@ -5,17 +5,19 @@ import secrets
 compte_bp = Blueprint('compte', __name__)
 
 #Créer un compte
-@compte_bp.route('/createCompte', methods=['POST'])
+@compte_bp.route('/createCompte', methods=['POST', 'GET'])
 def create_compte():
     # Récupérer les données envoyées dans la requête
-    nom = request.form.get('nomCompte')
-    prenom = request.form.get('prenomCompte')
-    email = request.form.get('email')
-    genre = request.form.get('genre')
-    voiture = request.form.get('voiture')
-    telephone = request.form.get('telephone')
-    mdp = request.form.get('mdp')
-    notificationMail = request.form.get('notificationMail')
+    nom = request.form.get('name-sign')
+    prenom = request.form.get('last-name-sign')
+    email = request.form.get('email-sign')
+    genre = request.form.get('gender-sign')
+    voiture = request.form.get('checkbox-licence-sign')
+    telephone = request.form.get('phone-sign')
+    mdp = request.form.get('password-sign')
+    #notificationMail = request.form.get('notificationMail')
+    notificationMail = 1
+
 
     # Vérifier si le compte existe déjà dans la base de données
     conn = sqlite3.connect('../database.db')

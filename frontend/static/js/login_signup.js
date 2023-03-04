@@ -60,7 +60,7 @@ function signIn(){
 
   if (checkValue("name-sign") && checkValue("last-name-sign") && checkValue("email-sign") && checkValue("phone-sign") && checkValue("checkbox-licence-sign") && checkValue("password-sign")){
     event.preventDefault(); // Prevent the default behavior of the button click
-    fetch('/createCompte', {
+    fetch('/compte/createCompte', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
