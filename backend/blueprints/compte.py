@@ -78,7 +78,7 @@ def connectCompte():
 
 
 #Recuperer les infos d'un compte avec son token
-@compte_bp.route('/getInfoCompte/<string:token>', methods=['POST'])
+@compte_bp.route('/getInfoCompte/<string:token>', methods=['GET'])
 def getInfoCompte(token):
      # Verif du token + recup id
     conn = sqlite3.connect('../database.db')
