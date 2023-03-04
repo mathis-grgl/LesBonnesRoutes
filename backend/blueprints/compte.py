@@ -80,16 +80,22 @@ def connectCompte():
 #Recuperer les infos d'un compte avec son token
 @compte_bp.route('/getInfoCompte/<string:token>', methods=['POST'])
 def getInfoCompte(token):
-    #Verif du token + recup id
+     # Verif du token + recup id
     conn = sqlite3.connect('../database.db')
     c = conn.cursor()
-    c.execute("SELECT idCompte FROM COMPTE WHERE token = ?"), token
+    c.execute("SELECT COMPTE.idCompte FROM COMPTE inner join TOKEN on COMPTE.idCompte = TOKEN.idCompte WHERE auth_token = ?", (token,))
     compte = c.fetchone()
     idCompte = compte[0]
+    print("voici l'id du compte en fonction de son token : ", idCompte)
 
-    #Le token est valide et conduit bien a un compte
+    # Le token est valide et conduit bien a un compte
     if compte:
-        c.execute("SELECT * FROM COMPTE WHERE idCompte = ?", idCompte)
+        idCompte = int(idCompte)
+
+
+        c.execute("SELECT * FROM COMPTE WHERE idCompte = ?", (idCompte,))
+
+        # c.execute("SELECT * FROM COMPTE WHERE idCompte = ?", idCompte)
         compte = c.fetchone()
         conn.close()
 
@@ -104,6 +110,7 @@ def getInfoCompte(token):
     else:
         conn.close()
         return jsonify({'message': 'Token invalide ou expiré.'}), 401
+
 
 
 
