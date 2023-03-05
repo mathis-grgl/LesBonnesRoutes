@@ -10,6 +10,8 @@ INSERT INTO COMPTE(nomCompte, prenomCompte, email, adresse, ville, codePostal, p
     VALUES ('PIERRE', 'Harry', 'harry@mail.com', '11 Rue des Tiercelins', 'NANCY', '54000', 'FRANCE', 'autre', 1, '0606060606', 'mdpHarry', 1);
 INSERT INTO COMPTE(nomCompte, prenomCompte, email, adresse, ville, codePostal, pays, genre, voiture, telephone, mdp, notificationMail)
     VALUES ('DIDIER', 'Sophie', 'sophie@mail.com', '8 Rue Gustave Simon', 'NANCY', '54000', 'FRANCE', 'femme', 0, '0606060606', 'mdpSophie', 1);
+INSERT INTO COMPTE(nomCompte, prenomCompte, email, adresse, ville, codePostal, pays, genre, voiture, telephone, mdp, notificationMail, isAdmin)
+    VALUES ('ADMIN', 'Admin', 'admin@mail.com', 'admin', 'ADMIN', '54000', 'FRANCE', 'femme', 0, '0606060606', 'mdpAdmin', 0, 1);
 
 INSERT INTO TRAJET(idConducteur, heureDepart, dateDepart, nbPlaces, prix, nbPlacesRestantes, statusTrajet, commentaires, precisionRdv, villeDepart, villeArrivee)
     VALUES (4, '10h30', '20230414', 5, 7, 3, 'a pourvoir', 'Non fumeur', 'Devant le Leclerc', 30, 27);
