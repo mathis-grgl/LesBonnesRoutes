@@ -128,18 +128,38 @@ def getInfoCompte(token):
     if compte:
         idCompte = int(idCompte)
 
-
+        # Récupération des données du compte
         c.execute("SELECT * FROM COMPTE WHERE idCompte = ?", (idCompte,))
 
-        # c.execute("SELECT * FROM COMPTE WHERE idCompte = ?", idCompte)
+        # Affectation des données à une variable
         compte = c.fetchone()
-        conn.close()
 
         # Récupération des noms de colonnes
         col_names = [desc[0] for desc in c.description]
 
         # Création d'un dictionnaire contenant les données
         compte_dict = {col_names[i]: compte[i] for i in range(len(col_names))}
+
+        # Récupération du nombre de notes
+        c.execute("SELECT count(distinct(idNote)) as nbnotes FROM NOTE WHERE idCompteNote = ?", (idCompte,))
+
+        # Affectation du nombre de notes à une variable
+        nbnotes = c.fetchone()
+
+        # Ajout du nombre de notes au dictionnaire
+        compte_dict['nbnotes'] = nbnotes[0]
+
+        # Récupération du nombre de trajets
+        c.execute("SELECT count(distinct(idTrajet)) as nbtrajets FROM HISTORIQUE_TRAJET WHERE idCompte = ?", (idCompte,))
+
+        # Affectation du nombre de trajets à une variable
+        nbtrajets = c.fetchone()
+
+        # Ajout du nombre de trajets au dictionnaire
+        compte_dict['nbtrajets'] = nbtrajets[0]
+
+        # Fermeture de la connexion
+        conn.close()
 
         # Envoi de la réponse en JSON avec code 200 et le compte
         return jsonify(compte_dict), 200
@@ -246,7 +266,7 @@ def delCompte(token):
     #On verifie le token
     conn = sqlite3.connect('../database.db')
     c = conn.cursor()
-    c.execute("SELECT idCompte FROM TOKEN WHERE token = ?", token)
+    c.execute("SELECT COMPTE.idCompte FROM COMPTE inner join TOKEN on COMPTE.idCompte = TOKEN.idCompte WHERE auth_token = ?", (token,))
     compte = c.fetchone()
 
     if not compte:
@@ -254,7 +274,7 @@ def delCompte(token):
         return jsonify({'message': 'Token invalide ou expiré.'}), 401
     else:
         idCompte = compte[0]
-        c.execute("DELETE FROM COMPTE WHERE idCompte = ?", idCompte)
+        c.execute("DELETE FROM COMPTE WHERE idCompte = ?", (idCompte,))
         conn.commit()
         conn.close()
         return jsonify({'message': 'Le compte a bien été supprimé'}), 200

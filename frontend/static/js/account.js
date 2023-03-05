@@ -1,9 +1,12 @@
 
-
-const url = 'compte/getInfoCompte/' + "9f36ad8ef1718c3c2258025e06e7eb2d";
+token = "9f36ad8ef1718c3c2258025e06e7eb2d"
+const url = 'compte/getInfoCompte/' + token;
+const urlDelete = 'compte/deleteCompte/' + token;
 function applyData() {
-    console.log("La fonction a été exécutée !");
-
+    // La même pour l'image de profil (à enlever si on a la photo)
+    var image = document.getElementById("image");
+    image.src = "https://www.w3schools.com/howto/img_avatar.png";
+    
     fetch(url)
         .then(response => {
             if (!response.ok) {
@@ -13,21 +16,48 @@ function applyData() {
         })
         .then(data => {
             // Gérer les données de réponse ici
-            console.log(data);
             let user = data;
             let nom = user.nomCompte;
             let prenom = user.prenomCompte;
             let tel = user.telephone;
             let genre = user.genre;
+            let adresse = user.adresse;
+            let pays = user.pays;
+            let ville = user.ville;
+            let codePostal = user.codePostal;
             let email = user.email;
-            let mdp = user.mdp;
             let voiture = user.voiture;
             let notif = user.notificationMail;
-            console.log(nom + ' ' + prenom);
+            let nbnotes = user.nbnotes;
+            let nbtrajets = user.nbtrajets;
+            //let photo = user.photo;
+            let noteCompte = parseInt(user.noteCompte);
             
+            // Cas de l'adresse
+            $('#adresse').text(adresse + ', ' + ville + ' ' + codePostal + ', ' + pays);
+
+            // Cas du nombre de notes (problème)
+            $('#nbnotes').text(nbnotes);
+
+            // Cas du nombre de trajets (problème)
+            $('#nbtrajets').text(nbtrajets);
+            console.log(nbtrajets);
+
+            // Cas de la notification et de l'email
+            switch (notif) {
+                case 0:
+                    notif = "❌📧";
+                    break;
+                case 1:
+                    notif = "✅📧";
+                    break;
+            }
+            $('#email').text(email + ' ' + notif);
+
+            // Cas du genre et du nom et prénom
             switch(genre){
                 case 'homme':
-                    genre = '♂';
+                    genre = '♂dede';
                     break;
                 case 'femme':
                     genre = '♀';
@@ -36,10 +66,17 @@ function applyData() {
                     break;
 
             }
-            $('#prenom').text(nom + ' ' + prenom + ', ' + genre);
+            // Cas du genre (problème)
+            document.getElementById('genre').innerHTML = ", "+genre;
+            console.log(genre);
+
+            // Cas du nom et prénom
+            $('#prenom').text(nom + ' ' + prenom);
+
+            // Cas du téléphone
             $('#telephone').text(tel);
-            $('#email').text(email);
             
+            // Cas de la voiture
             switch (voiture) {
                 case 0:
                     $('#voiture').text("L'utilisateur ne possède pas de voiture.");
@@ -47,54 +84,18 @@ function applyData() {
                 case 1:
                     $('#voiture').text("L'utilisateur possède une voiture.");
                     break;
-
-
             }
 
+            // Cas de la photo
+            //$('#image').attr('src', photo);
 
+            // Cas de la note
+            for (i = 1; i <= noteCompte; ++i) {
+                $('#rating-star-' + i).css('color', '#f8ce0b');
+            }
         });
-    //requete pour recupérer les données de l'utilisateur
-    // prenom + nom + sexe
-    // var prenom = document.getElementById("prenom");
-    // prenom.innerHTML = "Joseph SCHLESINGER, ♂";
 
-    // // adresse en entiere depuis requete
-    var adresse = document.getElementById("adresse");
-    adresse.innerHTML = "1 rue de la paix, 75000 Paris";
 
-    // // La même pour le nombre de trajets
-    var trajet = document.getElementById("trajets");
-    trajet.innerHTML = "3";
-
-    // // La même pour le nombre d'avis
-    var avis = document.getElementById("avis");
-    avis.innerHTML = "2";
-
-    // // La même pour le numéro de téléphone
-    // var telephone = document.getElementById("telephone");
-    // telephone.innerHTML = "06 06 06 06 06";
-
-    // // La même pour l'email
-    // var email = document.getElementById("email");
-    // email.innerHTML = "email@email.fr";
-
-    // // La même pour la voiture
-    // var voiture = document.getElementById("voiture");
-    // voiture.innerHTML = "Ne possède pas de voiture";
-
-    // // La même pour l'image de profil
-    var image = document.getElementById("image");
-    image.src = "https://www.w3schools.com/howto/img_avatar.png";
-
-    // // La même pour le nombre d'étoiles
-    // // requete pour récuperer le nombre d'étoiles.
-    var selected_value = 3;
-
-    for (i = 1; i <= selected_value; ++i) {
-        var star = document.getElementById("rating-star-" + i);
-        star.style.color = "#f8ce0b";
-        console.log("rating-star-" + i + " en jaune");
-    }
 }
 
 
@@ -102,10 +103,18 @@ function applyData() {
 
 function onDelete() {
     if (window.confirm("Are you sure you want to delete your account?")) {
-        //accéder à la base de données.
-        //requete pour supprimer le compte.
-        //fermer la base de données.
-        window.location.href = "/";
+        fetch(urlDelete, {
+            method: 'DELETE',
+          })
+        .then(response => {
+            if (response.ok) {
+                // Redirection vers la page d'accueil
+                location.replace("/");
+                return response.json();
+            } else {
+                throw new Error('Erreur : ' + response.status);
+            }
+        })
     }
 }
 
