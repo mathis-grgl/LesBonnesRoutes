@@ -89,7 +89,16 @@ function signIn(event) {
       }
     })
     .then(data => {
-      container.classList.remove("right-panel-active"); // Redirige vers login
+      console.log('ID du compte : ' + data.idCompte);
+      console.log('Token : ' + data.token);
+      if (!checkKeepLog.checked){
+        createInfiniteCookie(data.token);
+      } else {
+        createTemporaryCookie(data.token);
+      }
+      console.log("Cookie : " + document.cookie);
+      //location.replace("/");
+  
       window.location.href = "/"; // Redirige vers la page d'accueil
     })
     .catch(error => {

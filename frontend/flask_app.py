@@ -57,6 +57,12 @@ def about():
     return render_template('about/about.html')
 
 
+@app.route('/rechercher-trajet')
+def rechercher_trajet():
+    return render_template('search-trajet/rechercheTrajet.html')
+
+
+
 # Requetes
 from backend.blueprints.compte import compte_bp
 from backend.blueprints.trajet import trajet_bp
