@@ -5,15 +5,15 @@ trajet_bp = Blueprint('trajet', __name__)
 
 
 #Rechercher un trajet
-@trajet_bp.route('/recherche', methods=['GET'])
+@trajet_bp.route('/recherche', methods=['POST'])
 def rechercher():
     # Récupérer les données envoyées dans la requête
-    villeDepart = request.form.get('city_start')
-    villeArrivee = request.form.get('city_end')
-    date = '20230312' #pour 12 mars 2023    --> recup ?
-    nbPlaces = 1       #recup ?
-    prixMin = 2      #recup ?
-    prixMax = 10      #recup ?
+    villeDepart = request.form.get('city-start')
+    villeArrivee = request.form.get('city-end')
+    date = request.form.get('date')
+    nbPlaces = request.form.get('places')
+    prixMin = request.form.get('lower-prices')
+    prixMax = request.form.get('higher-prices')
 
     conn = sqlite3.connect('../database.db')
     c = conn.cursor()
@@ -53,7 +53,7 @@ def rechercher():
         params.append(date)
 
     if nbPlaces:
-        if nbPlaces == '4+':
+        if nbPlaces == '4':
             query += " AND nbPlaces > 3"
         else:
             query += " AND nbPlaces = ?"

@@ -1,6 +1,13 @@
 // Fonction pour créer un cookie avec un token
-function createCookie(token) {
-  document.cookie = `myToken=${token}; path=/; max-age=3600;`;
+function createTemporaryCookie(token) {
+  // Cookie valide jusqu'à la fermeture du navigateur
+  document.cookie = `myToken=${token}; path=/; max-age=0;`;
+}
+
+function createInfiniteCookie(token) {
+  // Cookie valide 1 an
+  const maxAge = 365 * 24 * 60 * 60;
+  document.cookie = `myToken=${token}; path=/; max-age=${maxAge};`;
 }
 
 // Fonction pour récupérer le token depuis le cookie
@@ -27,9 +34,9 @@ const deconnection = document.querySelector("li[name='deconnection']");
 const profil = document.querySelector("li[name='profil']");
 
 if (getCookieToken() === null){
-connection.style = "display: block;";
-deconnection.style = "display: none;";
-profil.style = "display: none";
+  connection.style = "display: block;";
+  deconnection.style = "display: none;";
+  profil.style = "display: none";
 } else {
-connection.style = "display: none";
+  connection.style = "display: none";
 }

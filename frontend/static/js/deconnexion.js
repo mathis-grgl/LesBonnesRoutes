@@ -1,23 +1,6 @@
-const logoutButton = document.getElementById('logout-button');
-
-
-
-
-logoutButton.addEventListener('click', (event) => {
-  // Gérer la déconnexion de l'utilisateur
+function deconnect(event){
   event.preventDefault();
-
-  // Supprime la session utilisateur
-  sessionStorage.removeItem('user');
-
+  deleteCookie(getCookieToken());
   console.log("On se déconnecte.");
-
-  // Redirige l'utilisateur vers la page de connexion
-  location.replace('file:///Users/romain/PPIL/Les-Bonnes-Routes/frontend/deconnexion.html');
-
-
-});
-
-
-
-
+  location.replace('/');
+}

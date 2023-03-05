@@ -3,6 +3,7 @@ const loginButton = document.getElementById("login");
 const container = document.getElementById("container");
 const emailLog = document.querySelector("input[name='email-log']");
 const emailSending = document.querySelector("div[name='email-sending']");
+const checkKeepLog = document.querySelector("input[name='checkbox-remember-log']");
 
 registerButton.addEventListener("click", () => {
   container.classList.add("right-panel-active");
@@ -55,9 +56,8 @@ function displayMessage(res){
 }
 
 
-function signIn() {
+function signIn(event) {
   const form = document.querySelector('#signup-form');
-  const url = 'http://127.0.0.1:5000/api/v1/user';
 
   if (checkValue('name-sign') && checkValue('last-name-sign') && checkValue('email-sign') && checkValue('phone-sign') && checkValue('checkbox-licence-sign') && checkValue('password-sign') && checkValue('gender-sign')) {
     event.preventDefault(); // Prevent the default behavior of the button click
@@ -89,9 +89,7 @@ function signIn() {
       }
     })
     .then(data => {
-      console.log('ID du compte : ' + data.idCompte);
-      console.log('Token : ' + data.token);
-      createCookie(data.token);
+      container.classList.remove("right-panel-active"); // Redirige vers login
     })
     .catch(error => {
       console.error('Erreur : ' + error.message);
@@ -101,7 +99,7 @@ function signIn() {
 
 
 
-function connect(){
+function connect(event){
   event.preventDefault(); // Prevent the default behavior of the button click
   fetch('/compte/connectCompte', {
     method: 'POST',
@@ -123,7 +121,13 @@ function connect(){
   .then(data => {
     console.log('ID du compte : ' + data.idCompte);
     console.log('Token : ' + data.token);
-    createCookie(data.token);
+    if (!checkKeepLog.checked){
+      createInfiniteCookie(data.token);
+    } else {
+      createTemporaryCookie(data.token);
+    }
+    console.log("Cookie : " + document.cookie);
+    //location.replace("/");
   })
   .catch(error => {
     console.error('Erreur : ' + error.message);
@@ -210,7 +214,7 @@ function checkValue(val){
       break;
 
     case "city-sign":
-      regex = /[^A-Za-z\s]/g;
+      regex = /^[a-zA-ZÀ-ÖÙ-öù-ÿ]+(?:[\s-][a-zA-ZÀ-ÖÙ-öù-ÿ]+)*$/;
       if (!regex.test(variable.value)){
         variable.style.setProperty("border", "1px solid #ff0000");
       } else {
