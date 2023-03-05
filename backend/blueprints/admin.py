@@ -43,9 +43,9 @@ def get_trajets():
         trajet = {col_names[i]: row[i] for i in range(len(col_names))}
 
         # Remplacement des ID des villes par leurs noms
-        c.execute("SELECT nomVille FROM VILLE WHERE idVille = ?", (row[10]))
+        c.execute("SELECT nomVille FROM VILLE WHERE idVille = ?", (row[10],))
         trajet['villeDepart'] = c.fetchone()[0]
-        c.execute("SELECT nomVille FROM VILLE WHERE idVille = ?", (row[11]))
+        c.execute("SELECT nomVille FROM VILLE WHERE idVille = ?", (row[11],))
         trajet['villeArrivee'] = c.fetchone()[0]
         trajets.append(trajet)
 

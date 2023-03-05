@@ -34,12 +34,12 @@
                   <ul class="list-unstyled menu">
                     <li class="active"><a href="/">Page d'accueil</a></li>
                     <li><a href="rooms">Trajets</a></li>
-                    <li><a href="login_signup">Se connecter</a></li>
+                    <li name="connection"><a href="login_signup">Se connecter</a></li>
                     <!-- <li><a role="button" id="logout-button" >Se déconnecter</a></li> -->
-                    <li><a href="account">Profil</a></li>
+                    <li name="profil"><a href="account">Profil</a></li>
                     <li><a href="contact">Contact</a></li>
                     <li><a href="about">À propos de nous</a></li>
-                    <li>
+                    <li name="deconnection">
                       <div class="background background--light">
                         <button class="logoutButton logoutButton--dark">
                           <svg class="doorway" viewBox="0 0 100 100">
@@ -96,3 +96,5 @@
     </div>
   </div>
 </header>
+
+<script src="static/js/required/session.js"></script> <!--Obliger de l'ajouter avant les autres scripts  -->

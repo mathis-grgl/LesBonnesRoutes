@@ -9,21 +9,21 @@ compte_bp = Blueprint('compte', __name__)
 def create_compte():
     data = request.get_json()
     # Récupérer les données envoyées dans la requête
-    nom = data.get('nomCompte')
-    prenom = data.get('prenomCompte')
-    email = data.get('email')
-    adresse = data.get('adresse')
-    ville = data.get('ville')
-    codePostal = data.get('codePostal')
-    pays = data.get('pays')
-    genre = data.get('genre')
-    voiture = data.get('voiture')
-    telephone = data.get('telephone')
-    mdp = data.get('mdp')
+    nom = data.get('name-sign')
+    prenom = data.get('last-name-sign')
+    email = data.get('email-sign')
+    adresse = data.get('address-sign')
+    ville = data.get('city-sign')
+    codePostal = data.get('postal-sign')
+    pays = data.get('country-sign')
+    genre = data.get('gender-sign')
+    voiture = data.get('checkbox-licence-sign')
+    telephone = data.get('phone-sign')
+    mdp = data.get('password-sign')
     #notificationMail = data.get('notificationMail')
-    notificationMail = 1
-    noteCompte = data.get('noteCompte')
-    photo = data.get('photo')
+    notificationMail = "1"
+    noteCompte = "2.5"
+    photo = "non"
 
 
 
@@ -45,7 +45,7 @@ def create_compte():
         return jsonify({'message': 'Informations manquantes'}), 400
 
     # Insérer le compte dans la base de données
-    c.execute("INSERT INTO COMPTE (nomCompte, prenomCompte, email, adresse, ville, codePostal, pays, genre, voiture, telephone, mdp, notificationMail) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+    c.execute("INSERT INTO COMPTE (nomCompte, prenomCompte, email, adresse, ville, codePostal, pays, genre, voiture, telephone, mdp, notificationMail) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
               (nom, prenom, email, adresse, ville, codePostal, pays, genre, voiture, telephone, mdp, notificationMail))
     conn.commit()
     conn.close()
