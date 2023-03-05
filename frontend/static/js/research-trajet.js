@@ -10,8 +10,8 @@ fetch('/admin/trajets')
 
 
 // Champs de recherche
-const villeDepart = document.querySelector("input[name=city-start]");
-const villeArrivee = document.querySelector("input[name=city-end]");
+const villeDepart = document.querySelector("select[name=city-start]");
+const villeArrivee = document.querySelector("select[name=city-end]");
 const date = document.querySelector("input[name=date]");
 const places = document.querySelector("select[name=places]");
 const prixInferieur = document.querySelector("input[name=lower-prices]");
@@ -99,3 +99,55 @@ async function getCoordinates(city) {
       return { latitude: null, longitude: null };
     }
 }
+
+
+// Menu deroulant ville de départ
+const select = document.querySelector("select[name='city-start']");
+
+fetch('/admin/villes')
+.then(response => {
+    if (response.ok) {
+        return response.json();
+    } else {
+        throw new Error('Erreur : ' + response.status);
+    }
+    })
+.then(data => {
+    // data contient un tableau avec les noms de toutes les villes
+    data.forEach(res => {
+        const city = document.createElement('option');
+        city.value = res;
+        city.innerText = res;
+        select.appendChild(city);
+    });
+        // faire quelque chose avec les données
+})
+.catch(error => {
+    console.error('Erreur : ' + error.message);
+});
+
+
+// Menu deroulant ville d'arrivée
+const select1 = document.querySelector("select[name='city-end']");
+
+fetch('/admin/villes')
+.then(response => {
+    if (response.ok) {
+        return response.json();
+    } else {
+        throw new Error('Erreur : ' + response.status);
+    }
+})
+.then(data => {
+    // data contient un tableau avec les noms de toutes les villes
+    data.forEach(res => {
+        const city = document.createElement('option');
+        city.value = res;
+        city.innerText = res;
+        select1.appendChild(city);
+    });
+    // faire quelque chose avec les données
+})
+.catch(error => {
+    console.error('Erreur : ' + error.message);
+});
