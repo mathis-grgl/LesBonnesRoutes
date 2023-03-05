@@ -132,12 +132,8 @@ function connect(event){
   .then(data => {
     console.log('ID du compte : ' + data.idCompte);
     console.log('Token : ' + data.token);
-    if (!checkKeepLog.checked){
-      createInfiniteCookie(data.token);
-    } else {
-      createTemporaryCookie(data.token);
-    }
-    console.log("Cookie : " + document.cookie);
+    //if (!checkKeepLog.checked){
+    createInfiniteCookie(data.token);
     //location.replace("/");
 
     window.location.href = "/"; // Redirige vers la page d'accueil

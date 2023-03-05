@@ -8,7 +8,7 @@ function createInfiniteCookie(token) {
   const expirationDate = new Date();
   expirationDate.setFullYear(expirationDate.getFullYear() + 1);
   const expirationString = expirationDate.toUTCString();
-  document.cookie = "token=" + data.token + "; expires=" + expirationString + "; path=/";
+  document.cookie = "token=" + token + "; expires=" + expirationString + "; path=/";
 }
 
 // Fonction pour récupérer le token depuis le cookie
