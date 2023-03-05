@@ -92,13 +92,13 @@ def connectCompte():
 def deconnectCompte(token):
     conn = sqlite3.connect('../database.db')
     c = conn.cursor()
-    c.execute("SELECT idCompte FROM TOKEN WHERE token = ?", token)
+    c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
     compte = c.fetchone()
     idCompte = compte[0]
 
     if compte:
         #On supprime de la table token
-        c.execute("DELETE FROM TOKEN WHERE idCompte = ? AND token = ?", (idCompte, token))
+        c.execute("DELETE FROM TOKEN WHERE idCompte = ? AND auth_token = ?", (idCompte, token))
         conn.commit()
         conn.close()
 
