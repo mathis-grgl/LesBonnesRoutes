@@ -19,6 +19,10 @@ def admin_search_account():
     return render_template('admin/search-account/admin-search-account.html')
 
 
+@admin_bp.route('/deconnexion')
+def admin_deconnexion():
+    return render_template('admin/deconnexion/admin-deconnexion.html')
+
 
 #Recuperer tous les comptes
 @admin_bp.route('/users')

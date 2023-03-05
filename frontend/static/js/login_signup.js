@@ -90,6 +90,7 @@ function signIn(event) {
     })
     .then(data => {
       container.classList.remove("right-panel-active"); // Redirige vers login
+      window.location.href = "/"; // Redirige vers la page d'accueil
     })
     .catch(error => {
       console.error('Erreur : ' + error.message);
@@ -128,6 +129,8 @@ function connect(event){
     }
     console.log("Cookie : " + document.cookie);
     //location.replace("/");
+
+    window.location.href = "/"; // Redirige vers la page d'accueil
   })
   .catch(error => {
     console.error('Erreur : ' + error.message);
