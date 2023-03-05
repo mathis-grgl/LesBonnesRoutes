@@ -1,7 +1,23 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, render_template
 import sqlite3
 
 admin_bp = Blueprint('admin', __name__)
+
+# Pages
+@admin_bp.route('/')
+def admin_index():
+    return render_template('admin/index/admin-index.html')
+
+
+@admin_bp.route('/account')
+def admin_account():
+    return render_template('admin/account/admin-account.html')
+
+
+@admin_bp.route('/admin-search-account')
+def admin_search_account():
+    return render_template('admin/search-account/admin-search-account.html')
+
 
 
 #Recuperer tous les comptes

@@ -74,7 +74,7 @@
               let account = data[i];
               console.log(account.nomCompte);
               let tr = $("<tr>");
-              tr.append($('<td>').append($('<img>').attr('src', "static/images/person_" + i + ".jpg").attr('alt', account.nomCompte).attr('width', 64).attr('height', 64)));
+              tr.append($('<td>').append($('<img>').attr('src', "/static/images/person_" + i + ".jpg").attr('alt', account.nomCompte).attr('width', 64).attr('height', 64)));
               tr.append($('<td>').text(account.nomCompte + ' ' + account.prenomCompte));
               tr.append($('<td>').text(account.genre));
               tr.append($('<td>').append($('<a>').attr('href', 'mailto:' + account.email).text(account.email)));
@@ -104,7 +104,7 @@
   <!-- <script src="https://code.jquery.com/jquery-3.5.1.js"></script> -->
   <script src="https://cdn.datatables.net/1.13.3/js/jquery.dataTables.min.js"></script>
   <script src="https://cdn.datatables.net/1.13.3/js/dataTables.bootstrap5.min.js"></script>
-  <script src="static/js/accountTable.js">
+  <script src="/static/js/accountTable.js">
     $("[data-toggle=tooltip]").tooltip();
   </script>
 

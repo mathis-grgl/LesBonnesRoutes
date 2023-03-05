@@ -12,21 +12,6 @@ app.url_map.strict_slashes = False
 
 # Pages
 
-@app.route('/admin')
-def admin_index():
-    return render_template('admin/index/admin-index.html')
-
-
-@app.route('/admin/account')
-def admin_account():
-    return render_template('admin/account/admin-account.html')
-
-
-@app.route('/admin/admin-search-account')
-def admin_search_account():
-    return render_template('admin/search-account/admin-search-account.html')
-
-
 @app.route('/')
 def index():
     return render_template('index/index.html')
