@@ -261,6 +261,8 @@ def modifCompte(token):
         return jsonify({'message': 'Token invalide ou expiré.'}), 401
 
 
+
+
 @compte_bp.route('/deleteCompte/<string:token>', methods=['DELETE'])
 def delCompte(token):
     #On verifie le token

@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, request
+from datetime import datetime
 import sqlite3
 
 trajet_bp = Blueprint('trajet', __name__)
@@ -8,12 +9,13 @@ trajet_bp = Blueprint('trajet', __name__)
 @trajet_bp.route('/recherche', methods=['POST'])
 def rechercher():
     # Récupérer les données envoyées dans la requête
-    villeDepart = request.form.get('city-start')
-    villeArrivee = request.form.get('city-end')
-    date = request.form.get('date')
-    nbPlaces = request.form.get('places')
-    prixMin = request.form.get('lower-prices')
-    prixMax = request.form.get('higher-prices')
+    data = request.get_json()
+    villeDepart = data.get('city-start')
+    villeArrivee = data.get('city-end')
+    date = data.get('date')
+    nbPlaces = data.get('places')
+    prixMin = data.get('lower-prices')
+    prixMax = data.get('higher-prices')
 
     conn = sqlite3.connect('../database.db')
     c = conn.cursor()
@@ -24,7 +26,7 @@ def rechercher():
 
     if villeDepart:
         #On recupere l'id de la ville
-        c.execute("SELECT idVille FROM VILLE WHERE nomVille = ?", villeDepart)
+        c.execute("SELECT idVille FROM VILLE WHERE nomVille = ?", (villeDepart,))
         ville = c.fetchone()
         if not ville:
             #Il y a un pbm, la ville n'existe pas
@@ -34,10 +36,11 @@ def rechercher():
             idVille = ville[0]
             query += " AND villeDepart = ?"
             params.append(idVille)
+            print("VilleDepart = ", idVille)
 
     if villeArrivee:
         #On recupere l'id de la ville
-        c.execute("SELECT idVille FROM VILLE WHERE nomVille = ?", villeDepart)
+        c.execute("SELECT idVille FROM VILLE WHERE nomVille = ?", (villeArrivee,))
         ville = c.fetchone()
         if not ville:
             #Il y a un pbm, la ville n'existe pas
@@ -47,8 +50,12 @@ def rechercher():
             idVille = ville[0]
             query += " AND villeArrivee = ?"
             params.append(idVille)
+            print("VilleArrivee = ", idVille)
 
     if date:
+        #On reformate la date sous la forme YYYYMMDD
+        date_obj = datetime.strptime(date, '%d %B, %Y')
+        date = date_obj.strftime('%Y%m%d')
         query += " AND dateDepart = ?"
         params.append(date)
 
@@ -64,6 +71,8 @@ def rechercher():
         query += " AND prix <= ?"
         params.append(prixMax)
 
+    print(query)
+
     # Exécution de la requête avec les paramètres
     c.execute(query, params)
 
@@ -74,13 +83,24 @@ def rechercher():
     col_names = [desc[0] for desc in c.description]
 
     # Création d'une liste de dictionnaires contenant les données
-    users = []
+    trajets = []
     for row in results:
-        user = {col_names[i]: row[i] for i in range(len(col_names))}
-        users.append(user)
+        trajet = {col_names[i]: row[i] for i in range(len(col_names))}
+
+        # Conversion de la date de la colonne 'dateDepart'
+        dateTrajet = datetime.strptime(trajet['dateDepart'], '%Y%m%d').strftime('%d %B, %Y')
+        trajet['dateDepart'] = dateTrajet
+        trajets.append(trajet)
+
+        # Conversion de l'idVille en nomVille
+        c.execute("SELECT nomVille FROM VILLE WHERE idVille = ?", (trajet['villeDepart'],))
+        trajet['villeDepart'] = c.fetchone()[0]
+        c.execute("SELECT nomVille FROM VILLE WHERE idVille = ?", (trajet['villeArrivee'],))
+        trajet['villeArrivee'] = c.fetchone()[0]
+
 
     conn.close()
-    return jsonify(users)
+    return jsonify(trajets)
 
 
 
@@ -96,6 +116,21 @@ def trajetsCompte(token):
         #On peut chercher tous ses trajets
         idCompte = compte[0]
         c.execute("SELECT * FROM COMPTE INNER JOIN TRAJET ON COMPTE.idCompte = TRAJET.idConducteur INNER JOIN TRAJET_EN_COURS_PASSAGER ON TRAJET.idTrajet = TRAJET_EN_COURS_PASSAGER.idTrajet WHERE TRAJET_EN_COURS_PASSAGER.idCompte = [id du passager]");
+        rows = c.fetchall()
+
+        # Récupération des noms de colonnes
+        col_names = [desc[0] for desc in c.description]
+
+        # Conversion de la date dans chaque ligne de résultat
+        trajets = []
+        for row in rows:
+            trajet = {col_names[i]: row[i] for i in range(len(col_names))}
+
+            # Conversion de la date de la colonne 'dateTrajet'
+            dateTrajet = datetime.strptime(trajet['dateTrajet'], '%Y%m%d').strftime('%d %B, %Y')
+            trajet['dateTrajet'] = dateTrajet
+
+            trajets.append(trajet)
 
         conn.commit()
         conn.close()
