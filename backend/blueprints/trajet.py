@@ -5,6 +5,43 @@ import sqlite3
 trajet_bp = Blueprint('trajet', __name__)
 
 
+#Voir un trajet
+@trajet_bp.route('/trajet/<int:idTrajet>', methods=['POST'])
+def getTrajet(idTrajet):
+    conn = sqlite3.connect('../database.db')
+    c = conn.cursor()
+    c.execute("SELECT * FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
+    trajet = c.fetchone()
+
+    if not trajet:
+        conn.close()
+        return jsonify({'message': 'Trajet non trouvé'}), 404
+
+    else:
+
+        # Récupération des noms de colonnes
+        col_names = [desc[0] for desc in c.description]
+
+        # Création d'un dictionnaire contenant les données du trajet
+        trajet = {col_names[i]: trajet[i] for i in range(len(col_names))}
+
+        # Conversion de la date de la colonne 'dateDepart'
+        dateTrajet = datetime.strptime(trajet['dateDepart'], '%Y%m%d').strftime('%d %B, %Y')
+        trajet['dateDepart'] = dateTrajet
+
+        # Conversion de l'idVille en nomVille
+        c.execute("SELECT nomVille FROM VILLE WHERE idVille = ?", (trajet['villeDepart'],))
+        trajet['villeDepart'] = c.fetchone()[0]
+        c.execute("SELECT nomVille FROM VILLE WHERE idVille = ?", (trajet['villeArrivee'],))
+        trajet['villeArrivee'] = c.fetchone()[0]
+
+        conn.close()
+
+        return jsonify(trajet)
+
+
+
+
 #Rechercher un trajet
 @trajet_bp.route('/recherche', methods=['POST'])
 def rechercher():
@@ -70,8 +107,6 @@ def rechercher():
     if prixMax:
         query += " AND prix <= ?"
         params.append(prixMax)
-
-    print(query)
 
     # Exécution de la requête avec les paramètres
     c.execute(query, params)
