@@ -77,12 +77,14 @@ def connectCompte():
 
     conn = sqlite3.connect('../database.db')
     c = conn.cursor()
+    # Récupérer isAdmin pour le laisser au front est moche
     c.execute(
-        "SELECT idCompte FROM COMPTE WHERE email = ? AND mdp = ?", (email, mdp))
+        "SELECT idCompte, isAdmin FROM COMPTE WHERE email = ? AND mdp = ?", (email, mdp))
     compte = c.fetchone()
 
     if compte:
         idCompte = compte[0]
+        isAdmin = compte[1]
         # Création du token
         token = secrets.token_hex(16)  # generate a random token with 16 bytes
         c.execute("INSERT INTO TOKEN VALUES (?, ?, ?)",
@@ -91,7 +93,7 @@ def connectCompte():
         conn.close()
 
         # Retour de la réponse avec code 200 et le token
-        return jsonify({'idCompte': idCompte, 'token': token}), 200
+        return jsonify({'idCompte': idCompte, 'token': token, 'isAdmin': isAdmin}), 200
     else:
         # Retour de la réponse avec code 401 et un message d'erreur
         conn.close()

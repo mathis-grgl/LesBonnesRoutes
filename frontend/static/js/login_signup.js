@@ -93,14 +93,15 @@ function signIn(event) {
         console.log(data.error);
         return;
       }
-      if (!data.token) {
-        console.log('Pas de token');
-        return;
-      }
       
       //if (!checkKeepLog.checked){ Le bouton n'existe pas
       createInfiniteCookie(data.token);
-      window.location.href = "/"; // Redirige vers la page d'accueil
+
+      // Moche sa mère
+      if (data.isAdmin)
+        window.location.href = "/admin"; // Redirige vers la page d'accueil
+      else
+        window.location.href = "/"; // Redirige vers la page d'accueil
     })
     .catch(error => {
       console.error('Erreur : ' + error.message);
@@ -130,13 +131,17 @@ function connect(event){
     }
   })
   .then(data => {
-    console.log('ID du compte : ' + data.idCompte);
-    console.log('Token : ' + data.token);
-    //if (!checkKeepLog.checked){
-    createInfiniteCookie(data.token);
-    //location.replace("/");
+    if (data.error) {
+      console.log(data.error);
+      return;
+    }
 
-    window.location.href = "/"; // Redirige vers la page d'accueil
+    createInfiniteCookie(data.token);
+
+    if (data.isAdmin)
+      window.location.href = "/admin"; // Redirige vers la page d'accueil
+    else
+      window.location.href = "/"; // Redirige vers la page d'accueil
   })
   .catch(error => {
     console.error('Erreur : ' + error.message);
