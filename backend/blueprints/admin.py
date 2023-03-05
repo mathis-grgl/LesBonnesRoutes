@@ -14,7 +14,7 @@ def admin_account():
     return render_template('admin/account/admin-account.html')
 
 
-@admin_bp.route('/admin-search-account')
+@admin_bp.route('/search-account')
 def admin_search_account():
     return render_template('admin/search-account/admin-search-account.html')
 
