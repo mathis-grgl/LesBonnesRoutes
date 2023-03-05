@@ -1,3 +1,9 @@
+const token = getCookieToken();
+const search = document.querySelector("div[id=next]");
+
+if (token === null){
+  search.style = "display: none;";
+}
 
 fetch('/admin/trajets')
   .then(response => response.json())

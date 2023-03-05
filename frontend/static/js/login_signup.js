@@ -54,20 +54,31 @@ function displayMessage(res){
   }
 }
 
-/*
-function signIn(){
+
+function signIn() {
+  const form = document.querySelector('#signup-form');
   const url = 'http://127.0.0.1:5000/api/v1/user';
 
-  if (checkValue("name-sign") && checkValue("last-name-sign") && checkValue("email-sign") && checkValue("phone-sign") && checkValue("checkbox-licence-sign") && checkValue("password-sign")){
+  if (checkValue('name-sign') && checkValue('last-name-sign') && checkValue('email-sign') && checkValue('phone-sign') && checkValue('checkbox-licence-sign') && checkValue('password-sign') && checkValue('gender-sign')) {
     event.preventDefault(); // Prevent the default behavior of the button click
+    
     fetch('/compte/createCompte', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        'email-log': document.querySelector("input[name='email-log']").value,
-        'password-log': document.querySelector("input[name='password-log']").value
+        'name-sign': document.querySelector("input[name='name-sign']").value,
+        'last-name-sign': document.querySelector("input[name='last-name-sign']").value,
+        'gender-sign': document.querySelector("input[name='gender-sign']:checked").value,
+        'email-sign': document.querySelector("input[name='email-sign']").value,
+        'phone-sign': document.querySelector("input[name='phone-sign']").value,
+        'checkbox-licence-sign': document.querySelector("input[name='checkbox-licence-sign']").value,
+        'address-sign': document.querySelector("input[name='address-sign']").value,
+        'city-sign': document.querySelector("input[name='city-sign']").value,
+        'postal-sign': document.querySelector("input[name='postal-sign']").value,
+        'country-sign': document.querySelector("input[name='country-sign']").value,
+        'password-sign': document.querySelector("input[name='password-sign']").value
       })
     })
     .then(response => {
@@ -80,35 +91,7 @@ function signIn(){
     .then(data => {
       console.log('ID du compte : ' + data.idCompte);
       console.log('Token : ' + data.token);
-    })
-    .catch(error => {
-      console.error('Erreur : ' + error.message);
-    });
-  }
-}
-*/
-function signIn() {
-  const form = document.querySelector('#signup-form');
-  const url = 'http://127.0.0.1:5000/api/v1/user';
-
-  if (checkValue('name-sign') && checkValue('last-name-sign') && checkValue('email-sign') && checkValue('phone-sign') && checkValue('checkbox-licence-sign') && checkValue('password-sign') && checkValue('file-sign')) {
-    event.preventDefault(); // Prevent the default behavior of the button click
-    
-    const formData = new FormData(form);
-    fetch('/compte/createCompte', {
-      method: 'POST',
-      body: formData
-    })
-    .then(response => {
-      if (response.ok) {
-        return response.json();
-      } else {
-        throw new Error('Erreur : ' + response.status);
-      }
-    })
-    .then(data => {
-      console.log('ID du compte : ' + data.idCompte);
-      console.log('Token : ' + data.token);
+      createCookie(data.token);
     })
     .catch(error => {
       console.error('Erreur : ' + error.message);
@@ -140,6 +123,7 @@ function connect(){
   .then(data => {
     console.log('ID du compte : ' + data.idCompte);
     console.log('Token : ' + data.token);
+    createCookie(data.token);
   })
   .catch(error => {
     console.error('Erreur : ' + error.message);
@@ -148,13 +132,12 @@ function connect(){
 
 
 function checkValue(val){
-  var variable;
+  var variable = document.querySelector("input[name=" + val + "]");
   var regex;
   var bool = false;
 
   switch(val){
     case "email-log":
-      variable = document.querySelector("input[name=" + val + "]");
       regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!regex.test(variable.value)){
         variable.style.setProperty("border", "1px solid #ff0000");
@@ -163,17 +146,8 @@ function checkValue(val){
         bool = true
       }    
       break;
-    
-    case "password-log":
-      break;
-        
-
-    case "checkbox-remember-log":
-      break;
-
 
     case "name-sign":
-      variable = document.querySelector("input[name=" + val + "]");
       regex = /^[A-Za-z\-' ]+$/;
       if (!regex.test(variable.value)){
         variable.style.setProperty("border", "1px solid #ff0000");
@@ -184,7 +158,6 @@ function checkValue(val){
       break;
 
     case "last-name-sign":
-      variable = document.querySelector("input[name=" + val + "]");
       regex = /^[A-Za-z\-' ]+$/;
       if (!regex.test(variable.value)){
         variable.style.setProperty("border", "1px solid #ff0000");
@@ -194,8 +167,13 @@ function checkValue(val){
       }
       break;
 
+    case "gender-sign":
+      if (document.querySelector('input[name=gender-sign]:checked').value != undefined){
+        bool = true;
+      }
+      break;
+
     case "email-sign":
-      variable = document.querySelector("input[name=" + val + "]");
       regex = /.+@.+\.[A-Za-z]{2,}/;
       if (!regex.test(variable.value)){
         variable.style.setProperty("border", "1px solid #ff0000");
@@ -206,7 +184,6 @@ function checkValue(val){
       break;
 
     case "phone-sign":
-      variable = document.querySelector("input[name=" + val + "]");
       regex = /^[0-9]{10}$/;
       if (!regex.test(variable.value)){
         variable.style.setProperty("border", "1px solid #ff0000");
@@ -217,13 +194,52 @@ function checkValue(val){
       break
 
     case "checkbox-licence-sign":
-      if (document.querySelector("input[name=" + val + "]").checked){
+      if (variable.checked){
+        bool = true;
+      }
+      break;
+
+    case "address-sign":
+      regex = /^\d+\s[a-zA-ZÀ-ÿ\s]+$/u;
+      if (!regex.test(variable.value)){
+        variable.style.setProperty("border", "1px solid #ff0000");
+      } else {
+        variable.style.setProperty("border", "1px solid #000000");
+        bool = true;
+      }
+      break;
+
+    case "city-sign":
+      regex = /[^A-Za-z\s]/g;
+      if (!regex.test(variable.value)){
+        variable.style.setProperty("border", "1px solid #ff0000");
+      } else {
+        variable.style.setProperty("border", "1px solid #000000");
+        bool = true;
+      }
+      break;
+
+    case "postal-sign":
+      regex = /^[0-9]{5}$/;
+      if (!regex.test(variable.value)){
+        variable.style.setProperty("border", "1px solid #ff0000");
+      } else {
+        variable.style.setProperty("border", "1px solid #000000");
+        bool = true;
+      }
+      break;
+
+    case "country-sign":
+      regex = /^[a-zA-Z\séàèëêôöîïûüçñÿ-]+$/;
+      if (!regex.test(variable.value)){
+        variable.style.setProperty("border", "1px solid #ff0000");
+      } else {
+        variable.style.setProperty("border", "1px solid #000000");
         bool = true;
       }
       break;
 
     case "password-sign":
-      variable = document.querySelector("input[name=" + val + "]");
       regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
       if (!regex.test(variable.value)){
         variable.style.setProperty("border", "1px solid #ff0000");

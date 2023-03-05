@@ -13,13 +13,13 @@
 <div class="accueil">
   <ul>
     <a href="/">
-      <li style="--color: #67ac5b">
+      <li style="--color: #ef436b">
         <span class="base"></span>
-        <span class="title">Accueil</span>
+        <span class="title">Les Bonnes Routes</span>
         <span class="icon">
           <ion-content>
             <img src="static/images/logo.png" class="img">
-          </ion-content>>
+          </ion-content>
         </span>
       </li>
     </a>
@@ -34,14 +34,14 @@
   <div class="container" id="container">
 
     <div class="form-container register-container">
-      <form action="#" id="signup-form" enctype="multipart/form-data" method="POST">
+      <form action="#">
         <h1>Inscription</h1>
         <input type="text" placeholder="Nom" name="name-sign" oninput="checkValue('name-sign')">
         <input type="text" placeholder="Prenom" name="last-name-sign" oninput="checkValue('last-name-sign')">
         <div class="content">Genre : *
-          <input type="radio" name="gender-sign" value="homme">Homme
-          <input type="radio" name="gender-sign" value="femme">Femme
-          <input type="radio" name="gender-sign" value="autre">Autre
+          <input type="radio" name="gender-sign" value="homme" oninput="checkValue('gender-sign')">Homme
+          <input type="radio" name="gender-sign" value="femme" oninput="checkValue('gender-sign')">Femme
+          <input type="radio" name="gender-sign" value="autre" oninput="checkValue('gender-sign')">Autre
         </div>        
         <input type="email" placeholder="Email" name="email-sign" oninput="checkValue('email-sign')">
         <input type="text" placeholder="Télephone" name="phone-sign" oninput="checkValue('phone-sign')">
@@ -51,6 +51,10 @@
             <label>Permis *</label>
           </div>
         </div>
+        <input type="text" placeholder="Adresse" name="address-sign" oninput="checkValue('address-sign')">
+        <input type="text" placeholder="Ville" name="city-sign" oninput="checkValue('city-sign')">
+        <input type="text" placeholder="Code postal" name="postal-sign" oninput="checkValue('postal-sign')">
+        <input type="text" placeholder="Pays" name="country-sign" oninput="checkValue('country-sign')">
         <!--<label for="file">Photo :</label>-->
         <input type="file" id="file" name="file-sign" accept="image/jpeg, image/png">
         <input type="password" placeholder="Mot de passe" name="password-sign" oninput="checkValue('password-sign')">
@@ -97,6 +101,7 @@
 
   </div>
 
+  <script src="static/js/required/session.js"></script>
   <script src="static/js/login_signup.js"></script>
   <script src="https://smtpjs.com/v3/smtp.js"></script>
   <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
