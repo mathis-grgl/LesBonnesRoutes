@@ -7,6 +7,7 @@ compte_bp = Blueprint('compte', __name__)
 #Créer un compte
 @compte_bp.route('/createCompte', methods=['POST'])
 def create_compte():
+    print("Othelo")
     data = request.get_json()
     # Récupérer les données envoyées dans la requête
     nom = data.get('name-sign')
@@ -47,11 +48,22 @@ def create_compte():
     # Insérer le compte dans la base de données
     c.execute("INSERT INTO COMPTE (nomCompte, prenomCompte, email, adresse, ville, codePostal, pays, genre, voiture, telephone, mdp, notificationMail) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
               (nom, prenom, email, adresse, ville, codePostal, pays, genre, voiture, telephone, mdp, notificationMail))
+
+    # Recupération de l'id du compte    
+    c.execute(
+        "SELECT idCompte FROM COMPTE WHERE email = ? AND mdp = ?", (email, mdp))
+    compte = c.fetchone()
+    idCompte = compte[0]
+    
+    # Création du token
+    token = secrets.token_hex(16)  # generate a random token with 16 bytes
+    c.execute("INSERT INTO TOKEN VALUES (?, ?, ?)",
+                (idCompte, token, "exp"))
     conn.commit()
     conn.close()
 
     # Envoyer une réponse avec le code HTTP 201 Created
-    return jsonify({'message': 'Le compte a été créé'}), 201
+    return jsonify({'message': 'Le compte a été créé', 'token': token}), 201
 
 
 
@@ -94,9 +106,9 @@ def deconnectCompte(token):
     c = conn.cursor()
     c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
     compte = c.fetchone()
-    idCompte = compte[0]
 
     if compte:
+        idCompte = compte[0]
         #On supprime de la table token
         c.execute("DELETE FROM TOKEN WHERE idCompte = ? AND auth_token = ?", (idCompte, token))
         conn.commit()

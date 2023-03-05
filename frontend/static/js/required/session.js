@@ -1,13 +1,14 @@
 // Fonction pour créer un cookie avec un token
 function createTemporaryCookie(token) {
-  // Cookie valide jusqu'à la fermeture du navigateur
-  document.cookie = `myToken=${token}; path=/; max-age=0;`;
+  document.cookie = "token=" + token + "; max-age=0";
 }
 
 function createInfiniteCookie(token) {
   // Cookie valide 1 an
-  const maxAge = 365 * 24 * 60 * 60;
-  document.cookie = `myToken=${token}; path=/; max-age=${maxAge};`;
+  const expirationDate = new Date();
+  expirationDate.setFullYear(expirationDate.getFullYear() + 1);
+  const expirationString = expirationDate.toUTCString();
+  document.cookie = "token=" + data.token + "; expires=" + expirationString + "; path=/";
 }
 
 // Fonction pour récupérer le token depuis le cookie
@@ -33,10 +34,10 @@ const connection = document.querySelector("li[name='connection']");
 const deconnection = document.querySelector("li[name='deconnection']");
 const profil = document.querySelector("li[name='profil']");
 
-if (getCookieToken() === null){
+if (getCookieToken() === null && connection !== null && deconnection !== null && profil !== null){
   connection.style = "display: block;";
   deconnection.style = "display: none;";
   profil.style = "display: none";
 } else {
-  connection.style = "display: none";
+  //connection.style = "display: none"; Shit
 }

@@ -108,8 +108,10 @@ function onDelete() {
           })
         .then(response => {
             if (response.ok) {
+                // Suppression du cookie
+                deleteCookie(getCookieToken());
                 // Redirection vers la page d'accueil
-                location.replace("/");
+                window.location.href = "/";
                 return response.json();
             } else {
                 throw new Error('Erreur : ' + response.status);

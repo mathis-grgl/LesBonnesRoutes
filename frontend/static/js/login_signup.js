@@ -59,7 +59,7 @@ function displayMessage(res){
 function signIn(event) {
   const form = document.querySelector('#signup-form');
 
-  if (checkValue('name-sign') && checkValue('last-name-sign') && checkValue('email-sign') && checkValue('phone-sign') && checkValue('checkbox-licence-sign') && checkValue('password-sign') && checkValue('gender-sign')) {
+  if (checkValue('name-sign') && checkValue('last-name-sign') && checkValue('email-sign') && checkValue('phone-sign') && checkValue('password-sign') && checkValue('gender-sign')) {
     event.preventDefault(); // Prevent the default behavior of the button click
     
     fetch('/compte/createCompte', {
@@ -89,16 +89,17 @@ function signIn(event) {
       }
     })
     .then(data => {
-      console.log('ID du compte : ' + data.idCompte);
-      console.log('Token : ' + data.token);
-      if (!checkKeepLog.checked){
-        createInfiniteCookie(data.token);
-      } else {
-        createTemporaryCookie(data.token);
+      if (data.error) {
+        console.log(data.error);
+        return;
       }
-      console.log("Cookie : " + document.cookie);
-      //location.replace("/");
-  
+      if (!data.token) {
+        console.log('Pas de token');
+        return;
+      }
+      
+      //if (!checkKeepLog.checked){ Le bouton n'existe pas
+      createInfiniteCookie(data.token);
       window.location.href = "/"; // Redirige vers la page d'accueil
     })
     .catch(error => {
