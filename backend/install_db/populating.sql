@@ -12,15 +12,15 @@ INSERT INTO COMPTE(nomCompte, prenomCompte, email, adresse, ville, codePostal, p
     VALUES ('DIDIER', 'Sophie', 'sophie@mail.com', '8 Rue Gustave Simon', 'NANCY', '54000', 'FRANCE', 'femme', 0, '0606060606', 'mdpSophie', 1);
 
 INSERT INTO TRAJET(idConducteur, heureDepart, dateDepart, nbPlaces, prix, nbPlacesRestantes, statusTrajet, commentaires, precisionRdv, villeDepart, villeArrivee)
-    VALUES (4, '10h30', '14/03/2023', 5, 7, 3, 'a pourvoir', 'Non fumeur', 'Devant le Leclerc', 30, 27);
+    VALUES (4, '10h30', '20230414', 5, 7, 3, 'a pourvoir', 'Non fumeur', 'Devant le Leclerc', 30, 27);
 INSERT INTO TRAJET(idConducteur, heureDepart, dateDepart, nbPlaces, prix, nbPlacesRestantes, statusTrajet, commentaires, precisionRdv, villeDepart, villeArrivee)
-    VALUES (1, '14h00', '20/02/2023', 4, 5, 2, 'a pourvoir', NULL, NULL, 23, 41);
+    VALUES (1, '14h00', '20230420', 4, 5, 2, 'a pourvoir', NULL, NULL, 23, 41);
 INSERT INTO TRAJET(idConducteur, heureDepart, dateDepart, nbPlaces, prix, nbPlacesRestantes, statusTrajet, commentaires, precisionRdv, villeDepart, villeArrivee)
-    VALUES (1, '18h00', '15/02/2023', 4, 10, 2, 'en cours', NULL, NULL, 27, 35);
+    VALUES (1, '18h00', '20230415', 4, 10, 2, 'en cours', NULL, NULL, 27, 35);
 INSERT INTO TRAJET(idConducteur, heureDepart, dateDepart, nbPlaces, prix, nbPlacesRestantes, statusTrajet, commentaires, precisionRdv, villeDepart, villeArrivee)
-   VALUES (4, '12h00', '01/01/2023', 5, 10, 3, 'termine', 'non fumeur', 'Devant le Leclerc', 30, 27);
+   VALUES (4, '12h00', '20230401', 5, 10, 3, 'termine', 'non fumeur', 'Devant le Leclerc', 30, 27);
 INSERT INTO TRAJET(idConducteur, heureDepart, dateDepart, nbPlaces, prix, nbPlacesRestantes, statusTrajet, commentaires, precisionRdv, villeDepart, villeArrivee)
-   VALUES (4, '14h00', '02/01/2023', 5, 10, 3, 'termine', 'non fumeur', 'A cote de l’Eglise', 27, 30);
+   VALUES (4, '14h00', '20230402', 5, 10, 3, 'termine', 'non fumeur', 'A cote de l’Eglise', 27, 30);
 
 UPDATE TRAJET SET nbPlacesRestantes = 0 WHERE idTrajet = 1; /* Test trajet complet */
 
