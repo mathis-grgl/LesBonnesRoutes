@@ -104,50 +104,62 @@ async function getCoordinates(city) {
 // Menu deroulant ville de départ
 const select = document.querySelector("select[name='city-start']");
 
-fetch('/admin/villes')
-.then(response => {
-    if (response.ok) {
-        return response.json();
-    } else {
-        throw new Error('Erreur : ' + response.status);
-    }
-    })
-.then(data => {
-    // data contient un tableau avec les noms de toutes les villes
-    data.forEach(res => {
-        const city = document.createElement('option');
-        city.value = res;
-        city.innerText = res;
-        select.appendChild(city);
-    });
-        // faire quelque chose avec les données
-})
-.catch(error => {
-    console.error('Erreur : ' + error.message);
-});
-
+if(select === null){
+  console.log("select null");
+}
+else
+{
+  fetch('/admin/villes')
+  .then(response => {
+      if (response.ok) {
+          return response.json();
+      } else {
+          throw new Error('Erreur : ' + response.status);
+      }
+      })
+  .then(data => {
+      console.log(data.length);
+      // data contient un tableau avec les noms de toutes les villes
+      data.forEach(res => {
+          const city = document.createElement('option');
+          city.value = res;
+          city.innerText = res;
+          select.appendChild(city);
+      });
+          // faire quelque chose avec les données
+  })
+  .catch(error => {
+      console.error('Erreur : ' + error.message);
+  });
+}
 
 // Menu deroulant ville d'arrivée
 const select1 = document.querySelector("select[name='city-end']");
 
-fetch('/admin/villes')
-.then(response => {
-    if (response.ok) {
-        return response.json();
-    } else {
-        throw new Error('Erreur : ' + response.status);
-    }
-})
-.then(data => {
-    // data contient un tableau avec les noms de toutes les villes
-    data.forEach(res => {
-        const city = document.createElement('option');
-        city.value = res;
-        city.innerText = res;
-        select1.appendChild(city);
-    });
-    // faire quelque chose avec les données
-})
-.catch(error => {
-    console.error('Erreur : ' + error.message);
-});
+if(select1 === null){
+  console.log("select null");
+}
+else
+{
+  fetch('/admin/villes')
+  .then(response => {
+      if (response.ok) {
+          return response.json();
+      } else {
+          throw new Error('Erreur : ' + response.status);
+      }
+  })
+  .then(data => {
+      // data contient un tableau avec les noms de toutes les villes
+      data.forEach(res => {
+          const city = document.createElement('option');
+          city.value = res;
+          city.innerText = res;
+          select1.appendChild(city);
+      });
+      // faire quelque chose avec les données
+  })
+  .catch(error => {
+      console.error('Erreur : ' + error.message);
+  });
+}
