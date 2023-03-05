@@ -53,11 +53,8 @@ def rechercher():
         params.append(date)
 
     if nbPlaces:
-        if nbPlaces == '4':
-            query += " AND nbPlaces > 3"
-        else:
-            query += " AND nbPlaces = ?"
-            params.append(nbPlaces)
+        query += " AND nbPlaces = ?"
+        params.append(nbPlaces)
 
     if prixMin:
         query += " AND prix >= ?"
@@ -84,3 +81,28 @@ def rechercher():
 
     conn.close()
     return jsonify(users)
+
+
+
+#Voir la liste des trajets d'un compte avec son token
+@trajet_bp.route('/trajetsCompte/<string:token>', methods=['GET'])
+def trajetsCompte(token):
+    conn = sqlite3.connect('../database.db')
+    c = conn.cursor()
+    c.execute("SELECT idCompte FROM TOKEN WHERE token = ?", token)
+    compte = c.fetchone()
+
+    if compte:
+        #On peut chercher tous ses trajets
+        idCompte = compte[0]
+        c.execute("SELECT * FROM COMPTE INNER JOIN TRAJET ON COMPTE.idCompte = TRAJET.idConducteur INNER JOIN TRAJET_EN_COURS_PASSAGER ON TRAJET.idTrajet = TRAJET_EN_COURS_PASSAGER.idTrajet WHERE TRAJET_EN_COURS_PASSAGER.idCompte = [id du passager]");
+
+        conn.commit()
+        conn.close()
+
+        # Retour de la réponse avec code 200
+        return jsonify({'message': 'Le compte a bien été déconnecté.'}), 200
+    else:
+        # Retour de la réponse avec code 401 et un message d'erreur
+        conn.close()
+        return jsonify({'message': 'Token invalide ou expiré'}), 401
