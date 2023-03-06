@@ -160,11 +160,17 @@ def trajetsCompte(token):
         trajets = []
         for row in rows:
             trajet = {col_names[i]: row[i] for i in range(len(col_names))}
-            
-
+        
             # Conversion de la date de la colonne 'dateTrajet'
             dateTrajet = datetime.strptime(trajet['dateDepart'], '%Y%m%d').strftime('%d %B, %Y')
             trajet['dateDepart'] = dateTrajet
+
+            # Conversion de l'idVille en nomVille
+            c.execute("SELECT nomVille FROM VILLE WHERE idVille = ?", (trajet['villeDepart'],))
+            trajet['villeDepart'] = c.fetchone()[0]
+            c.execute("SELECT nomVille FROM VILLE WHERE idVille = ?", (trajet['villeArrivee'],))
+            trajet['villeArrivee'] = c.fetchone()[0]
+
 
             trajets.append(trajet)
 
