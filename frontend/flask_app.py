@@ -61,6 +61,10 @@ def about():
 def rechercher_trajet():
     return render_template('search-trajet/rechercheTrajet.html')
 
+@app.route('/mes_offres')
+def mes_trajets():
+    return render_template('mes_trajets/mes_trajets.html')
+
 
 
 # Requetes
