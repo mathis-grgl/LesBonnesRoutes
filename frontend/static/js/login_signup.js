@@ -1,3 +1,4 @@
+// Variables
 const registerButton = document.getElementById("register");
 const loginButton = document.getElementById("login");
 const container = document.getElementById("container");
@@ -5,6 +6,27 @@ const emailLog = document.querySelector("input[name='email-log']");
 const emailSending = document.querySelector("div[name='email-sending']");
 const checkKeepLog = document.querySelector("input[name='checkbox-remember-log']");
 
+// Bouton voir/cacher mot de passe
+feather.replace();
+
+const eye = document.querySelector(".feather-eye");
+const eyeoff = document.querySelector(".feather-eye-off");
+const passwordField = document.querySelector("input[name=password-log]");
+
+eye.addEventListener("click", () => {
+  eye.style.display = "none";
+  eyeoff.style.display = "block";
+  passwordField.type = "text";
+});
+
+eyeoff.addEventListener("click", () => {
+  eyeoff.style.display = "none";
+  eye.style.display = "block";
+  passwordField.type = "password";
+});
+
+
+// Boutons se connecter et s'inscrire
 registerButton.addEventListener("click", () => {
   container.classList.add("right-panel-active");
 });
@@ -32,24 +54,23 @@ function sendEmail(){
       Body : message
     }).then(
       function() {
-        displayMessage(true);
+        displayMessage(true, "Le mail de récupération a bien été envoyé, vérifiez bien vos spams.");
       }
     ).catch(
       function() {
-        displayMessage(false);
+        displayMessage(false, "Le mail de récupération n'a pas été envoyé, vérifiez bien votre email et réessayez.");
       }
     );
   }
 }
 
 
-function displayMessage(res){
+function displayMessage(res, message){
+  emailSending.innerHTML = message
   if (res){
-    emailSending.innerHTML = "Le mail de récupération a bien été envoyé, vérifiez bien vos spams."
     emailSending.style.display = "flex";
     emailSending.style.backgroundColor = "#9dcba1";
   } else {
-    emailSending.innerHTML = "Le mail de récupération n'a pas été envoyé, vérifiez bien votre email et réessayez."
     emailSending.style.display = "flex";
     emailSending.style.backgroundColor = "#ff5140";
   }
@@ -59,7 +80,7 @@ function displayMessage(res){
 function signIn(event) {
   const form = document.querySelector('#signup-form');
 
-  if (checkValue('name-sign') && checkValue('last-name-sign') && checkValue('email-sign') && checkValue('phone-sign') && checkValue('password-sign') && checkValue('gender-sign')) {
+  if (checkValue('name-sign') && checkValue('last-name-sign') && checkValue("gender-sign") && checkValue('email-sign') && checkValue('phone-sign') &&checkValue("address-sign") && checkValue("city-sign") && checkValue("postal-sign") && checkValue("country-sign") && checkValue('password-sign')) {
     event.preventDefault(); // Prevent the default behavior of the button click
     
     fetch('/compte/createCompte', {
@@ -85,6 +106,7 @@ function signIn(event) {
       if (response.ok) {
         return response.json();
       } else {
+        displayMessage(false, "Erreur lors de la création du compte.");
         throw new Error('Erreur : ' + response.status);
       }
     })
@@ -93,18 +115,13 @@ function signIn(event) {
         console.log(data.error);
         return;
       }
-      
-      //if (!checkKeepLog.checked){ Le bouton n'existe pas
-      createInfiniteCookie(data.token);
 
-      // Moche sa mère
-      if (data.isAdmin)
-        window.location.href = "/admin"; // Redirige vers la page d'accueil
-      else
-        window.location.href = "/"; // Redirige vers la page d'accueil
+      container.classList.remove("right-panel-active");
+      displayMessage(true, "Votre compte a bien été crée.");
     })
     .catch(error => {
       console.error('Erreur : ' + error.message);
+      displayMessage(false, "Ce compte existe déjà.");
     });
   }
 }
@@ -149,6 +166,7 @@ function connect(event){
   })
   .catch(error => {
     console.error('Erreur : ' + error.message);
+    displayMessage(false, "L'email ou le mot de passe est incorrect");
   });
 }
 
@@ -232,7 +250,7 @@ function checkValue(val){
       break;
 
     case "city-sign":
-      regex = /^[a-zA-ZÀ-ÖÙ-öù-ÿ]+(?:[\s-][a-zA-ZÀ-ÖÙ-öù-ÿ]+)*$/;
+      regex = /^[a-zA-ZÀ-ÖÙ-öù-ÿ-œ]+(?:[\s-][a-zA-ZÀ-ÖÙ-öù-ÿ-œ]+)*$/;
       if (!regex.test(variable.value)){
         variable.style.setProperty("border", "1px solid #ff0000");
       } else {
