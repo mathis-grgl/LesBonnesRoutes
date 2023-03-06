@@ -150,7 +150,7 @@ def trajetsCompte(token):
     if compte:
         #On peut chercher tous ses trajets
         idCompte = compte[0]
-        c.execute("SELECT * FROM COMPTE INNER JOIN TRAJET ON COMPTE.idCompte = TRAJET.idConducteur INNER JOIN TRAJET_EN_COURS_PASSAGER ON TRAJET.idTrajet = TRAJET_EN_COURS_PASSAGER.idTrajet WHERE TRAJET_EN_COURS_PASSAGER.idCompte = ?", (idCompte,))
+        c.execute("SELECT * FROM COMPTE INNER JOIN TRAJET ON COMPTE.idCompte = TRAJET.idConducteur INNER JOIN TRAJET_EN_COURS_PASSAGER ON TRAJET.idTrajet = TRAJET_EN_COURS_PASSAGER.idTrajet WHERE TRAJET_EN_COURS_PASSAGER.idCompte = ? GROUP BY dateDepart ASC", (idCompte,))
         rows = c.fetchall()
 
         # Récupération des noms de colonnes
@@ -287,3 +287,38 @@ def deleteTrajet(token, idTrajet):
                 conn.commit()
                 conn.close()
                 return jsonify({'message': 'Le trajet a bien été supprimé.'}), 200
+
+
+
+@trajet_bp.route('/demandeTrajet/<string:token>/<int:idTrajet>/<int:nbPlaces>', methods=['POST'])
+def demandeTrajet(token, idTrajet, nbPlaces):
+    conn = sqlite3.connect('../database.db')
+    c = conn.cursor()
+    #On recupere l'id du conducteur
+    c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
+    compte = c.fetchone()
+    if not compte:
+        conn.close()
+        return jsonify({'message': 'Token invalide ou expiré'}), 401
+    else:
+        idCompte = compte[0]
+        #On verifie que le compte ne participe pas deja au trajet ou n'a pas deja une demande en cours
+        c.execute("SELECT * FROM TRAJET_EN_COURS_PASSAGER NATURAL JOIN TRAJET WHERE TRAJET_EN_COURS_PASSAGER.idCompte = ? OR TRAJET.idConducteur = ?", (idCompte, idCompte))
+        particpe = c.fetchone()
+        c.execute("SELECT * FROM DEMANDE_TRAJET_EN_COURS WHERE idCompte = ?", (idCompte,))
+        demande = c.fetchone()
+        if particpe or demande:
+            conn.close()
+            return jsonify({'message': 'Requête refusée : vous êtes déjà un participant du trajet ou avez une demande en cours'}), 403
+        else:
+            #On verifie le nombre de places restantes
+            c.execute("SELECT nbPlacesRestantes FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
+            nbPlacesRestantes = c.fetchone()[0]
+            if nbPlaces > nbPlacesRestantes:
+                conn.close()
+                return jsonify({'message': 'Requête refusée : le nombre de places demandées est supérieure au nb disponible'}), 403
+            else:
+                c.execute("INSERT INTO DEMANDE_TRAJET_EN_COURS VALUES (?, ?, ?, ?)", (idCompte, idTrajet, nbPlaces, 'en cours'))
+                conn.commit()
+                conn.close()
+                return jsonify({'message': 'La demande a bien été prise en compte.'}), 200

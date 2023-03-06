@@ -124,7 +124,7 @@ def removeFriend(idGroupe: int, idCompte: int):
 
 
 
-def deleteTrajet(token, idTrajet):
+def demandeTrajet(token, idTrajet, nbPlaces):
     conn = sqlite3.connect('../database.db')
     c = conn.cursor()
     #On recupere l'id du conducteur
@@ -132,24 +132,28 @@ def deleteTrajet(token, idTrajet):
     compte = c.fetchone()
     if not compte:
         conn.close()
-        return None#jsonify({'message': 'Token invalide ou expiré'}), 401
+        return 1#jsonify({'message': 'Token invalide ou expiré'}), 401
     else:
         idCompte = compte[0]
-        #On vérifie que le client est bien conducteur du trajet et que le trajet existe
-        c.execute("SELECT idConducteur FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
-        conducteur = c.fetchone()
-        if not conducteur:
+        #On verifie que le compte ne participe pas deja au trajet ou n'a pas deja une demande en cours
+        c.execute("SELECT * FROM TRAJET_EN_COURS_PASSAGER NATURAL JOIN TRAJET WHERE TRAJET_EN_COURS_PASSAGER.idCompte = ? OR TRAJET.idConducteur = ?", (idCompte, idCompte))
+        particpe = c.fetchone()
+        c.execute("SELECT * FROM DEMANDE_TRAJET_EN_COURS WHERE idCompte = ?", (idCompte,))
+        demande = c.fetchone()
+        if particpe or demande:
             conn.close()
-            return None#jsonify({'message': 'Ce trajet n\'existe pas'}), 404
+            return 2#jsonify({'message': 'Requête refusée : vous êtes déjà un participant du trajet'}), 403
         else:
-            idConducteur = conducteur[0]
-            if idCompte != idConducteur:
+            #On verifie le nombre de places restantes
+            c.execute("SELECT nbPlacesRestantes FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
+            nbPlacesRestantes = c.fetchone()[0]
+            if nbPlaces > nbPlacesRestantes:
                 conn.close()
-                return None#jsonify({'message': 'Suppression non autorisée : vous n\'êtes pas conducteur de ce trajet'}), 403
+                return 3#jsonify({'message': 'Requête refusée : le nombre de places demandées est supérieure au nb disponible'}), 403
             else:
-                c.execute("DELETE FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
+                c.execute("INSERT INTO DEMANDE_TRAJET_EN_COURS VALUES (?, ?, ?, ?)", (idCompte, idTrajet, nbPlaces, 'en cours'))
                 conn.commit()
                 conn.close()
-                return 'OK'#jsonify({'message': 'Le trajet a bien été supprimé.'}), 200
+                return 'OK'#jsonify({'message': 'La demande a bien été prise en compte.'}), 200
 
-print(deleteTrajet('9f36ad8ef1718c3c2258025e06e7eb2d', 1))
+print(demandeTrajet('9f36ad8ef1718c3c2258025e06e7eb2d', 3, 2))
