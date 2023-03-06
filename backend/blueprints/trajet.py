@@ -144,13 +144,13 @@ def rechercher():
 def trajetsCompte(token):
     conn = sqlite3.connect('../database.db')
     c = conn.cursor()
-    c.execute("SELECT idCompte FROM TOKEN WHERE token = ?", token)
+    c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
     compte = c.fetchone()
 
     if compte:
         #On peut chercher tous ses trajets
         idCompte = compte[0]
-        c.execute("SELECT * FROM COMPTE INNER JOIN TRAJET ON COMPTE.idCompte = TRAJET.idConducteur INNER JOIN TRAJET_EN_COURS_PASSAGER ON TRAJET.idTrajet = TRAJET_EN_COURS_PASSAGER.idTrajet WHERE TRAJET_EN_COURS_PASSAGER.idCompte = [id du passager]");
+        c.execute("SELECT * FROM COMPTE INNER JOIN TRAJET ON COMPTE.idCompte = TRAJET.idConducteur INNER JOIN TRAJET_EN_COURS_PASSAGER ON TRAJET.idTrajet = TRAJET_EN_COURS_PASSAGER.idTrajet WHERE TRAJET_EN_COURS_PASSAGER.idCompte = ? GROUP BY dateDepart ASC", (idCompte,))
         rows = c.fetchall()
 
         # Récupération des noms de colonnes
@@ -160,10 +160,17 @@ def trajetsCompte(token):
         trajets = []
         for row in rows:
             trajet = {col_names[i]: row[i] for i in range(len(col_names))}
-
+        
             # Conversion de la date de la colonne 'dateTrajet'
-            dateTrajet = datetime.strptime(trajet['dateTrajet'], '%Y%m%d').strftime('%d %B, %Y')
-            trajet['dateTrajet'] = dateTrajet
+            dateTrajet = datetime.strptime(trajet['dateDepart'], '%Y%m%d').strftime('%d %B, %Y')
+            trajet['dateDepart'] = dateTrajet
+
+            # Conversion de l'idVille en nomVille
+            c.execute("SELECT nomVille FROM VILLE WHERE idVille = ?", (trajet['villeDepart'],))
+            trajet['villeDepart'] = c.fetchone()[0]
+            c.execute("SELECT nomVille FROM VILLE WHERE idVille = ?", (trajet['villeArrivee'],))
+            trajet['villeArrivee'] = c.fetchone()[0]
+
 
             trajets.append(trajet)
 
@@ -249,3 +256,69 @@ def createTrajet(token):
         else:
             conn.close()
             return jsonify({'message': 'Probleme au niveau de la requête'}), 401
+
+
+
+@trajet_bp.route('/deleteTrajet/<string:token>/<int:idTrajet>', methods=['POST'])
+def deleteTrajet(token, idTrajet):
+    conn = sqlite3.connect('../database.db')
+    c = conn.cursor()
+    #On recupere l'id du conducteur
+    c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
+    compte = c.fetchone()
+    if not compte:
+        conn.close()
+        return jsonify({'message': 'Token invalide ou expiré'}), 401
+    else:
+        idCompte = compte[0]
+        #On vérifie que le client est bien conducteur du trajet et que le trajet existe
+        c.execute("SELECT idConducteur FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
+        conducteur = c.fetchone()
+        if not conducteur:
+            conn.close()
+            return jsonify({'message': 'Ce trajet n\'existe pas'}), 404
+        else:
+            idConducteur = conducteur[0]
+            if idCompte != idConducteur:
+                conn.close()
+                return jsonify({'message': 'Suppression non autorisée : vous n\'êtes pas conducteur de ce trajet'}), 403
+            else:
+                c.execute("DELETE FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
+                conn.commit()
+                conn.close()
+                return jsonify({'message': 'Le trajet a bien été supprimé.'}), 200
+
+
+
+@trajet_bp.route('/demandeTrajet/<string:token>/<int:idTrajet>/<int:nbPlaces>', methods=['POST'])
+def demandeTrajet(token, idTrajet, nbPlaces):
+    conn = sqlite3.connect('../database.db')
+    c = conn.cursor()
+    #On recupere l'id du conducteur
+    c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
+    compte = c.fetchone()
+    if not compte:
+        conn.close()
+        return jsonify({'message': 'Token invalide ou expiré'}), 401
+    else:
+        idCompte = compte[0]
+        #On verifie que le compte ne participe pas deja au trajet ou n'a pas deja une demande en cours
+        c.execute("SELECT * FROM TRAJET_EN_COURS_PASSAGER NATURAL JOIN TRAJET WHERE TRAJET_EN_COURS_PASSAGER.idCompte = ? OR TRAJET.idConducteur = ?", (idCompte, idCompte))
+        particpe = c.fetchone()
+        c.execute("SELECT * FROM DEMANDE_TRAJET_EN_COURS WHERE idCompte = ?", (idCompte,))
+        demande = c.fetchone()
+        if particpe or demande:
+            conn.close()
+            return jsonify({'message': 'Requête refusée : vous êtes déjà un participant du trajet ou avez une demande en cours'}), 403
+        else:
+            #On verifie le nombre de places restantes
+            c.execute("SELECT nbPlacesRestantes FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
+            nbPlacesRestantes = c.fetchone()[0]
+            if nbPlaces > nbPlacesRestantes:
+                conn.close()
+                return jsonify({'message': 'Requête refusée : le nombre de places demandées est supérieure au nb disponible'}), 403
+            else:
+                c.execute("INSERT INTO DEMANDE_TRAJET_EN_COURS VALUES (?, ?, ?, ?)", (idCompte, idTrajet, nbPlaces, 'en cours'))
+                conn.commit()
+                conn.close()
+                return jsonify({'message': 'La demande a bien été prise en compte.'}), 200

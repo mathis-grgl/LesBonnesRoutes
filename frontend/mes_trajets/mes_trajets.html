@@ -3,17 +3,24 @@
     <head>
         {% set title='Mes offres de trajets ' %}
         {% include 'head.html' %}
+        <link rel="stylesheet" href="/static/css/mes_trajets.css">
+        
     </head>
-    <body>
+    <body onload = "charger_trajets()">
         {% include 'header.html' %}
 
         {% set section_name='Mes offres de trajets' %}
         {% include 'inner-page.html' %}
+        {% include 'mes_trajets/container_trajets.html' %}
+
+
 
         
 
         {% include 'footer.html' %}
         
         {% include 'scripts-required.html' %}
+        
+        
     </body>
 </html>

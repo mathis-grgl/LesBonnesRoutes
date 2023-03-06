@@ -124,69 +124,36 @@ def removeFriend(idGroupe: int, idCompte: int):
 
 
 
-def createTrajet(token):
-    #data = request.get_json()
-    heureDepart = '10h30'
-    dateDepart = '11 March, 2023'
-    nbPlaces = 3
-    prix = 13
-    commentaires = 'commentaires'
-    precisionRdv = 'precisionRdv'
-    villeDepart = 'Paris'
-    villeArrivee = 'Lyon'
-
-    if not heureDepart or not dateDepart or not nbPlaces or not prix or not villeDepart or not villeArrivee:
-        return 'Il manque une ou plusieurs infos'
-
-    #On reformate la date
-    dateDepart = datetime.strptime(dateDepart, '%d %B, %Y').strftime('%Y%m%d')
-
+def demandeTrajet(token, idTrajet, nbPlaces):
     conn = sqlite3.connect('../database.db')
     c = conn.cursor()
-
-    if True:
-        idCompte = 1
-        #On recupere les id des villes
-        c.execute("SELECT idVille FROM VILLE WHERE nomVille = ?", (villeDepart,))
-        ville = c.fetchone()
-        if not ville:
+    #On recupere l'id du conducteur
+    c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
+    compte = c.fetchone()
+    if not compte:
+        conn.close()
+        return 1#jsonify({'message': 'Token invalide ou expiré'}), 401
+    else:
+        idCompte = compte[0]
+        #On verifie que le compte ne participe pas deja au trajet ou n'a pas deja une demande en cours
+        c.execute("SELECT * FROM TRAJET_EN_COURS_PASSAGER NATURAL JOIN TRAJET WHERE TRAJET_EN_COURS_PASSAGER.idCompte = ? OR TRAJET.idConducteur = ?", (idCompte, idCompte))
+        particpe = c.fetchone()
+        c.execute("SELECT * FROM DEMANDE_TRAJET_EN_COURS WHERE idCompte = ?", (idCompte,))
+        demande = c.fetchone()
+        if particpe or demande:
             conn.close()
-            return 'pbm villeD'
+            return 2#jsonify({'message': 'Requête refusée : vous êtes déjà un participant du trajet'}), 403
         else:
-            villeDepart = ville[0]
-        c.execute("SELECT idVille FROM VILLE WHERE nomVille = ?", (villeArrivee,))
-        ville = c.fetchone()
-        if not ville:
-            conn.close()
-            return 'Pbm villeA'
-        else:
-            villeArrivee = ville[0]
-        
-        query = None
-        values = ()
-        if not commentaires:
-            if not precisionRdv:
-                query = "INSERT INTO TRAJET (idConducteur, heureDepart, dateDepart, nbPlaces, nbPlacesRestantes, prix, statusTrajet, villeDepart, villeArrivee) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
-                values = (idCompte, heureDepart, dateDepart, nbPlaces, nbPlaces, prix, 'A pourvoir', villeDepart, villeArrivee)
+            #On verifie le nombre de places restantes
+            c.execute("SELECT nbPlacesRestantes FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
+            nbPlacesRestantes = c.fetchone()[0]
+            if nbPlaces > nbPlacesRestantes:
+                conn.close()
+                return 3#jsonify({'message': 'Requête refusée : le nombre de places demandées est supérieure au nb disponible'}), 403
             else:
-                query = "INSERT INTO TRAJET (idConducteur, heureDepart, dateDepart, nbPlaces, nbPlacesRestantes, prix, statusTrajet, villeDepart, villeArrivee, precisionRdv) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-                values = (idCompte, heureDepart, dateDepart, nbPlaces, nbPlaces, prix, 'A pourvoir', villeDepart, villeArrivee, precisionRdv)
-        else:
-            if not precisionRdv:
-                query = "INSERT INTO TRAJET (idConducteur, heureDepart, dateDepart, nbPlaces, nbPlacesRestantes, prix, statusTrajet, villeDepart, villeArrivee, commentaires) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-                values = (idCompte, heureDepart, dateDepart, nbPlaces, nbPlaces, prix, 'A pourvoir', villeDepart, villeArrivee, commentaires)
-            else:
-                query = "INSERT INTO TRAJET (idConducteur, heureDepart, dateDepart, nbPlaces, nbPlacesRestantes, prix, statusTrajet, villeDepart, villeArrivee, commentaires, precisionRdv) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-                values = (idCompte, heureDepart, dateDepart, nbPlaces, nbPlaces, prix, 'A pourvoir', villeDepart, villeArrivee, commentaires, precisionRdv)
-        if query:
-            c.execute(query, values)
-            print(query)
-            print(values)
-            conn.commit()
-            conn.close()
-            return 'OK'
-        else:
-            conn.close()
-            return 'pbm requete vide'
+                c.execute("INSERT INTO DEMANDE_TRAJET_EN_COURS VALUES (?, ?, ?, ?)", (idCompte, idTrajet, nbPlaces, 'en cours'))
+                conn.commit()
+                conn.close()
+                return 'OK'#jsonify({'message': 'La demande a bien été prise en compte.'}), 200
 
-print(createTrajet('9f36ad8ef1718c3c2258025e06e7eb2d'))
+print(demandeTrajet('9f36ad8ef1718c3c2258025e06e7eb2d', 3, 2))
