@@ -339,17 +339,22 @@ def quitterTrajet(token, idTrajet):
         idCompte = compte[0]
         #On vérifie que l'utilisateur n'est pas le conducteur du trajet
         c.execute("SELECT idConducteur FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
-        if idCompte == c.fetchone()[0]:
+        trajet = c.fetchone()
+        if not trajet:
             conn.close()
-            return jsonify({'message': 'Requête refusée : vous ne pouvez pas quitter un trajet si vous êtes le conducteur'}), 403
+            return jsonify({'message': 'Ce trajet n\'existe pas'}), 404
         else:
-            #On test si l'utilisateur est bien passager du trajet
-            c.execute("SELECT * FROM TRAJET_EN_COURS_PASSAGER WHERE idTrajet = ?", (idTrajet,))
-            if c.fetchone():
+            if idCompte == trajet[0]:
                 conn.close()
-                return jsonify({'message': 'Requête refusée : vous ne pouvez pas quitter un trajet si vous n\'y participez pas'}), 403
+                return jsonify({'message': 'Requête refusée : vous ne pouvez pas quitter un trajet si vous êtes le conducteur'}), 403
             else:
-                #On peut quitter le trajet
-                c.execute("DELETE FROM TRAJET_EN_COURS_PASSAGER WHERE idTrajet = ? AND idCompte = ?", (idTrajet, idCompte))
-                conn.commit()
-                return jsonify({'message': 'La demande d\'annulation de participation a bien été prise en compte.'}), 200
+                #On test si l'utilisateur est bien passager du trajet
+                c.execute("SELECT * FROM TRAJET_EN_COURS_PASSAGER WHERE idTrajet = ?", (idTrajet,))
+                if not c.fetchone():
+                    conn.close()
+                    return jsonify({'message': 'Requête refusée : vous ne pouvez pas quitter un trajet si vous n\'y participez pas'}), 403
+                else:
+                    #On peut quitter le trajet
+                    c.execute("DELETE FROM TRAJET_EN_COURS_PASSAGER WHERE idTrajet = ? AND idCompte = ?", (idTrajet, idCompte))
+                    conn.commit()
+                    return jsonify({'message': 'La demande d\'annulation de participation a bien été prise en compte.'}), 200
