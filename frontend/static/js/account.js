@@ -1,5 +1,5 @@
 
-token = "9f36ad8ef1718c3c2258025e06e7eb2d"
+token = getCookieToken();
 const url = 'compte/getInfoCompte/' + token;
 const urlDelete = 'compte/deleteCompte/' + token;
 function applyData() {
@@ -37,10 +37,10 @@ function applyData() {
             $('#adresse').text(adresse + ', ' + ville + ' ' + codePostal + ', ' + pays);
 
             // Cas du nombre de notes (problème)
-            $('#nbnotes').text(nbnotes + ' Avis');
+            $('#nbnotes').text(nbnotes);
 
             // Cas du nombre de trajets (problème)
-            $('#nbtrajets').text(nbtrajets + ' Trajets');
+            $('#nbtrajets').text(nbtrajets);
 
             // Cas de la notification et de l'email
             switch (notif) {
