@@ -97,6 +97,39 @@ def deleteCompte(token, idCompte):
             conn.commit()
             conn.close()
             return jsonify({'message': 'Le compte a bien été supprimé'}), 200
+
+
+
+@admin_bp.route('/deleteTrajet/<string:token>/<int:idTrajet>', methods=['POST'])
+def deleteTrajet(token, idTrajet):
+    #On verifie que le token est admin
+    conn = sqlite3.connect('../database.db')
+    c = conn.cursor()
+    c.execute("SELECT isAdmin FROM TOKEN NATURAL JOIN COMPTE WHERE token = ?", token)
+    admin = c.fetchone()
+    if not admin:
+        #Le token n'existe pas
+        conn.close()
+        return jsonify({'message': 'Le token est invalide ou expiré'}), 401
+    else:
+        isAdmin = admin[0]
+        if not isAdmin:
+            #Le token n'est pas admin
+            conn.close()
+            return jsonify({'message': 'Le token n\'est pas admin'}), 401
+        else:
+            #On verifie que le trajet existe
+            c.execute("SELECT * FROM TRAJET WHERE idTrajet = ?", idTrajet)
+            trajet = c.fetchone()
+            if not trajet:
+                conn.close()
+                return jsonify({'message': 'Ce trajet n\'existe pas'}), 404
+            else:
+                c.execute("DELETE FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
+                conn.commit()
+                conn.close()
+                return jsonify({'message': 'Le trajet a bien été supprimé.'}), 200
+                
     
 
 

@@ -144,7 +144,7 @@ def rechercher():
 def trajetsCompte(token):
     conn = sqlite3.connect('../database.db')
     c = conn.cursor()
-    c.execute("SELECT idCompte FROM TOKEN WHERE token = ?", token)
+    c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", token)
     compte = c.fetchone()
 
     if compte:
@@ -249,3 +249,34 @@ def createTrajet(token):
         else:
             conn.close()
             return jsonify({'message': 'Probleme au niveau de la requête'}), 401
+
+
+
+@trajet_bp.route('/deleteTrajet/<string:token>/<int:idTrajet>', methods=['POST'])
+def deleteTrajet(token, idTrajet):
+    conn = sqlite3.connect('../database.db')
+    c = conn.cursor()
+    #On recupere l'id du conducteur
+    c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
+    compte = c.fetchone()
+    if not compte:
+        conn.close()
+        return jsonify({'message': 'Token invalide ou expiré'}), 401
+    else:
+        idCompte = compte[0]
+        #On vérifie que le client est bien conducteur du trajet et que le trajet existe
+        c.execute("SELECT idConducteur FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
+        conducteur = c.fetchone()
+        if not conducteur:
+            conn.close()
+            return jsonify({'message': 'Ce trajet n\'existe pas'}), 404
+        else:
+            idConducteur = conducteur[0]
+            if idCompte != idConducteur:
+                conn.close()
+                return jsonify({'message': 'Suppression non autorisée : vous n\'êtes pas conducteur de ce trajet'}), 403
+            else:
+                c.execute("DELETE FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
+                conn.commit()
+                conn.close()
+                return jsonify({'message': 'Le trajet a bien été supprimé.'}), 200

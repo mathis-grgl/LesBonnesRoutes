@@ -124,69 +124,32 @@ def removeFriend(idGroupe: int, idCompte: int):
 
 
 
-def createTrajet(token):
-    #data = request.get_json()
-    heureDepart = '10h30'
-    dateDepart = '11 March, 2023'
-    nbPlaces = 3
-    prix = 13
-    commentaires = 'commentaires'
-    precisionRdv = 'precisionRdv'
-    villeDepart = 'Paris'
-    villeArrivee = 'Lyon'
-
-    if not heureDepart or not dateDepart or not nbPlaces or not prix or not villeDepart or not villeArrivee:
-        return 'Il manque une ou plusieurs infos'
-
-    #On reformate la date
-    dateDepart = datetime.strptime(dateDepart, '%d %B, %Y').strftime('%Y%m%d')
-
+def deleteTrajet(token, idTrajet):
     conn = sqlite3.connect('../database.db')
     c = conn.cursor()
-
-    if True:
-        idCompte = 1
-        #On recupere les id des villes
-        c.execute("SELECT idVille FROM VILLE WHERE nomVille = ?", (villeDepart,))
-        ville = c.fetchone()
-        if not ville:
+    #On recupere l'id du conducteur
+    c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
+    compte = c.fetchone()
+    if not compte:
+        conn.close()
+        return None#jsonify({'message': 'Token invalide ou expiré'}), 401
+    else:
+        idCompte = compte[0]
+        #On vérifie que le client est bien conducteur du trajet et que le trajet existe
+        c.execute("SELECT idConducteur FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
+        conducteur = c.fetchone()
+        if not conducteur:
             conn.close()
-            return 'pbm villeD'
+            return None#jsonify({'message': 'Ce trajet n\'existe pas'}), 404
         else:
-            villeDepart = ville[0]
-        c.execute("SELECT idVille FROM VILLE WHERE nomVille = ?", (villeArrivee,))
-        ville = c.fetchone()
-        if not ville:
-            conn.close()
-            return 'Pbm villeA'
-        else:
-            villeArrivee = ville[0]
-        
-        query = None
-        values = ()
-        if not commentaires:
-            if not precisionRdv:
-                query = "INSERT INTO TRAJET (idConducteur, heureDepart, dateDepart, nbPlaces, nbPlacesRestantes, prix, statusTrajet, villeDepart, villeArrivee) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
-                values = (idCompte, heureDepart, dateDepart, nbPlaces, nbPlaces, prix, 'A pourvoir', villeDepart, villeArrivee)
+            idConducteur = conducteur[0]
+            if idCompte != idConducteur:
+                conn.close()
+                return None#jsonify({'message': 'Suppression non autorisée : vous n\'êtes pas conducteur de ce trajet'}), 403
             else:
-                query = "INSERT INTO TRAJET (idConducteur, heureDepart, dateDepart, nbPlaces, nbPlacesRestantes, prix, statusTrajet, villeDepart, villeArrivee, precisionRdv) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-                values = (idCompte, heureDepart, dateDepart, nbPlaces, nbPlaces, prix, 'A pourvoir', villeDepart, villeArrivee, precisionRdv)
-        else:
-            if not precisionRdv:
-                query = "INSERT INTO TRAJET (idConducteur, heureDepart, dateDepart, nbPlaces, nbPlacesRestantes, prix, statusTrajet, villeDepart, villeArrivee, commentaires) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-                values = (idCompte, heureDepart, dateDepart, nbPlaces, nbPlaces, prix, 'A pourvoir', villeDepart, villeArrivee, commentaires)
-            else:
-                query = "INSERT INTO TRAJET (idConducteur, heureDepart, dateDepart, nbPlaces, nbPlacesRestantes, prix, statusTrajet, villeDepart, villeArrivee, commentaires, precisionRdv) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-                values = (idCompte, heureDepart, dateDepart, nbPlaces, nbPlaces, prix, 'A pourvoir', villeDepart, villeArrivee, commentaires, precisionRdv)
-        if query:
-            c.execute(query, values)
-            print(query)
-            print(values)
-            conn.commit()
-            conn.close()
-            return 'OK'
-        else:
-            conn.close()
-            return 'pbm requete vide'
+                c.execute("DELETE FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
+                conn.commit()
+                conn.close()
+                return 'OK'#jsonify({'message': 'Le trajet a bien été supprimé.'}), 200
 
-print(createTrajet('9f36ad8ef1718c3c2258025e06e7eb2d'))
+print(deleteTrajet('9f36ad8ef1718c3c2258025e06e7eb2d', 1))
