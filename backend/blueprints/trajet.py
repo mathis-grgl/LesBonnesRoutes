@@ -144,7 +144,7 @@ def rechercher():
 def trajetsCompte(token):
     conn = sqlite3.connect('../database.db')
     c = conn.cursor()
-    c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", token)
+    c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
     compte = c.fetchone()
 
     if compte:
