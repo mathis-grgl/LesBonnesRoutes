@@ -135,8 +135,12 @@ function connect(event){
       console.log(data.error);
       return;
     }
-
-    createInfiniteCookie(data.token);
+    if (checkKeepLog.checked){
+      createInfiniteCookie(data.token);
+    } else {
+      createTemporaryCookie(data.token);
+    }
+    
 
     if (data.isAdmin)
       window.location.href = "/admin"; // Redirige vers la page d'accueil
