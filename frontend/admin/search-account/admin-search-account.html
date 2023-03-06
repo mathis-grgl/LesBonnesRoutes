@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html lang="fr-FR">
-
 <head>
   {% set title='Administrateur - Recherche de compte utilisateur' %}
   {% include 'head.html' %}
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.3/css/dataTables.bootstrap5.min.css">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-
 </head>
-
 <body>
+  {% include 'scripts-required.html' %}
+  <script src="https://cdn.datatables.net/1.13.3/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.3/js/dataTables.bootstrap5.min.js"></script>
+
   {% include 'header.html' %}
 
   {% set section_name='Administrateur - Recherche de compte utilisateur' %}
@@ -57,8 +58,7 @@
       </thead>
 
       <script>
-        console.log('on est appelé.');
-        fetch('admin/users')
+        fetch('/admin/users')
           .then(reponse => {
             if (!reponse.ok) {
               throw new Error('Network response was not ok');
@@ -66,27 +66,90 @@
             return reponse.json();
           })
           .then(data => {
-            console.log(data);
             let nbCompte = data.length;
-            let table = $('#accountTable');
-            let tbody = $("<tbody>");
+            let table = document.getElementById('accountTable');
+            if (nbCompte > 0)
+              table.deleteRow(1);
+            
+            let tbody = document.createElement("tbody");
             for (let i = 0; i < nbCompte; i++) {
               let account = data[i];
-              console.log(account.nomCompte);
-              let tr = $("<tr>");
-              tr.append($('<td>').append($('<img>').attr('src', "static/images/person_" + i + ".jpg").attr('alt', account.nomCompte).attr('width', 64).attr('height', 64)));
-              tr.append($('<td>').text(account.nomCompte + ' ' + account.prenomCompte));
-              tr.append($('<td>').text(account.genre));
-              tr.append($('<td>').append($('<a>').attr('href', 'mailto:' + account.email).text(account.email)));
-              tr.append($('<td>').text(account.telephone));
-              tr.append($('<td>').text(account.noteCompte));
-              tr.append($('<td>').append($('<p>').attr('data-placement', 'top').attr('data-toggle', 'tooltip').attr('title', 'Edit').append($('<button>').addClass('btn btn-primary btn-xs').attr('data-title', 'Edit').attr('data-toggle', 'modal').attr('data-target', '#edit').append($('<span>').addClass('fa fa-pencil')))));
-              tr.append($('<td>').append($('<p>').attr('data-placement', 'top').attr('data-toggle', 'tooltip').attr('title', 'Delete').append($('<button>').addClass('btn btn-danger btn-xs').attr('data-title', 'Delete').attr('data-toggle', 'modal').attr('data-target', '#delete').append($('<span>').addClass('fa fa-trash')))));
-              tbody.append(tr);
+              
+              let tr = document.createElement("tr");
+              let tdImg = document.createElement("td");
+              let img = document.createElement("img");
+              img.src = "/static/images/person_" + i + ".jpg";
+              img.alt = account.nomCompte;
+              img.width = 64;
+              img.height = 64;
+              tdImg.appendChild(img);
+              tr.appendChild(tdImg);
 
+              let tdNom = document.createElement("td");
+              tdNom.textContent = account.nomCompte + ' ' + account.prenomCompte;
+              tr.appendChild(tdNom);
+
+              let tdGenre = document.createElement("td");
+              tdGenre.textContent = account.genre;
+              tr.appendChild(tdGenre);
+
+              let tdEmail = document.createElement("td");
+              let aEmail = document.createElement("a");
+              aEmail.href = 'mailto:' + account.email;
+              aEmail.textContent = account.email;
+              tdEmail.appendChild(aEmail);
+              tr.appendChild(tdEmail);
+
+              let tdTelephone = document.createElement("td");
+              tdTelephone.textContent = account.telephone;
+              tr.appendChild(tdTelephone);
+
+              let tdNote = document.createElement("td");
+              tdNote.textContent = account.noteCompte;
+              tr.appendChild(tdNote);
+
+              let tdEdit = document.createElement("td");
+              let pEdit = document.createElement("p");
+              pEdit.setAttribute("data-placement", "top");
+              pEdit.setAttribute("data-toggle", "tooltip");
+              pEdit.setAttribute("title", "Edit");
+
+              let btnEdit = document.createElement("a");
+              btnEdit.classList.add("btn", "btn-primary", "btn-xs");
+              btnEdit.setAttribute("href", "/admin/account/edit/" + account.idCompte);
+              btnEdit.setAttribute("data-title", "Edit");
+              btnEdit.setAttribute("data-toggle", "modal");
+              btnEdit.setAttribute("data-target", "#edit");
+
+              let spanEdit = document.createElement("span");
+              spanEdit.classList.add("fa", "fa-pencil");
+              btnEdit.appendChild(spanEdit);
+              pEdit.appendChild(btnEdit);
+              tdEdit.appendChild(pEdit);
+              tr.appendChild(tdEdit);
+
+              let tdDelete = document.createElement("td");
+              let pDelete = document.createElement("p");
+              pDelete.setAttribute("data-placement", "top");
+              pDelete.setAttribute("data-toggle", "tooltip");
+              pDelete.setAttribute("title", "Delete");
+
+              let btnDelete = document.createElement("a");
+              btnDelete.classList.add("btn", "btn-danger", "btn-xs");
+              btnDelete.setAttribute("href", "/admin/account/delete/" + account.idCompte);
+              btnDelete.setAttribute("data-title", "Delete");
+              btnDelete.setAttribute("data-toggle", "modal");
+              btnDelete.setAttribute("data-target", "#delete");
+
+              let spanDelete = document.createElement("span");
+              spanDelete.classList.add("fa", "fa-trash");
+              btnDelete.appendChild(spanDelete);
+              pDelete.appendChild(btnDelete);
+              tdDelete.appendChild(pDelete);
+              tr.appendChild(tdDelete);
+              tbody.appendChild(tr);
             }
-            table.append(tbody);
-        
+            table.appendChild(tbody);
 
           }).catch(error => {
             console.error(error);
@@ -98,18 +161,8 @@
 
   {% include 'footer.html' %}
 
-  {% include 'scripts-required.html' %}
-
-
-  <!-- <script src="https://code.jquery.com/jquery-3.5.1.js"></script> -->
-  <script src="https://cdn.datatables.net/1.13.3/js/jquery.dataTables.min.js"></script>
-  <script src="https://cdn.datatables.net/1.13.3/js/dataTables.bootstrap5.min.js"></script>
-  <script src="static/js/accountTable.js">
+  <script src="/static/js/accountTable.js">
     $("[data-toggle=tooltip]").tooltip();
   </script>
-
-
-
 </body>
-
 </html>

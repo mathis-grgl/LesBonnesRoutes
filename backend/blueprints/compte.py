@@ -7,6 +7,7 @@ compte_bp = Blueprint('compte', __name__)
 #Créer un compte
 @compte_bp.route('/createCompte', methods=['POST'])
 def create_compte():
+    print("Othelo")
     data = request.get_json()
     # Récupérer les données envoyées dans la requête
     nom = data.get('name-sign')
@@ -47,11 +48,22 @@ def create_compte():
     # Insérer le compte dans la base de données
     c.execute("INSERT INTO COMPTE (nomCompte, prenomCompte, email, adresse, ville, codePostal, pays, genre, voiture, telephone, mdp, notificationMail) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
               (nom, prenom, email, adresse, ville, codePostal, pays, genre, voiture, telephone, mdp, notificationMail))
+
+    # Recupération de l'id du compte    
+    c.execute(
+        "SELECT idCompte FROM COMPTE WHERE email = ? AND mdp = ?", (email, mdp))
+    compte = c.fetchone()
+    idCompte = compte[0]
+    
+    # Création du token
+    token = secrets.token_hex(16)  # generate a random token with 16 bytes
+    c.execute("INSERT INTO TOKEN VALUES (?, ?, ?)",
+                (idCompte, token, "exp"))
     conn.commit()
     conn.close()
 
     # Envoyer une réponse avec le code HTTP 201 Created
-    return jsonify({'message': 'Le compte a été créé'}), 201
+    return jsonify({'message': 'Le compte a été créé', 'token': token}), 201
 
 
 
@@ -65,12 +77,14 @@ def connectCompte():
 
     conn = sqlite3.connect('../database.db')
     c = conn.cursor()
+    # Récupérer isAdmin pour le laisser au front est moche
     c.execute(
-        "SELECT idCompte FROM COMPTE WHERE email = ? AND mdp = ?", (email, mdp))
+        "SELECT idCompte, isAdmin FROM COMPTE WHERE email = ? AND mdp = ?", (email, mdp))
     compte = c.fetchone()
 
     if compte:
         idCompte = compte[0]
+        isAdmin = compte[1]
         # Création du token
         token = secrets.token_hex(16)  # generate a random token with 16 bytes
         c.execute("INSERT INTO TOKEN VALUES (?, ?, ?)",
@@ -79,7 +93,7 @@ def connectCompte():
         conn.close()
 
         # Retour de la réponse avec code 200 et le token
-        return jsonify({'idCompte': idCompte, 'token': token}), 200
+        return jsonify({'idCompte': idCompte, 'token': token, 'isAdmin': isAdmin}), 200
     else:
         # Retour de la réponse avec code 401 et un message d'erreur
         conn.close()
@@ -92,13 +106,13 @@ def connectCompte():
 def deconnectCompte(token):
     conn = sqlite3.connect('../database.db')
     c = conn.cursor()
-    c.execute("SELECT idCompte FROM TOKEN WHERE token = ?", token)
+    c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
     compte = c.fetchone()
-    idCompte = compte[0]
 
     if compte:
+        idCompte = compte[0]
         #On supprime de la table token
-        c.execute("DELETE FROM TOKEN WHERE idCompte = ? AND token = ?", (idCompte, token))
+        c.execute("DELETE FROM TOKEN WHERE idCompte = ? AND auth_token = ?", (idCompte, token))
         conn.commit()
         conn.close()
 
@@ -259,6 +273,8 @@ def modifCompte(token):
     else:
         conn.close()
         return jsonify({'message': 'Token invalide ou expiré.'}), 401
+
+
 
 
 @compte_bp.route('/deleteCompte/<string:token>', methods=['DELETE'])

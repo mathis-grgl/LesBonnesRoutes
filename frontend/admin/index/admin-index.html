@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="fr-FR">
     <head>
-        {% set title='Modifier Profil' %}
+        {% set title='Panel - Accueil' %}
         {% include 'head.html' %}
-        <link rel="stylesheet" href="/static/css/modifprofil.css">
     </head>
     <body>
         {% include 'header.html' %}
 
-        {% include 'modifProfil/container_modifProfil.html' %}
+        {% set section_name='Panel - Accueil' %}
+        {% include 'inner-page.html' %}
+
+        <a style="display: center" href="/admin/search-account" class="btn btn-primary">Rechercher un compte</a>
 
         {% include 'footer.html' %}
         

@@ -12,21 +12,6 @@ app.url_map.strict_slashes = False
 
 # Pages
 
-@app.route('/admin')
-def admin_index():
-    return render_template('admin/index/admin-index.html')
-
-
-@app.route('/admin/account')
-def admin_account():
-    return render_template('admin/account/admin-account.html')
-
-
-@app.route('/admin/admin-search-account')
-def admin_search_account():
-    return render_template('admin/search-account/admin-search-account.html')
-
-
 @app.route('/')
 def index():
     return render_template('index/index.html')
@@ -72,6 +57,12 @@ def about():
     return render_template('about/about.html')
 
 
+@app.route('/rechercher-trajet')
+def rechercher_trajet():
+    return render_template('search-trajet/rechercheTrajet.html')
+
+
+
 # Requetes
 from backend.blueprints.compte import compte_bp
 from backend.blueprints.trajet import trajet_bp
@@ -84,4 +75,4 @@ app.register_blueprint(trajet_bp, url_prefix='/trajet')
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=8080, threaded=True)
+    app.run(host="0.0.0.0", port=8080, threaded=True, debug=True)
