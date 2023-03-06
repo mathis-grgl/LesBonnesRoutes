@@ -37,11 +37,10 @@ function applyData() {
             $('#adresse').text(adresse + ', ' + ville + ' ' + codePostal + ', ' + pays);
 
             // Cas du nombre de notes (problème)
-            $('#nbnotes').text(nbnotes);
+            $('#nbnotes').text(nbnotes + ' Avis');
 
             // Cas du nombre de trajets (problème)
-            $('#nbtrajets').text(nbtrajets);
-            console.log(nbtrajets);
+            $('#nbtrajets').text(nbtrajets + ' Trajets');
 
             // Cas de la notification et de l'email
             switch (notif) {
@@ -57,7 +56,7 @@ function applyData() {
             // Cas du genre et du nom et prénom
             switch(genre){
                 case 'homme':
-                    genre = '♂dede';
+                    genre = '♂';
                     break;
                 case 'femme':
                     genre = '♀';
@@ -66,12 +65,7 @@ function applyData() {
                     break;
 
             }
-            // Cas du genre (problème)
-            document.getElementById('genre').innerHTML = ", "+genre;
-            console.log(genre);
-
-            // Cas du nom et prénom
-            $('#prenom').text(nom + ' ' + prenom);
+            $('#prenom').text(nom + ' ' + prenom + ' ' + genre);
 
             // Cas du téléphone
             $('#telephone').text(tel);
