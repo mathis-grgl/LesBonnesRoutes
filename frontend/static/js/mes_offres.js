@@ -15,6 +15,15 @@ function charger_trajets(){
     })
     .then(data => {
         console.log(data);
+        let nbTrajets = data.length;
+        console.log(nbTrajets);
+        let table = ("#trajets");
+        let tbody = $("<tbody></tbody>");
+        for (let i = 0; i < nbTrajets; i++){
+            let trajet = data[i];
+            console.log(trajet);
+        }
+
 
     })
     .catch(error => {
