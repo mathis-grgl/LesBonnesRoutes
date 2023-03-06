@@ -2,8 +2,9 @@
 token = getCookieToken();
 const url = 'compte/getInfoCompte/' + token;
 const urlDelete = 'compte/deleteCompte/' + token;
+
 function applyData() {
-    // La même pour l'image de profil (à enlever si on a la photo)
+    // Image de profil par défaut
     var image = document.getElementById("image");
     image.src = "https://www.w3schools.com/howto/img_avatar.png";
     
@@ -30,17 +31,17 @@ function applyData() {
             let notif = user.notificationMail;
             let nbnotes = user.nbnotes;
             let nbtrajets = user.nbtrajets;
-            //let photo = user.photo;
+            let photo = user.photo;
             let noteCompte = parseInt(user.noteCompte);
             
             // Cas de l'adresse
             $('#adresse').text(adresse + ', ' + ville + ' ' + codePostal + ', ' + pays);
 
-            // Cas du nombre de notes (problème)
-            $('#nbnotes').text(nbnotes);
+            // Cas du nombre de notes
+            document.getElementById("nbnotes").innerHTML = nbnotes + document.getElementById("nbnotes").innerHTML;
 
-            // Cas du nombre de trajets (problème)
-            $('#nbtrajets').text(nbtrajets);
+            // Cas du nombre de trajets
+            document.getElementById("nbtrajets").innerHTML = nbtrajets + document.getElementById("nbtrajets").innerHTML;
 
             // Cas de la notification et de l'email
             switch (notif) {
@@ -73,15 +74,16 @@ function applyData() {
             // Cas de la voiture
             switch (voiture) {
                 case 0:
-                    $('#voiture').text("L'utilisateur ne possède pas de voiture.");
+                    $('#voiture').text("Ne possède pas de voiture.");
                     break;
                 case 1:
-                    $('#voiture').text("L'utilisateur possède une voiture.");
+                    $('#voiture').text("Possède une voiture.");
                     break;
             }
 
             // Cas de la photo
-            //$('#image').attr('src', photo);
+            if (photo != null) 
+                $('#image').attr('src', photo);
 
             // Cas de la note
             for (i = 1; i <= noteCompte; ++i) {
