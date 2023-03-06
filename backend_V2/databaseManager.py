@@ -6,16 +6,22 @@ from typing import Any, Final, Optional
 
 from argon2 import PasswordHasher
 
-from User import User
 
 DATABASE_NAME: Final[str] = "database.db"
+
+USER_ATTR: tuple[str, ...] = ("idCompte", "nomCompte", "prenomCompte", "email", "genre", "voiture", "telephone", "notificationMail")
+USER_PARTIAL_ATTR: tuple[str, ...] = ("idCompte", "nomCompte", "prenomCompte", "genre", "voiture")
+
+TRAJET_ATTR: tuple[str, ...]
+TRAJET_PARTIAL_ATTR: tuple[str, ...]
+
 
 def generate_token() -> str:
     charset = ascii_letters + digits
     return "".join(random.choices(charset, k=128))
 
 
-def new_user(data: dict[str, Any]) -> tuple[Optional[User], int]:
+def new_user(data: dict[str, Any]) -> tuple[dict, int]:
     
     # hashing password
     hasher = PasswordHasher()
@@ -33,30 +39,45 @@ def new_user(data: dict[str, Any]) -> tuple[Optional[User], int]:
     except sqlite3.IntegrityError as e:
         if e.sqlite_errorcode == SQLITE_CONSTRAINT_UNIQUE:
             connection.close()
-            return None, 409
+            return {}, 409
     finally:
         connection.close()
 
-    get_user(data["email"])
-    return User(0), 201
+    user = get_user(data["email"])
+    user["voiture"] = bool(user["voiture"])
+    user["notificationMail"] = bool(user["notificationMail"])
+    return user, 201
+
 
 def get_user(mail: str, partial:bool=False):
     if partial:
-        members = "nomCompte", "prenomCompte", "genre", "voiture"
+        members = USER_PARTIAL_ATTR
     else:
-        members = "nomCompte", "prenomCompte", "email", "genre", "voiture", "telephone", "notificationMail"
+        members = USER_ATTR
     query = f"""
-        SELECT {members}
+        SELECT {", ".join(members)}
         FROM COMPTE
         WHERE email=?"""
     connection = sqlite3.connect(DATABASE_NAME)
     cursor = connection.cursor()
-    print(query)
-    print(mail)
     cursor.execute(query, (mail,))
     row = cursor.fetchone()
-    print(row)
     connection.close()
-    
+    if row is None:
+        return {}
+    return dict(zip(members, row))
 
-    
+
+def edit_user(user_id: int, data: dict[str, Any]) -> tuple[dict, int]:
+    query = f"""
+        UPDATE COMPTE
+        SET ?=?
+        WHERE id = ?"""
+
+    connection = sqlite3.connect(DATABASE_NAME)
+    cursor = connection.cursor()
+    cursor.execute(query)
+    row = cursor.fetchone()
+    connection.close()
+
+    return {}, 0

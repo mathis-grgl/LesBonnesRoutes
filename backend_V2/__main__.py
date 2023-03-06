@@ -1,4 +1,4 @@
-from typing import Any, TYPE_CHECKING, Callable
+from typing import Any, Callable
 import json
 
 import flask
@@ -9,10 +9,8 @@ from jsonschema.exceptions import ValidationError
 
 import databaseManager
 
-if TYPE_CHECKING:
-    from User import User
-
 app = flask.Flask(__name__)
+app.config['JSON_SORT_KEYS'] = False
 app.config["debug"] = True
 
 @app.errorhandler(HTTPException)
@@ -56,20 +54,19 @@ def new_user() -> tuple[Response, int]:
     creation of a new user
     """
     data: dict[str, Any] = json.loads(request.data)
-    user, code = databaseManager.new_user(data)
-    response = jsonify(user.toJSON()) if user is not None else jsonify({})
-    return response, code
+    resp, code = databaseManager.new_user(data)
+    return jsonify(resp), code
 
 
 @app.route("/api/v1/user/<user_id>", methods=['PATCH'])
+@check_datas()
 def edit_user(user_id: int) -> Response:
     """
     edit specified data of a user
     """
     data: dict[str, Any] = json.loads(request.data)
-    user: User = User.get(user_id)
-    user.update(data)
-    return jsonify(user.toJSON())
+    databaseManager.edit_user(user_id, data)
+    return jsonify()
 
 @app.route("/api/v1/user/<user_id>", methods=['DELETE'])
 def delete_user(user_id: int) -> Response:
