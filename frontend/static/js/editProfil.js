@@ -70,9 +70,11 @@ console.log("Voici le nom de l'user " + nomuser);
 //     console.log(error.message);
 //   });
 
+const token = getCookieToken();
 
-const url = 'compte/getInfoCompte/' + "9f36ad8ef1718c3c2258025e06e7eb2d";
-const token = "9f36ad8ef1718c3c2258025e06e7eb2d";
+const url = 'compte/getInfoCompte/' + token;
+console.log(token);
+console.log(url);
 
 fetch(url)
   .then(response => {
@@ -83,7 +85,7 @@ fetch(url)
   })
   .then(data => {
     console.log(data);
-    
+
     let nom = data.nomCompte;
     let prenom = data.prenomCompte;
     let tel = data.telephone;
@@ -220,7 +222,7 @@ $('#update-form').submit(function (event) {
 
 
   // On récupère les mot de passes
-  let inputmdp = $('input[name="logpass"]')
+  let inputmdp = $('input[name="logpass"]');
   let mdp = inputmdp.val();
   console.log("Voici le mdp : " + mdp);
 
@@ -375,24 +377,66 @@ $('#update-form').submit(function (event) {
   } else {
     // mettre ici le code pour update les données.
     let modif = 'compte/modifCompte/' + token;
-    
+    console.log(modif);
+
     let formData = new FormData($('form')[0]);
+    console.log(formData.has('voiture'));
     fetch(modif, {
       method: 'POST',
-      body: formData
-    })
-    .then(reponse => {
-      if(reponse.ok){
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        'nom': document.querySelector("input[name='nom']").value,
+        'email': document.querySelector("input[name='email']").value,
+        'prenom': document.querySelector("input[name='prenom']").value,
+        'telephone' : $('input[name="telephone"]').val(),
+        'notif': $('input[name="notif"]:checked').val(),
+        'voiture': $('input[name="voiture"]:checked').val(),
+        'mdp': $('input[name="logpass"]').val(),
+        'ville': $('input[name="ville"]').val(),
+        'adresse': $('input[name="adresse"]').val(),
+        'pays': $('input[name="pays"]').val(),
+        'codepostal': $('input[name="codepostal"]').val(),
+        'genre': $('#genre').val(),
+        'photo' : $('input[name="poster"]').prop('files')
+
+
+        // 'checkbox-licence-sign': document.querySelector("input[name='checkbox-licence-sign']").value,
+        // 'address-sign': document.querySelector("input[name='address-sign']").value,
+        // 'city-sign': document.querySelector("input[name='city-sign']").value,
+        // 'postal-sign': document.querySelector("input[name='postal-sign']").value,
+        // 'country-sign': document.querySelector("input[name='country-sign']").value,
+        // 'password-sign': document.querySelector("input[name='password-sign']").value
+      })
+    }).then(reponse => {
+      if (reponse.ok) {
         alert("Votre compte a bien été modifié.");
         window.location.href = '/account';
-      }else{
+      } else {
         alert("Probleme dans le fetch");
 
       }
+    }).catch(error => {
+      console.error(error);
     })
+
+    //   fetch(modif, {
+    //     method: 'POST',
+    //     body: formData
+    //   })
+    //   .then(reponse => {
+    //     if(reponse.ok){
+    //       alert("Votre compte a bien été modifié.");
+    //       window.location.href = '/account';
+    //     }else{
+    //       alert("Probleme dans le fetch");
+
+    //     }
+    //   })
+    // }
+
+
   }
-
-
-
 
 })
