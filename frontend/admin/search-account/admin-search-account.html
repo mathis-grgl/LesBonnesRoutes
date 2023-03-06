@@ -23,7 +23,9 @@
   <!-- inclure le code ici -->
 
   <style>
+    /* Pour l'affichage de la table */
     #accountTable {
+      /* width: 80%; */
       text-align: center !important;
       vertical-align: middle !important;
     }
@@ -43,12 +45,58 @@
       text-align: center !important;
     }
 
+
+    /* Pour l'affichage de l'adresse e-mail */
     .emailLink {
       text-decoration: none;
     }
     .emailLink:hover {
       text-decoration: underline;
     }
+
+
+    /* Pour l'affichage des étoiles */
+    .rating {
+      display: inline-block;
+      position: relative;
+      height: 30px;
+      width: 90%;
+      line-height: 30px;
+      font-size: 20px;
+      background-color: #eee;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    .stars {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 100%;
+      background-color: #ffdd00;
+      transition: width 0.5s ease;
+    }
+    .stars span:not(.rating-value) {
+      display: inline-block;
+      box-sizing: border-box;
+      height: 100%;
+      width: 20%;
+      padding: 0;
+      margin: 0;
+      /* background-image: url("https://static.vecteezy.com/system/resources/previews/001/189/057/non_2x/star-png.png"); */
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
+    .rating-value {
+      z-index: 99;
+      position: relative;
+      /* top: 0;
+      right: 0; */
+      padding-left: 5px;
+      font-size: 16px;
+    }
+
+
   </style>
 
   <section class="col-md-12">
@@ -81,10 +129,6 @@
       </tfoot>
     </table>
   </section>
-
-  <!-- <script>
-
-  </script> -->
 
   {% include 'footer.html' %}
 
@@ -139,7 +183,16 @@
 
           let tdNote = document.createElement("td");
           if (account.noteCompte != null) {
-            tdNote.textContent = account.noteCompte + " / 5"; //todo: changer avec un système d'étoiles
+            tdNote.innerHTML = `
+              <div class="rating">
+                <div class="stars" style="width:` + 100*account.noteCompte/5.0 +`%">
+                  <span></span>
+                </div>
+                <span class="rating-value">` + account.noteCompte + " / 5" + `</span>
+              </div>
+            `;
+
+            // tdNote.textContent = account.noteCompte + " / 5"; //todo: changer avec un système d'étoiles
           } else {
             tdNote.textContent = "N/A";
           }
