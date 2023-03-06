@@ -196,11 +196,14 @@ def modifCompte(token):
     compte = c.fetchone()
     idCompte = compte[0]
     print("voici l'id du compte en fonction de son token : ", idCompte)
+    print('test')
 
     #Le token est valide et conduit bien a un compte
     if compte:
         data = request.get_json()
+        print(data)
         email = data.get('email')
+        print(email)
         #On verifie l'unicite de l'email
         idCompte = int(idCompte)
         # c.execute("SELECT idCompte FROM COMPTE WHERE NOT(idCompte = ?)", idCompte)
@@ -212,6 +215,7 @@ def modifCompte(token):
 
         if len(test) > 1:
             #L'adresse est deja utilisee
+            print("on est ici.")
             conn.close()
             return jsonify({'message': 'L\'adresse mail est déjà utilisée.'}), 400
 
@@ -252,9 +256,10 @@ def modifCompte(token):
 
             # Est-ce bon ?
             print("6")
-            poster = request.files['photo']
+            poster = data.get('photo')
+            print(poster)
             print("6")
-            if poster != None :
+            if poster :
                 #Il y a une photo : on inserer le nom dans la db
                 nomPhoto = poster.filename
                 c.execute("UPDATE COMPTE SET telephone=?, prenomCompte=?, nomCompte=?, mdp=?, adresse=?, ville=?, pays=?, codePostal=?, genre=?, voiture=?, notificationMail=?, photo=? WHERE idCompte=?",
@@ -271,6 +276,7 @@ def modifCompte(token):
                 return jsonify({'message': 'ok'}), 200
 
     else:
+        print('on rentre pas dans le if compte')
         conn.close()
         return jsonify({'message': 'Token invalide ou expiré.'}), 401
 

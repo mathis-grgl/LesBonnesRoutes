@@ -12,6 +12,7 @@
               <div class="field-icon-wrap">
                 <div class="icon"><span class="icon-calendar"></span></div>
                 <select id="city_start" name="city-start" class="form-control">
+                  <option value=""></option>
                   <!-- Ajoute d'autres options ici donc ne pas retirer le select-->
                 </select>
               </div>
@@ -21,6 +22,7 @@
               <div class="field-icon-wrap">
                 <div class="icon"><span class="icon-calendar"></span></div>
                 <select id="city_end" name="city-end" class="form-control">
+                  <option value=""></option>
                   <!-- Ajoute d'autres options ici donc ne pas retirer le select-->
                 </select>
               </div>
@@ -56,17 +58,17 @@
                       <button onclick="showSection(event)" class="form-control">Prix</button>
                       <section id="slidersSection" run="dialog" hidden>
                         <div class="sliders_control">
-                          <input id="fromSlider" name="lower-prices" type="range" value="10" min="0" max="100"/>
-                          <input id="toSlider" name="higher-prices" type="range" value="40" min="0" max="100"/>
+                          <input id="fromSlider" name="lower-prices" type="range" value="0" min="0" max="100"/>
+                          <input id="toSlider" name="higher-prices" type="range" value="100" min="0" max="100"/>
                         </div>
                         <div class="form_control">
                           <div class="form_control_container">
                             <div class="form_control_container__time">Min</div>
-                            <input class="form_control_container__time__input" type="number" id="fromInput" name="lower-prices" value="10" min="0" max="500"/>
+                            <input class="form_control_container__time__input" type="number" id="fromInput" name="lower-prices" value="0" min="0" max="500"/>
                           </div>
                           <div class="form_control_container">
                             <div class="form_control_container__time">Max</div>
-                            <input class="form_control_container__time__input" type="number" id="toInput" name="higher-prices" value="40" min="0" max="500"/>
+                            <input class="form_control_container__time__input" type="number" id="toInput" name="higher-prices" value="100" min="0" max="500"/>
                           </div>
                         </div>
                       </section>

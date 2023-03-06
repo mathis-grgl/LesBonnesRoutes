@@ -49,7 +49,7 @@
         <div class="content">
           <div class="checkbox">
             <input type="checkbox" name="checkbox-licence-sign" id="checkbox-sign" oninput="checkValue('checkbox-licence-sign')">
-            <label>Permis</label>
+            <label>Je possède un véhicule</label>
           </div>
         </div>
         <input type="text" placeholder="Adresse" name="address-sign" oninput="checkValue('address-sign')">
@@ -67,7 +67,13 @@
       <form action="#">
         <h1>Connexion</h1>
         <input type="email" placeholder="Email" name="email-log" oninput="checkValue('email-log')">
-        <input type="password" placeholder="Mot de passe" name="password-log" oninput="checkValue('password-log')">
+        <label class="iconEye">
+          <input type="password" placeholder="Mot de passe" name="password-log" oninput="checkValue('password-log')">
+          <div class="password-icon">
+            <i data-feather="eye"></i>
+            <i data-feather="eye-off"></i>
+          </div>
+        </label>
         <div class="content">
           <div class="checkbox">
             <input type="checkbox" name="checkbox-remember-log" id="checkbox-log" oninput="checkValue('checkbox-remember-log')">
@@ -102,6 +108,7 @@
 
   </div>
 
+  <script src="https://unpkg.com/feather-icons"></script>
   <script src="/static/js/required/cookies.js"></script>
   <script src="/static/js/login_signup.js"></script>
   <script src="https://smtpjs.com/v3/smtp.js"></script>
