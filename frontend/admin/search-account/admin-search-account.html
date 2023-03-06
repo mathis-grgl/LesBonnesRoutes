@@ -9,8 +9,11 @@
 </head>
 <body>
   {% include 'scripts-required.html' %}
+
   <script src="https://cdn.datatables.net/1.13.3/js/jquery.dataTables.min.js"></script>
   <script src="https://cdn.datatables.net/1.13.3/js/dataTables.bootstrap5.min.js"></script>
+
+  <script src="/static/js/accountTable.js"></script>
 
   {% include 'header.html' %}
 
@@ -39,10 +42,17 @@
     th.sorting {
       text-align: center !important;
     }
+
+    .emailLink {
+      text-decoration: none;
+    }
+    .emailLink:hover {
+      text-decoration: underline;
+    }
   </style>
 
   <section class="col-md-12">
-    <table id="accountTable" class="table table-striped table-bordered table-responsive-lg" cellspacing="0"
+    <table id="accountTable" class="table table-striped table-bordered table-responsive-lg display" cellspacing="0"
       width="100%">
       <thead>
         <tr>
@@ -56,113 +66,138 @@
           <th>Supprimer</th>
         </tr>
       </thead>
-
-      <script>
-        fetch('/admin/users')
-          .then(reponse => {
-            if (!reponse.ok) {
-              throw new Error('Network response was not ok');
-            }
-            return reponse.json();
-          })
-          .then(data => {
-            let nbCompte = data.length;
-            let table = document.getElementById('accountTable');
-            if (nbCompte > 0)
-              table.deleteRow(1);
-            
-            let tbody = document.createElement("tbody");
-            for (let i = 0; i < nbCompte; i++) {
-              let account = data[i];
-              
-              let tr = document.createElement("tr");
-              let tdImg = document.createElement("td");
-              let img = document.createElement("img");
-              img.src = "/static/images/person_" + i + ".jpg";
-              img.alt = account.nomCompte;
-              img.width = 64;
-              img.height = 64;
-              tdImg.appendChild(img);
-              tr.appendChild(tdImg);
-
-              let tdNom = document.createElement("td");
-              tdNom.textContent = account.nomCompte + ' ' + account.prenomCompte;
-              tr.appendChild(tdNom);
-
-              let tdGenre = document.createElement("td");
-              tdGenre.textContent = account.genre;
-              tr.appendChild(tdGenre);
-
-              let tdEmail = document.createElement("td");
-              let aEmail = document.createElement("a");
-              aEmail.href = 'mailto:' + account.email;
-              aEmail.textContent = account.email;
-              tdEmail.appendChild(aEmail);
-              tr.appendChild(tdEmail);
-
-              let tdTelephone = document.createElement("td");
-              tdTelephone.textContent = account.telephone;
-              tr.appendChild(tdTelephone);
-
-              let tdNote = document.createElement("td");
-              tdNote.textContent = account.noteCompte;
-              tr.appendChild(tdNote);
-
-              let tdEdit = document.createElement("td");
-              let pEdit = document.createElement("p");
-              pEdit.setAttribute("data-placement", "top");
-              pEdit.setAttribute("data-toggle", "tooltip");
-              pEdit.setAttribute("title", "Edit");
-
-              let btnEdit = document.createElement("a");
-              btnEdit.classList.add("btn", "btn-primary", "btn-xs");
-              btnEdit.setAttribute("href", "/admin/account/edit/" + account.idCompte);
-              btnEdit.setAttribute("data-title", "Edit");
-              btnEdit.setAttribute("data-toggle", "modal");
-              btnEdit.setAttribute("data-target", "#edit");
-
-              let spanEdit = document.createElement("span");
-              spanEdit.classList.add("fa", "fa-pencil");
-              btnEdit.appendChild(spanEdit);
-              pEdit.appendChild(btnEdit);
-              tdEdit.appendChild(pEdit);
-              tr.appendChild(tdEdit);
-
-              let tdDelete = document.createElement("td");
-              let pDelete = document.createElement("p");
-              pDelete.setAttribute("data-placement", "top");
-              pDelete.setAttribute("data-toggle", "tooltip");
-              pDelete.setAttribute("title", "Delete");
-
-              let btnDelete = document.createElement("a");
-              btnDelete.classList.add("btn", "btn-danger", "btn-xs");
-              btnDelete.setAttribute("href", "/admin/account/delete/" + account.idCompte);
-              btnDelete.setAttribute("data-title", "Delete");
-              btnDelete.setAttribute("data-toggle", "modal");
-              btnDelete.setAttribute("data-target", "#delete");
-
-              let spanDelete = document.createElement("span");
-              spanDelete.classList.add("fa", "fa-trash");
-              btnDelete.appendChild(spanDelete);
-              pDelete.appendChild(btnDelete);
-              tdDelete.appendChild(pDelete);
-              tr.appendChild(tdDelete);
-              tbody.appendChild(tr);
-            }
-            table.appendChild(tbody);
-
-          }).catch(error => {
-            console.error(error);
-          });
-
-      </script>
+      <tbody id="accountList"></tbody>
+      <tfoot>
+        <tr>
+          <th>Photo</th>
+          <th>Nom de l'utilisateur</th>
+          <th>Genre</th>
+          <th>E-mail</th>
+          <th>Numéro de téléphone</th>
+          <th>Note</th>
+          <th>Modifier</th>
+          <th>Supprimer</th>
+        </tr>
+      </tfoot>
     </table>
   </section>
 
+  <!-- <script>
+
+  </script> -->
+
   {% include 'footer.html' %}
 
-  <script src="/static/js/accountTable.js">
-    $("[data-toggle=tooltip]").tooltip();
+  <script>
+    $(document).ready(function () {
+      var table = getAccountTable();
+      $("[data-toggle=tooltip]").tooltip();
+
+      // Ajout des utilisateurs depuis la BDD
+      fetch('/admin/users')
+      .then(reponse => {
+        if (!reponse.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return reponse.json();
+      })
+      .then(data => {
+        let nbCompte = data.length;
+        let user = [];
+        for (let i = 0; i < nbCompte; i++) {
+          let account = data[i];
+          
+          let tr = document.createElement("tr");
+          let tdImg = document.createElement("td");
+          let img = document.createElement("img");
+          img.src = "/static/images/person_" + i + ".jpg";
+          img.alt = account.nomCompte;
+          img.width = 64;
+          img.height = 64;
+          tdImg.appendChild(img);
+          tr.appendChild(tdImg);
+
+          let tdNom = document.createElement("td");
+          tdNom.textContent = account.nomCompte + ' ' + account.prenomCompte;
+          tr.appendChild(tdNom);
+
+          let tdGenre = document.createElement("td");
+          tdGenre.textContent = account.genre;
+          tr.appendChild(tdGenre);
+
+          let tdEmail = document.createElement("td");
+          let aEmail = document.createElement("a");
+          aEmail.classList.add("emailLink");
+          aEmail.href = 'mailto:' + account.email;
+          aEmail.textContent = account.email;
+          tdEmail.appendChild(aEmail);
+          tr.appendChild(tdEmail);
+
+          let tdTelephone = document.createElement("td");
+          tdTelephone.textContent = "(+33) " + account.telephone;
+          tr.appendChild(tdTelephone);
+
+          let tdNote = document.createElement("td");
+          if (account.noteCompte != null) {
+            tdNote.textContent = account.noteCompte + " / 5"; //todo: changer avec un système d'étoiles
+          } else {
+            tdNote.textContent = "N/A";
+          }
+          tr.appendChild(tdNote);
+
+          let tdEdit = document.createElement("td");
+          let pEdit = document.createElement("p");
+          pEdit.setAttribute("data-placement", "top");
+          pEdit.setAttribute("data-toggle", "tooltip");
+          pEdit.setAttribute("title", "Edit");
+
+          let btnEdit = document.createElement("a");
+          btnEdit.classList.add("btn", "btn-primary", "btn-xs");
+          btnEdit.onclick = () => {
+            location.href = "/admin/account/edit/" + account.idCompte;
+          }
+          btnEdit.setAttribute("href", "/admin/account/edit/" + account.idCompte);
+          btnEdit.setAttribute("data-title", "Edit");
+          btnEdit.setAttribute("data-toggle", "modal");
+          btnEdit.setAttribute("data-target", "#edit");
+
+          let spanEdit = document.createElement("span");
+          spanEdit.classList.add("fa", "fa-pencil");
+          btnEdit.appendChild(spanEdit);
+          pEdit.appendChild(btnEdit);
+          tdEdit.appendChild(pEdit);
+          tr.appendChild(tdEdit);
+
+          let tdDelete = document.createElement("td");
+          let pDelete = document.createElement("p");
+          pDelete.setAttribute("data-placement", "top");
+          pDelete.setAttribute("data-toggle", "tooltip");
+          pDelete.setAttribute("title", "Delete");
+
+          let btnDelete = document.createElement("a");
+          btnDelete.classList.add("btn", "btn-danger", "btn-xs");
+          btnDelete.onclick = () => {
+            location.href = "/admin/account/delete/" + account.idCompte;
+          }
+          btnDelete.setAttribute("href", "/admin/account/delete/" + account.idCompte);
+          btnDelete.setAttribute("data-title", "Delete");
+          btnDelete.setAttribute("data-toggle", "modal");
+          btnDelete.setAttribute("data-target", "#delete");
+
+          let spanDelete = document.createElement("span");
+          spanDelete.classList.add("fa", "fa-trash");
+          btnDelete.appendChild(spanDelete);
+          pDelete.appendChild(btnDelete);
+          tdDelete.appendChild(pDelete);
+          tr.appendChild(tdDelete);
+
+          table.row.add(tr).draw(false);
+        }
+      }).catch(error => {
+        console.error(error);
+      });
+
+    });
   </script>
 </body>
 </html>

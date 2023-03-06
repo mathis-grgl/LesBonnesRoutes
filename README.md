@@ -6,6 +6,7 @@ Branche principale du développement de Les Bonnes Routes. Un site web de covoit
 
 - [Pré-requis](#pré-requis)
 - [Installation](#installation)
+- [Démarrage](#démarrage)
 
 ## Pré-requis
 
@@ -22,4 +23,10 @@ python3.10 -m pip install jinja2==3.1.2
 
 ```bash
 git clone https://github.com/ElDjeee/Les-Bonnes-Routes.git
+```
+
+## Démarrage du serveur en local (localhost:8080)
+```bash
+cd frontend
+python flask_app.py
 ```
