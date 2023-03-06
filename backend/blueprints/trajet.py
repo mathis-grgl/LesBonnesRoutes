@@ -171,8 +171,81 @@ def trajetsCompte(token):
         conn.close()
 
         # Retour de la réponse avec code 200
-        return jsonify({'message': 'Le compte a bien été déconnecté.'}), 200
+        return jsonify(trajets), 200
     else:
         # Retour de la réponse avec code 401 et un message d'erreur
         conn.close()
         return jsonify({'message': 'Token invalide ou expiré'}), 401
+
+
+
+
+@trajet_bp.route('/createTrajet/<string:token>', methods=['POST', 'GET'])
+def createTrajet(token):
+    data = request.get_json()
+    heureDepart = data.get('heureDepart')
+    dateDepart = data.get('dateDepart')
+    nbPlaces = data.get('nbPlaces')
+    prix = data.get('prix')
+    commentaires = data.get('commentaires')
+    precisionRdv = data.get('precisionRdv')
+    villeDepart = data.get('villeDepart')
+    villeArrivee = data.get('villeArrivee')
+
+    if not heureDepart or not dateDepart or not nbPlaces or not prix or not villeDepart or not villeArrivee:
+        return jsonify({'message': 'I*l manque une ou plusieurs infos'}), 401
+
+    #On reformate la date
+    dateDepart = datetime.strptime(dateDepart, '%d %B, %Y').strftime('%Y%m%d')
+
+    conn = sqlite3.connect('../database.db')
+    c = conn.cursor()
+
+    #On recupere l'id du conducteur
+    c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
+    compte = c.fetchone()
+    if not compte:
+        conn.close()
+        return jsonify({'message': 'Token invalide ou expiré'}), 401
+    else:
+        idCompte = compte[0]
+        #On recupere les id des villes
+        c.execute("SELECT idVille FROM VILLE WHERE nomVille = ?", (villeDepart,))
+        ville = c.fetchone()
+        if not ville:
+            conn.close()
+            return jsonify({'message': 'VilleDepart inexistante'}), 404
+        else:
+            villeDepart = ville[0]
+        c.execute("SELECT idVille FROM VILLE WHERE nomVille = ?", (villeArrivee,))
+        ville = c.fetchone()
+        if not ville:
+            conn.close()
+            return jsonify({'message': 'VilleArrivee inexistante'}), 404
+        else:
+            villeArrivee = ville[0]
+        
+        query = None
+        values = ()
+        if not commentaires:
+            if not precisionRdv:
+                query = "INSERT INTO TRAJET (idConducteur, heureDepart, dateDepart, nbPlaces, nbPlacesRestantes, prix, statusTrajet, villeDepart, villeArrivee) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+                values = (idCompte, heureDepart, dateDepart, nbPlaces, nbPlaces, prix, 'A pourvoir', villeDepart, villeArrivee)
+            else:
+                query = "INSERT INTO TRAJET (idConducteur, heureDepart, dateDepart, nbPlaces, nbPlacesRestantes, prix, statusTrajet, villeDepart, villeArrivee, precisionRdv) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+                values = (idCompte, heureDepart, dateDepart, nbPlaces, nbPlaces, prix, 'A pourvoir', villeDepart, villeArrivee, precisionRdv)
+        else:
+            if not precisionRdv:
+                query = "INSERT INTO TRAJET (idConducteur, heureDepart, dateDepart, nbPlaces, nbPlacesRestantes, prix, statusTrajet, villeDepart, villeArrivee, commentaires) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+                values = (idCompte, heureDepart, dateDepart, nbPlaces, nbPlaces, prix, 'A pourvoir', villeDepart, villeArrivee, commentaires)
+            else:
+                query = "INSERT INTO TRAJET (idConducteur, heureDepart, dateDepart, nbPlaces, nbPlacesRestantes, prix, statusTrajet, villeDepart, villeArrivee, commentaires, precisionRdv) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+                values = (idCompte, heureDepart, dateDepart, nbPlaces, nbPlaces, prix, 'A pourvoir', villeDepart, villeArrivee, commentaires, precisionRdv)
+        if query:
+            c.execute(query, values)
+            conn.commit()
+            conn.close()
+            return jsonify({'message': 'Le trajet a bien été créé.'}), 200
+        else:
+            conn.close()
+            return jsonify({'message': 'Probleme au niveau de la requête'}), 401

@@ -121,3 +121,72 @@ def removeFriend(idGroupe: int, idCompte: int):
     cursor.executescript(sql)
 
     cursor.close()
+
+
+
+def createTrajet(token):
+    #data = request.get_json()
+    heureDepart = '10h30'
+    dateDepart = '11 March, 2023'
+    nbPlaces = 3
+    prix = 13
+    commentaires = 'commentaires'
+    precisionRdv = 'precisionRdv'
+    villeDepart = 'Paris'
+    villeArrivee = 'Lyon'
+
+    if not heureDepart or not dateDepart or not nbPlaces or not prix or not villeDepart or not villeArrivee:
+        return 'Il manque une ou plusieurs infos'
+
+    #On reformate la date
+    dateDepart = datetime.strptime(dateDepart, '%d %B, %Y').strftime('%Y%m%d')
+
+    conn = sqlite3.connect('../database.db')
+    c = conn.cursor()
+
+    if True:
+        idCompte = 1
+        #On recupere les id des villes
+        c.execute("SELECT idVille FROM VILLE WHERE nomVille = ?", (villeDepart,))
+        ville = c.fetchone()
+        if not ville:
+            conn.close()
+            return 'pbm villeD'
+        else:
+            villeDepart = ville[0]
+        c.execute("SELECT idVille FROM VILLE WHERE nomVille = ?", (villeArrivee,))
+        ville = c.fetchone()
+        if not ville:
+            conn.close()
+            return 'Pbm villeA'
+        else:
+            villeArrivee = ville[0]
+        
+        query = None
+        values = ()
+        if not commentaires:
+            if not precisionRdv:
+                query = "INSERT INTO TRAJET (idConducteur, heureDepart, dateDepart, nbPlaces, nbPlacesRestantes, prix, statusTrajet, villeDepart, villeArrivee) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+                values = (idCompte, heureDepart, dateDepart, nbPlaces, nbPlaces, prix, 'A pourvoir', villeDepart, villeArrivee)
+            else:
+                query = "INSERT INTO TRAJET (idConducteur, heureDepart, dateDepart, nbPlaces, nbPlacesRestantes, prix, statusTrajet, villeDepart, villeArrivee, precisionRdv) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+                values = (idCompte, heureDepart, dateDepart, nbPlaces, nbPlaces, prix, 'A pourvoir', villeDepart, villeArrivee, precisionRdv)
+        else:
+            if not precisionRdv:
+                query = "INSERT INTO TRAJET (idConducteur, heureDepart, dateDepart, nbPlaces, nbPlacesRestantes, prix, statusTrajet, villeDepart, villeArrivee, commentaires) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+                values = (idCompte, heureDepart, dateDepart, nbPlaces, nbPlaces, prix, 'A pourvoir', villeDepart, villeArrivee, commentaires)
+            else:
+                query = "INSERT INTO TRAJET (idConducteur, heureDepart, dateDepart, nbPlaces, nbPlacesRestantes, prix, statusTrajet, villeDepart, villeArrivee, commentaires, precisionRdv) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+                values = (idCompte, heureDepart, dateDepart, nbPlaces, nbPlaces, prix, 'A pourvoir', villeDepart, villeArrivee, commentaires, precisionRdv)
+        if query:
+            c.execute(query, values)
+            print(query)
+            print(values)
+            conn.commit()
+            conn.close()
+            return 'OK'
+        else:
+            conn.close()
+            return 'pbm requete vide'
+
+print(createTrajet('9f36ad8ef1718c3c2258025e06e7eb2d'))
