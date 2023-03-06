@@ -2,7 +2,7 @@
 const connection = document.querySelector("li[name='connection']");
 const deconnection = document.querySelector("li[name='deconnection']");
 const profil = document.querySelector("li[name='profil']");
-const rechercherTrajet = document.querySelector("li[name='rechercher-trajet']");
+const rechercherTrajet = document.querySelector("li[name='mes_offres']");
 
 if (getCookieToken() === null){
   connection.style = "display: block;";

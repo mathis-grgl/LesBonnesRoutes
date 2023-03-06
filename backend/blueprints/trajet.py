@@ -160,10 +160,11 @@ def trajetsCompte(token):
         trajets = []
         for row in rows:
             trajet = {col_names[i]: row[i] for i in range(len(col_names))}
+            
 
             # Conversion de la date de la colonne 'dateTrajet'
-            dateTrajet = datetime.strptime(trajet['dateTrajet'], '%Y%m%d').strftime('%d %B, %Y')
-            trajet['dateTrajet'] = dateTrajet
+            dateTrajet = datetime.strptime(trajet['dateDepart'], '%Y%m%d').strftime('%d %B, %Y')
+            trajet['dateDepart'] = dateTrajet
 
             trajets.append(trajet)
 
