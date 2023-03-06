@@ -83,15 +83,12 @@
       width: 20%;
       padding: 0;
       margin: 0;
-      /* background-image: url("https://static.vecteezy.com/system/resources/previews/001/189/057/non_2x/star-png.png"); */
       background-size: contain;
       background-repeat: no-repeat;
     }
     .rating-value {
       z-index: 99;
       position: relative;
-      /* top: 0;
-      right: 0; */
       padding-left: 5px;
       font-size: 16px;
     }
@@ -191,10 +188,16 @@
                 <span class="rating-value">` + account.noteCompte + " / 5" + `</span>
               </div>
             `;
-
-            // tdNote.textContent = account.noteCompte + " / 5"; //todo: changer avec un système d'étoiles
           } else {
             tdNote.textContent = "N/A";
+            // tdNote.innerHTML = `
+            //   <div class="rating">
+            //     <div class="stars" style="width:0%">
+            //       <span></span>
+            //     </div>
+            //     <span class="rating-value">N/A</span>
+            //   </div>
+            // `;
           }
           tr.appendChild(tdNote);
 
