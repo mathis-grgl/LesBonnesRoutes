@@ -146,8 +146,10 @@
 
 <div id="popup-container">
     <div id="popup">
-        <textarea placeholder="Saisissez votre texte ici"></textarea>
+        <textarea placeholder="Saisissez votre texte ici" id="commentary"></textarea>
+        <div class="form_control_container__time">Nombres de places à réserver : </div>
+        <input class="form_control_container__time__input" type="number" id="nbPlacesInput" value="1" min="1" max="5"/>
         <button class="btn btn-success btn-block text-white" onclick="closePopup()">Fermer</button>
-        <button class="btn btn-success btn-block text-white" onclick="">Envoyer</button>
+        <button class="btn btn-success btn-block text-white" onclick="askJourney(event)">Envoyer</button>
     </div>
 </div>

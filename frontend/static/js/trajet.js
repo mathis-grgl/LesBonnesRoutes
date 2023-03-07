@@ -12,6 +12,8 @@ const infoLieu = document.getElementById("infoLieu");
 const contraintes = document.getElementById("contraintes");
 const lieu = document.getElementById("lieu");
 
+const nbPlacesInput = document.getElementById("nbPlacesInput");
+const commentary = document.getElementById("commentary");
 
 // Récuperer infos trajet
 fetch(`/trajet/trajet/${id}`, {
@@ -29,6 +31,7 @@ fetch(`/trajet/trajet/${id}`, {
     prix.innerHTML = data.prix + prix.innerHTML;
     infoLieu.innerHTML = data.precisionRdv;
     contraintes.innerHTML = data.commentaires;
+    nbPlacesInput.max = data.nbPlacesRestantes;
 })
 .catch(error => console.error(error));
 
@@ -71,4 +74,31 @@ function openPopup() {
 function closePopup() {
     document.getElementById("popup-container").style.display = "none";
     //document.body.classList.remove("flou");
+}
+
+function askJourney(){
+    event.preventDefault(); // Prevent the default behavior of the button click
+  fetch(`/trajet/demandeTrajet/${getCookieToken()}/${id}/${nbPlacesInput.value}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      'commentaire': commentary.value
+    })
+  })
+  .then(response => {
+    if (response.ok) {
+        closePopup();
+      return response.json();
+    } else {
+      throw new Error('Erreur : ' + response.status);
+    }
+  })
+  .then(data => {
+
+  })
+  .catch(error => {
+    console.error('Erreur : ' + error.message);
+  });
 }
