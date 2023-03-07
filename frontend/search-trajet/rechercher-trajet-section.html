@@ -12,7 +12,7 @@
               <div class="field-icon-wrap">
                 <div class="icon"><span class="icon-calendar"></span></div>
                 <select id="city_start" name="city-start" class="form-control">
-                  <option value=""></option>
+                  <option value="">Ville de départ</option>
                   <!-- Ajoute d'autres options ici donc ne pas retirer le select-->
                 </select>
               </div>
@@ -22,7 +22,7 @@
               <div class="field-icon-wrap">
                 <div class="icon"><span class="icon-calendar"></span></div>
                 <select id="city_end" name="city-end" class="form-control">
-                  <option value=""></option>
+                  <option value="">Ville d'arrivée</option>
                   <!-- Ajoute d'autres options ici donc ne pas retirer le select-->
                 </select>
               </div>
@@ -31,7 +31,7 @@
               <label for="checkout_date" class="font-weight-bold text-black">Date de départ</label>
               <div class="field-icon-wrap">
                 <div class="icon"><span class="icon-calendar"></span></div>
-                <input type="text" id="checkout_date" name="date" class="form-control">
+                <input type="text" id="checkout_date" name="date" class="form-control" placeholder="Date de départ">
               </div>
             </div>
             <div class="col-md-6 mb-3 mb-md-0 col-lg-3">
@@ -41,7 +41,7 @@
                   <div class="field-icon-wrap">
                     <div class="icon"><span class="ion-ios-arrow-down"></span></div>
                     <select name="places" id="adults" class="form-control">
-                      <option value=""></option>
+                      <option value="">Places</option>
                       <option value="1">1</option>
                       <option value="1">2</option>
                       <option value="3">3</option>
@@ -51,24 +51,24 @@
                   </div>
                 </div>
                 <div class="col-md-6 mb-3 mb-md-0">
-                  <label for="children" class="font-weight-bold text-black">Prix</label>
+                  <label for="children" class="font-weight-bold text-black">Tarifs</label>
                   <div class="field-icon-wrap">
-                    <div class="icon"><span class="ion-ios-arrow-right"></span></div>
+                    <div class="icon"><span class="ion-ios-arrow-down"></span></div>
                     <div class="range_container">
-                      <button onclick="showSection(event)" class="form-control">Prix</button>
+                      <button onclick="showSection(event)" class="form-control" style="width: fit-content;">Tarifs</button>
                       <section id="slidersSection" run="dialog" hidden>
                         <div class="sliders_control">
                           <input id="fromSlider" name="lower-prices" type="range" value="0" min="0" max="100"/>
                           <input id="toSlider" name="higher-prices" type="range" value="100" min="0" max="100"/>
                         </div>
                         <div class="form_control">
-                          <div class="form_control_container">
+                          <div class="form_control_container displayNumber">
                             <div class="form_control_container__time">Min</div>
-                            <input class="form_control_container__time__input" type="number" id="fromInput" name="lower-prices" value="0" min="0" max="500"/>
+                            <input class="form_control_container__time__input inputNumber" type="number" id="fromInput" name="lower-prices" value="0" min="0" max="100"/>
                           </div>
-                          <div class="form_control_container">
+                          <div class="form_control_container displayNumber">
                             <div class="form_control_container__time">Max</div>
-                            <input class="form_control_container__time__input" type="number" id="toInput" name="higher-prices" value="100" min="0" max="500"/>
+                            <input class="form_control_container__time__input inputNumber" type="number" id="toInput" name="higher-prices" value="100" min="0" max="100"/>
                           </div>
                         </div>
                       </section>

@@ -50,15 +50,21 @@ function displayOffer(event){
         if (response.ok) {
         return response.json();
         } else {
+          titreOffre.innerHTML = "Aucun trajet correspondant";
         throw new Error('Erreur : ' + response.status);
         }
     })
     .then(data => {
-        titreOffre.innerHTML = "Trajets correspondants";
-        descriptionOffres.innerHTML = "Retrouvez ici les offres de trajets correspondantes."
+        if (data.length === 0){
+          titreOffre.innerHTML = "Aucun trajet correspondant";
+        } else {
+          titreOffre.innerHTML = "Trajets correspondants";
+          descriptionOffres.innerHTML = "Retrouvez ici les offres de trajets correspondantes.";
+        }
         displayTrajet(data);
     })
     .catch(error => {
+        titreOffre.innerHTML = "Aucun trajet correspondant";
         console.error('Erreur : ' + error.message);
     });
 }
