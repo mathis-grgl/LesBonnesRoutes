@@ -1,6 +1,12 @@
 let nomuser = $('#nomUser').text();
 console.log("Voici le nom de l'user " + nomuser);
 
+function onLoad(){
+  if(getCookieToken() == null){
+    window.location.href = "login_signup";
+  }
+}
+
 
 // fetch('/users')
 //   .then(response => {
