@@ -1,0 +1,44 @@
+@media (min-width: 1200px) {
+    .col-xl-8 {
+      max-width: 100%;
+      flex: 0 0 100%;
+    }
+  }
+  
+  .description{
+    font-family: "Roboto", arial, sans-serif;
+    font-weight: 200;
+    font-size: 20px;
+    margin-right: 20px;
+  }
+  
+  .heading{
+    font-size: 40px;
+    font-family: "Playfair Display", times, serif;
+    font-weight: 700;
+  }
+  
+  .tailleBloc{
+    width: 110%;
+    height: 70%;
+  }
+  
+  .imgtailleprofile{
+    width: 30%;
+    height: 30%;
+    margin-top: 10px;
+    margin-left: 25px;
+  }
+  
+  .card-body {
+    padding: 10px;
+  }
+
+  .profil {
+    left: 10%;
+    margin-top: 5%;
+  }
+
+  .infosTrajet {
+    margin-left: 10px;
+  }

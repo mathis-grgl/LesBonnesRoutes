@@ -66,6 +66,11 @@ def mes_trajets():
     return render_template('mes_trajets/mes_trajets.html')
 
 
+@app.route('/trajet')
+def trajet():
+    return render_template('trajet/trajet.html')
+
+
 
 # Requetes
 from backend.blueprints.compte import compte_bp

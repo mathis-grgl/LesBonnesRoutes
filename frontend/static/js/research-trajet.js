@@ -72,7 +72,7 @@ function displayTrajet(trajets){
       const trajetElement = document.createElement('div');
       trajetElement.classList.add('col-md-6', 'col-lg-4');
       trajetElement.innerHTML = `
-        <a href="#" class="room">
+        <a href="/trajet?id=${trajet.idTrajet}" class="room">
           <figure class="img-wrap">
             <img src="https://maps.geoapify.com/v1/staticmap?style=osm-carto&width=480&height=480&center=lonlat:${coordsDep.longitude},${coordsDep.latitude}&zoom=8.468&marker=lonlat:-${coordsArr.longitude},${coordsArr.latitude};color:%23ff0000;size:medium&apiKey=28ed3d4ce3664398aa6e2f080d227bbc" alt="Free website template" class="img-fluid mb-3">
           </figure>
