@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, request
+from datetime import datetime
 import sqlite3
 import secrets
 
@@ -300,3 +301,53 @@ def delCompte(token):
         conn.commit()
         conn.close()
         return jsonify({'message': 'Le compte a bien été supprimé'}), 200
+
+
+
+#Voir ses demandes de trajet
+@compte_bp.route('/getDemandesEnCours/<string:token>', methods = ['POST'])
+def getDemandesEnCours(token):
+    #On verifie le token
+    conn = sqlite3.connect('../database.db')
+    c = conn.cursor()
+    c.execute("SELECT COMPTE.idCompte FROM COMPTE inner join TOKEN on COMPTE.idCompte = TOKEN.idCompte WHERE auth_token = ?", (token,))
+    compte = c.fetchone()
+
+    if not compte:
+        conn.close()
+        return jsonify({'message': 'Token invalide ou expiré.'}), 401
+    else:
+        idCompte = compte[0]
+        #On peut recuperer ses demandes de trajets en cours
+        c.execute("SELECT * FROM DEMANDE_TRAJET_EN_COURS inner join TRAJET on DEMANDE_TRAJET_EN_COURS.idTrajet = TRAJET.idTrajet WHERE idCompte = ?", (idCompte,))
+        rows = c.fetchmany()
+        if not rows:
+            #Il n'y a aucune demande en cours
+            conn.close()
+            return jsonify({'message': 'Aucune demande en cours'}), 204
+        else:
+            # Récupération des noms de colonnes
+            col_names = [desc[0] for desc in c.description]
+
+            # Conversion de la date dans chaque ligne de résultat
+            trajets = []
+            for row in rows:
+                trajet = {col_names[i]: row[i] for i in range(len(col_names))}
+            
+                # Conversion de la date de la colonne 'dateTrajet'
+                dateTrajet = datetime.strptime(trajet['dateDepart'], '%Y%m%d').strftime('%d %B, %Y')
+                trajet['dateDepart'] = dateTrajet
+
+                # Conversion de l'idVille en nomVille
+                c.execute("SELECT nomVille FROM VILLE WHERE idVille = ?", (trajet['villeDepart'],))
+                trajet['villeDepart'] = c.fetchone()[0]
+                c.execute("SELECT nomVille FROM VILLE WHERE idVille = ?", (trajet['villeArrivee'],))
+                trajet['villeArrivee'] = c.fetchone()[0]
+
+
+                trajets.append(trajet)
+            conn.commit()
+            conn.close()
+
+            # Retour de la réponse avec code 200
+            return jsonify(trajets), 200
