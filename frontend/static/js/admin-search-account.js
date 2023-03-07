@@ -1,3 +1,5 @@
+tokenAdmin = getCookieToken();
+
 $(document).ready(function () {
     var table = getAccountTable();
     $("[data-toggle=tooltip]").tooltip();
@@ -84,6 +86,7 @@ $(document).ready(function () {
         pEdit.setAttribute("data-toggle", "tooltip");
         pEdit.setAttribute("title", "Edit");
 
+        //Création du bouton modifier
         let btnEdit = document.createElement("a");
         btnEdit.classList.add("btn", "btn-primary", "btn-xs");
         btnEdit.onclick = () => {
@@ -94,8 +97,11 @@ $(document).ready(function () {
         btnEdit.setAttribute("data-toggle", "modal");
         btnEdit.setAttribute("data-target", "#edit");
 
+        //Logo du bouton modifier
         let spanEdit = document.createElement("span");
         spanEdit.classList.add("fa", "fa-pencil");
+
+        //Imbrication des éléments pour le bouton modifier
         btnEdit.appendChild(spanEdit);
         pEdit.appendChild(btnEdit);
         tdEdit.appendChild(pEdit);
@@ -108,18 +114,22 @@ $(document).ready(function () {
         pDelete.setAttribute("data-toggle", "tooltip");
         pDelete.setAttribute("title", "Delete");
 
+        //Création du bouton supprimer
         let btnDelete = document.createElement("a");
         btnDelete.classList.add("btn", "btn-danger", "btn-xs");
         btnDelete.onclick = () => {
           location.href = "/admin/account/delete/" + account.idCompte;
         }
-        btnDelete.setAttribute("href", "/admin/account/delete/" + account.idCompte);
+        btnDelete.setAttribute("onclick", "onDeleteAccount(" + account.idCompte+")");
         btnDelete.setAttribute("data-title", "Delete");
         btnDelete.setAttribute("data-toggle", "modal");
         btnDelete.setAttribute("data-target", "#delete");
 
+        //Logo du bouton supprimer
         let spanDelete = document.createElement("span");
-        spanDelete.classList.add("fa", "fa-trash");
+        spanDelete.classList.add("fa", "fa-trash", "white_button");
+
+        //Imbrication des éléments pour le bouton supprimer
         btnDelete.appendChild(spanDelete);
         pDelete.appendChild(btnDelete);
         tdDelete.appendChild(pDelete);
@@ -133,3 +143,17 @@ $(document).ready(function () {
     });
 
   });
+
+function onDeleteAccount(id) {
+  if (confirm("Voulez-vous vraiment supprimer ce compte ?")) {
+    fetch('/admin/deleteCompte/'+ tokenAdmin + '/' + id, {
+      method: 'DELETE'
+    }).then(response => {
+      if (response.ok) {
+        location.reload();
+      } else {
+        alert("Une erreur est survenue lors de la suppression du compte.");
+      }
+    });
+  }
+}

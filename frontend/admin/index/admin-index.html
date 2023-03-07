@@ -5,7 +5,7 @@
         {% include 'head.html' %}
         <link rel="stylesheet" href="static/css/admin.css">
     </head>
-    <body>
+    <body onload="onLoad()">
         {% include 'header.html' %}
 
         {% set section_name='Panel - Accueil' %}
@@ -16,5 +16,6 @@
         {% include 'footer.html' %}
         
         {% include 'scripts-required.html' %}
+        <script src="static/js/admin.js"></script>
     </body>
 </html>

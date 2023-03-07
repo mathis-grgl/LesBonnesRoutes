@@ -84,7 +84,7 @@ def deleteCompte(token, idCompte):
     #On verifie que le token est admin
     conn = sqlite3.connect('../database.db')
     c = conn.cursor()
-    c.execute("SELECT isAdmin FROM TOKEN NATURAL JOIN COMPTE WHERE token = ?", token)
+    c.execute("SELECT isAdmin FROM TOKEN NATURAL JOIN COMPTE WHERE auth_token = ?", (token,))
     admin = c.fetchone()
     if not admin:
         #Le token n'existe pas
@@ -98,7 +98,7 @@ def deleteCompte(token, idCompte):
             return jsonify({'message': 'Le token n\'est pas admin'}), 401
         else:
             #On peut supprimer le compte
-            c.execute("DELETE FROM COMPTE WHERE idCompte = ?", idCompte)
+            c.execute("DELETE FROM COMPTE WHERE idCompte = ?", (idCompte,))
             conn.commit()
             conn.close()
             return jsonify({'message': 'Le compte a bien été supprimé'}), 200
@@ -110,7 +110,7 @@ def deleteTrajet(token, idTrajet):
     #On verifie que le token est admin
     conn = sqlite3.connect('../database.db')
     c = conn.cursor()
-    c.execute("SELECT isAdmin FROM TOKEN NATURAL JOIN COMPTE WHERE token = ?", token)
+    c.execute("SELECT isAdmin FROM TOKEN NATURAL JOIN COMPTE WHERE auth_token = ?", (token,))
     admin = c.fetchone()
     if not admin:
         #Le token n'existe pas
@@ -124,7 +124,7 @@ def deleteTrajet(token, idTrajet):
             return jsonify({'message': 'Le token n\'est pas admin'}), 401
         else:
             #On verifie que le trajet existe
-            c.execute("SELECT * FROM TRAJET WHERE idTrajet = ?", idTrajet)
+            c.execute("SELECT * FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
             trajet = c.fetchone()
             if not trajet:
                 conn.close()
@@ -179,7 +179,7 @@ def modifTrajet(token, idTrajet):
             return jsonify({'message': 'Ce trajet n\'existe pas'}), 404
         else:
             #On verifie que l'utilisateur est admin
-            c.execute("SELECT isAdmin FROM TOKEN NATURAL JOIN COMPTE WHERE token = ?", token)
+            c.execute("SELECT isAdmin FROM TOKEN NATURAL JOIN COMPTE WHERE auth_token = ?", (token,))
             admin = c.fetchone()
             if not admin:
                 #Le token n'existe pas
