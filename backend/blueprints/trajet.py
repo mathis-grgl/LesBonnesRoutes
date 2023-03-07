@@ -357,6 +357,7 @@ def quitterTrajet(token, idTrajet):
                     #On peut quitter le trajet
                     c.execute("DELETE FROM TRAJET_EN_COURS_PASSAGER WHERE idTrajet = ? AND idCompte = ?", (idTrajet, idCompte))
                     conn.commit()
+                    conn.close()
                     return jsonify({'message': 'La demande d\'annulation de participation a bien été prise en compte.'}), 200
 
 
@@ -386,3 +387,33 @@ def getConducteur(idTrajet):
             compte = {col_names[i]: trajet[i] for i in range(len(col_names))}
             conn.close()
             return jsonify(compte), 200
+
+
+@trajet_bp.route('/annuleTrajet/<string:token>/<int:idTrajet>', methods=['POST'])
+def annuleTrajet(token, idTrajet):
+    conn = sqlite3.connect('../database.db')
+    c = conn.cursor()
+    #On recupere l'id du conducteur
+    c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
+    compte = c.fetchone()
+    if not compte:
+        conn.close()
+        return jsonify({'message': 'Token invalide ou expiré'}), 401
+    else:
+        idCompte = compte[0]
+        #On vérifie que l'utilisateur est le conducteur du trajet
+        c.execute("SELECT idConducteur FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
+        trajet = c.fetchone()
+        if not trajet:
+            conn.close()
+            return jsonify({'message': 'Ce trajet n\'existe pas'}), 404
+        else:
+            if idCompte != trajet[0]:
+                conn.close()
+                return jsonify({'message': 'Requête refusée : vous devez être le conducteur pour annuler un trajet'}), 403
+            else:
+                #On peut annuler le trajet
+                c.execute("DELETE FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
+                conn.commit()
+                conn.close()
+                return jsonify({'message': 'Le trajet a bien été annulé.'}), 200
