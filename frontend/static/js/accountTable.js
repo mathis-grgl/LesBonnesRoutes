@@ -245,6 +245,20 @@ function getAccountTable () {
             "search": "Rechercher :",
             "thousands": " "
         },
+        'columns': [
+          { data: 'nom' }, /* index - 0 */
+          { data: 'genre' }, /* index - 1 */
+          { data: 'photo' }, /* index - 2 */
+          { data: 'email' }, /* index - 3 */
+          { data: 'telephone' }, /* index - 4 */
+          { data: 'note' }, /* index - 5 */
+          { data: 'modifier' }, /* index - 6 */
+          { data: 'supprimer' } /* index - 7 */
+       ],
+       'columnDefs': [ {
+          'targets': [2,6,7], /* column index */
+          'orderable': false, /* true or false */
+       }]
     });
     return table;
 }

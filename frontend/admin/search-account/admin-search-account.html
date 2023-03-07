@@ -101,9 +101,9 @@
       width="100%">
       <thead>
         <tr>
-          <th>Photo</th>
           <th>Nom de l'utilisateur</th>
           <th>Genre</th>
+          <th>Photo</th>
           <th>E-mail</th>
           <th>Numéro de téléphone</th>
           <th>Note</th>
@@ -114,9 +114,9 @@
       <tbody id="accountList"></tbody>
       <tfoot>
         <tr>
-          <th>Photo</th>
           <th>Nom de l'utilisateur</th>
           <th>Genre</th>
+          <th>Photo</th>
           <th>E-mail</th>
           <th>Numéro de téléphone</th>
           <th>Note</th>
@@ -148,7 +148,20 @@
         for (let i = 0; i < nbCompte; i++) {
           let account = data[i];
           
+          // Création d'une nouvelle ligne
           let tr = document.createElement("tr");
+
+          // Ajout du nom d'utilisateur
+          let tdNom = document.createElement("td");
+          tdNom.textContent = account.nomCompte + ' ' + account.prenomCompte;
+          tr.appendChild(tdNom);
+
+          // Ajout du genre
+          let tdGenre = document.createElement("td");
+          tdGenre.textContent = account.genre;
+          tr.appendChild(tdGenre);
+
+          // Ajout de la photo
           let tdImg = document.createElement("td");
           let img = document.createElement("img");
           img.src = "/static/images/person_" + i + ".jpg";
@@ -158,14 +171,7 @@
           tdImg.appendChild(img);
           tr.appendChild(tdImg);
 
-          let tdNom = document.createElement("td");
-          tdNom.textContent = account.nomCompte + ' ' + account.prenomCompte;
-          tr.appendChild(tdNom);
-
-          let tdGenre = document.createElement("td");
-          tdGenre.textContent = account.genre;
-          tr.appendChild(tdGenre);
-
+          // Ajout de l'e-mail
           let tdEmail = document.createElement("td");
           let aEmail = document.createElement("a");
           aEmail.classList.add("emailLink");
@@ -174,10 +180,12 @@
           tdEmail.appendChild(aEmail);
           tr.appendChild(tdEmail);
 
+          // Ajout du numéro de téléphone
           let tdTelephone = document.createElement("td");
           tdTelephone.textContent = "(+33) " + account.telephone;
           tr.appendChild(tdTelephone);
 
+          // Ajout de la note
           let tdNote = document.createElement("td");
           if (account.noteCompte != null) {
             tdNote.innerHTML = `
@@ -189,7 +197,7 @@
               </div>
             `;
           } else {
-            tdNote.textContent = "N/A";
+            tdNote.innerHTML = "N/A";
             // tdNote.innerHTML = `
             //   <div class="rating">
             //     <div class="stars" style="width:0%">
@@ -201,6 +209,7 @@
           }
           tr.appendChild(tdNote);
 
+          // Ajout du bouton modifier
           let tdEdit = document.createElement("td");
           let pEdit = document.createElement("p");
           pEdit.setAttribute("data-placement", "top");
@@ -224,6 +233,7 @@
           tdEdit.appendChild(pEdit);
           tr.appendChild(tdEdit);
 
+          // Ajout du bouton supprimer
           let tdDelete = document.createElement("td");
           let pDelete = document.createElement("p");
           pDelete.setAttribute("data-placement", "top");
@@ -247,6 +257,7 @@
           tdDelete.appendChild(pDelete);
           tr.appendChild(tdDelete);
 
+          // Ajout de la ligne complète
           table.row.add(tr).draw(false);
         }
       }).catch(error => {
