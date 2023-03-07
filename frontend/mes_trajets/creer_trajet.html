@@ -17,14 +17,14 @@
 
 </head>
 
-<body id="page-top" onload="charger_trajets()">
+<body id="page-top" >
     {% include 'header.html' %}
 
-    {% set section_name='Mes offres de trajets' %}
+    {% set section_name='Créer un trajet' %}
     {% include 'inner-page.html' %}
 
-    {% set title='Mes trajets crées' %}
-    {% include 'mes_trajets/container_trajets_crees.html' %}
+    {% set title='Créer un nouveau trajet' %}
+    {% include 'mes_trajets/container_creer_trajet.html' %}
 
 
 
@@ -33,6 +33,7 @@
     {% include 'footer.html' %}
 
     {% include 'scripts-required.html' %}
+    <script src="/static/js/mes_offres.js"> </script>
 
 
 </body>
