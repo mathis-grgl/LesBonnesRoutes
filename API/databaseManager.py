@@ -108,14 +108,17 @@ def connect_user(data: json_dict) -> tuple[json_dict, int]:
     connection = sqlite3.connect(DATABASE_NAME)
     cursor = connection.cursor()
     cursor.execute(query, (data["email"],))
-    mdp, = cursor.fetchone()
-
+    res = cursor.fetchone()
+    if res is not None:
+        mdp, = res
+    else:
+        return {}, 401
     hasher = PasswordHasher()
     try:
         hasher.verify(mdp, data["mdp"])
     except VerificationError:
         connection.close()
-        return {"details": "invalid email or password"}, 401
+        return {}, 401
     
     token = generate_token()
     user = get_user(data["email"])

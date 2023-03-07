@@ -37,17 +37,16 @@ def check_datas(authentified:bool=True):
                 data: dict[str, Any] = json.loads(request.data)
                 schema = json.load(open(f"./API/jsonschemas/{f.__name__}.json"))
                 jsonschema.validate(data, schema)
-                print("not catch")
             except json.decoder.JSONDecodeError: # json.load
-                print("DEBUG: invalid json document")
-                abort(400)
+                abort(400, "invalid json document")
             except ValidationError: # jsonshema.validate
-                print("DEBUG: valid json document but invalid datas")
-                abort(400)
+                abort(400, "invalid datas")
             if authentified:
                 token = request.headers.get("auth_token")
-                if token is None or not databaseManager.check_token(token):
-                    abort(401)
+                if token is None:
+                    abort(401, "no token supplied")
+                if not databaseManager.check_token(token):
+                    abort(401, "invalid or expired token")
             return f(*args, **kwargs)
         return inner
     return wrapper
@@ -64,7 +63,7 @@ def new_user() -> tuple[Response, int]:
     return jsonify(resp), code
 
 
-@app.route("/api/v1/user/<user_id>", methods=['PATCH'])
+@app.route("/api/v1/user/<int:user_id>", methods=['PATCH'])
 @check_datas()
 def edit_user(user_id: int) -> Response:
     """
@@ -74,7 +73,7 @@ def edit_user(user_id: int) -> Response:
     databaseManager.edit_user(user_id, data)
     return jsonify()
 
-@app.route("/api/v1/user/<user_id>", methods=['DELETE'])
+@app.route("/api/v1/user/<int:user_id>", methods=['DELETE'])
 def delete_user(user_id: int) -> Response:
     """
     remove a user from database (require auth token and password)
@@ -89,9 +88,11 @@ def connect_user() -> tuple[Response, int]:
     """
     data = json.loads(request.data)
     resp, code = databaseManager.connect_user(data)
+    if resp == {}:
+        abort(401, "invalid email or password")
     return jsonify(resp), code
 
-@app.route("/api/v1/user/<user_id>", methods=['GET'])
+@app.route("/api/v1/user/<int:user_id>", methods=['GET'])
 def get_user(user_id: int) -> Response:
     return jsonify()
 
