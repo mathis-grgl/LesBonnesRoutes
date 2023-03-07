@@ -122,3 +122,39 @@ def removeFriend(idGroupe: int, idCompte: int):
 
     cursor.close()
 
+def acceptInTrajet(token, idCompte, idTrajet, nbPlaces, accept):
+    conn = sqlite3.connect('../database.db')
+    c = conn.cursor()
+    #On recupere l'id du conducteur
+    c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
+    compte = c.fetchone()
+    if not compte:
+        conn.close()
+        return 1#jsonify({'message': 'Token invalide ou expiré'}), 401
+    else:
+        #On vérifie que le compte et le trajet existent bien
+        c.execute("SELECT * FROM COMPTE WHERE idCompte = ?", (idCompte,))
+        if not c.fetchone():
+            conn.close()
+            return 2#jsonify({'message': 'Ce compte n\'existe pas'}), 404
+        c.execute("SELECT * FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
+        if not c.fetchone():
+            conn.close()
+            return 3#jsonify({'message': 'Ce trajet n\'existe pas'}), 404
+        
+        #On verifie si on accepte ou pas la demande
+        if accept == 'oui':
+            #On accepte : on insere dans TRAJET_EN_COURS_PASSAGER
+            c.execute("INSERT INTO TRAJET_EN_COURS_PASSAGER VALUES (?, ?, ?)", (idCompte, idTrajet, nbPlaces))
+            c.execute("DELETE FROM DEMANDE_TRAJET_EN_COURS WHERE idCompte = ? AND idTrajet = ?", (idCompte, idTrajet))
+            conn.commit()
+            conn.close()
+            return 'Ok oui'#jsonify({'message': 'La demande a bien été acceptée.'}), 200
+        elif accept == 'non':
+            #On n'accepte pas : on supprime la demande
+            c.execute("DELETE FROM DEMANDE_TRAJET_EN_COURS WHERE idCompte = ? AND idTrajet = ?", (idCompte, idTrajet))
+            conn.commit()
+            conn.close()
+            return 'Ok non'#jsonify({'message': 'La demande a bien été refusée.'}), 200
+
+print(acceptInTrajet('9f36ad8ef1718c3c2258025e06e7eb2d', 1, 3, 2, 'non'))

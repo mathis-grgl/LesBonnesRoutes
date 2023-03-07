@@ -417,3 +417,44 @@ def annuleTrajet(token, idTrajet):
                 conn.commit()
                 conn.close()
                 return jsonify({'message': 'Le trajet a bien été annulé.'}), 200
+
+
+
+@trajet_bp.route('/acceptInTrajet/<string:token>/<int:idCompte>/<int:idTrajet>/<int:nbPlaces>/<string:accept>', methods=['POST'])
+def acceptInTrajet(token, idCompte, idTrajet, nbPlaces, accept):
+    conn = sqlite3.connect('../database.db')
+    c = conn.cursor()
+    #On recupere l'id du conducteur
+    c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
+    compte = c.fetchone()
+    if not compte:
+        conn.close()
+        return jsonify({'message': 'Token invalide ou expiré'}), 401
+    else:
+        #On vérifie que le compte et le trajet existent bien
+        c.execute("SELECT * FROM COMPTE WHERE idCompte = ?", (idCompte,))
+        if not c.fetchone():
+            conn.close()
+            return jsonify({'message': 'Ce compte n\'existe pas'}), 404
+        c.execute("SELECT * FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
+        if not c.fetchone():
+            conn.close()
+            return jsonify({'message': 'Ce trajet n\'existe pas'}), 404
+        
+        #On verifie si on accepte ou pas la demande
+        if accept == 'oui':
+            #On accepte : on insere dans TRAJET_EN_COURS_PASSAGER et on supprime la demande
+            c.execute("INSERT INTO TRAJET_EN_COURS_PASSAGER VALUES (?, ?, ?)", (idCompte, idTrajet, nbPlaces))
+            c.execute("DELETE FROM DEMANDE_TRAJET_EN_COURS WHERE idCompte = ? AND idTrajet = ?", (idCompte, idTrajet))
+            conn.commit()
+            conn.close()
+            return jsonify({'message': 'La demande a bien été acceptée.'}), 200
+        elif accept == 'non':
+            #On n'accepte pas : on supprime la demande
+            c.execute("DELETE FROM DEMANDE_TRAJET_EN_COURS WHERE idCompte = ? AND idTrajet = ?", (idCompte, idTrajet))
+            conn.commit()
+            conn.close()
+            return jsonify({'message': 'La demande a bien été refusée.'}), 200
+        else:
+            conn.close()
+            return jsonify({'message': 'accept doit être à oui ou non.'}), 403
