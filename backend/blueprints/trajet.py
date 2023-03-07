@@ -178,7 +178,7 @@ def trajetsCompte(token):
             trajet['villeDepart'] = c.fetchone()[0]
             c.execute("SELECT nomVille FROM VILLE WHERE idVille = ?", (trajet['villeArrivee'],))
             trajet['villeArrivee'] = c.fetchone()[0]
-
+            trajet['idCompte'] = idCompte
 
             trajets.append(trajet)
 
