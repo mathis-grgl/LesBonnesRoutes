@@ -150,7 +150,15 @@ def trajetsCompte(token):
     if compte:
         #On peut chercher tous ses trajets
         idCompte = compte[0]
-        c.execute("SELECT * FROM COMPTE INNER JOIN TRAJET ON COMPTE.idCompte = TRAJET.idConducteur INNER JOIN TRAJET_EN_COURS_PASSAGER ON TRAJET.idTrajet = TRAJET_EN_COURS_PASSAGER.idTrajet WHERE TRAJET_EN_COURS_PASSAGER.idCompte = ? ORDER BY dateDepart ASC", (idCompte,))
+
+        query = """
+            SELECT DISTINCT TRAJET.*
+            FROM TRAJET
+            LEFT JOIN TRAJET_EN_COURS_PASSAGER ON TRAJET.idTrajet = TRAJET_EN_COURS_PASSAGER.idTrajet
+            WHERE TRAJET_EN_COURS_PASSAGER.idCompte = ? OR TRAJET.idConducteur = ?
+        """
+
+        c.execute(query, (idCompte, idCompte))
         rows = c.fetchall()
 
         # Récupération des noms de colonnes
@@ -176,6 +184,8 @@ def trajetsCompte(token):
 
         conn.commit()
         conn.close()
+
+        print(trajets)
 
         # Retour de la réponse avec code 200
         return jsonify(trajets), 200

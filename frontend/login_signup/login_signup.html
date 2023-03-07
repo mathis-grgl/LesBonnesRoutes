@@ -37,28 +37,67 @@
     <div class="form-container register-container">
       <form action="#">
         <h1>Inscription</h1>
-        <input type="text" placeholder="Nom" name="name-sign" oninput="checkValue('name-sign')">
-        <input type="text" placeholder="Prenom" name="last-name-sign" oninput="checkValue('last-name-sign')">
+        <div class="tooltip">
+          <input type="text" placeholder="Nom" name="name-sign" oninput="checkValue('name-sign')">
+          <span class="tooltiptext">Nom sans caractères spéciaux</span>
+        </div>
+
+        <div class="tooltip">
+          <input type="text" placeholder="Prenom" name="last-name-sign" oninput="checkValue('last-name-sign')">
+          <span class="tooltiptext">Prenom sans caractères spéciaux</span>
+        </div>
+        
         <div class="content">Genre : *
           <input type="radio" name="gender-sign" value="homme" oninput="checkValue('gender-sign')">Homme
           <input type="radio" name="gender-sign" value="femme" oninput="checkValue('gender-sign')">Femme
           <input type="radio" name="gender-sign" value="autre" oninput="checkValue('gender-sign')">Autre
-        </div>        
-        <input type="email" placeholder="Email" name="email-sign" oninput="checkValue('email-sign')">
-        <input type="text" placeholder="Télephone" name="phone-sign" oninput="checkValue('phone-sign')">
+        </div>  
+        
+        <div class="tooltip">
+          <input type="email" placeholder="Email" name="email-sign" oninput="checkValue('email-sign')">
+          <span class="tooltiptext">Email du type exemple@mail.com</span>
+        </div>
+        
+        <div class="tooltip">
+          <input type="text" placeholder="Télephone" name="phone-sign" oninput="checkValue('phone-sign')">
+          <span class="tooltiptext">Numéro du type : XX.XX.XX.XX.XX</span>
+        </div>
+        
         <div class="content">
           <div class="checkbox">
             <input type="checkbox" name="checkbox-licence-sign" id="checkbox-sign" oninput="checkValue('checkbox-licence-sign')">
             <label>Je possède un véhicule</label>
           </div>
         </div>
-        <input type="text" placeholder="Adresse" name="address-sign" oninput="checkValue('address-sign')">
-        <input type="text" placeholder="Ville" name="city-sign" oninput="checkValue('city-sign')">
-        <input type="text" placeholder="Code postal" name="postal-sign" oninput="checkValue('postal-sign')">
-        <input type="text" placeholder="Pays" name="country-sign" oninput="checkValue('country-sign')">
+
+        <div class="tooltip">
+          <input type="text" placeholder="Adresse" name="address-sign" oninput="checkValue('address-sign')">
+          <span class="tooltiptext">Adresse du type : n° nom rue </span>
+        </div>
+
+        <div class="tooltip">
+          <input type="text" placeholder="Ville" name="city-sign" oninput="checkValue('city-sign')">
+          <span class="tooltiptext">Ville sans caractères spéciaux</span>
+        </div>
+        
+        <div class="tooltip">
+          <input type="text" placeholder="Code postal" name="postal-sign" oninput="checkValue('postal-sign')">
+          <span class="tooltiptext">Code postal du type : XXXXX</span>
+        </div>
+        
+        <div class="tooltip">
+          <input type="text" placeholder="Pays" name="country-sign" oninput="checkValue('country-sign')">
+          <span class="tooltiptext">Pays sans caractères spéciaux</span>
+        </div>
+        
         <!--<label for="file">Photo :</label>-->
         <input type="file" id="file" name="file-sign" accept="image/jpeg, image/png">
-        <input type="password" placeholder="Mot de passe" name="password-sign" oninput="checkValue('password-sign')">
+
+        <div class="tooltip">
+          <input type="password" placeholder="Mot de passe" name="password-sign" oninput="checkValue('password-sign')">
+          <span class="tooltiptext">Mdp contenant 8 caractères dont 1 majuscule et 1 caratcère spéciale</span>
+        </div>
+
         <button onclick="signIn(event)">S'inscrire</button>
       </form>
     </div>
