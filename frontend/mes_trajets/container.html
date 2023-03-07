@@ -6,22 +6,22 @@
                 <div class="sb-sidenav-menu">
                     <div class="nav">
                         <div class="sb-sidenav-menu-heading">Trajets</div>
-                        <a class="nav-link" href="index.html">
+                        <a class="nav-link" href="/mes_trajets">
                             <div class="sb-nav-link-icon"></div>
                             Consulter mes trajets à venir
                         </a>
 
-                        <a class="nav-link" href="index.html">
+                        <a class="nav-link" href="/mes_trajets_crees">
                             <div class="sb-nav-link-icon"></div>
                             Consulter mes trajets crées
                         </a>
 
-                        <a class="nav-link" href="index.html">
+                        <a class="nav-link" href="/creer_trajet">
                             <div class="sb-nav-link-icon"></div>
                             Créer un trajet
                         </a>
 
-                        <a class="nav-link" href="index.html">
+                        <a class="nav-link" href="/historique_trajets">
                             <div class="sb-nav-link-icon"></div>
                             Consulter mes précédents trajets
                         </a>
@@ -40,16 +40,16 @@
         <div id="layoutSidenav_content">
             <main>
                 <div class="container-fluid px-4">
-                    <h1 class="mt-4">Mes trajets en cours</h1>
+                    <h1 class="mt-4">{{ title }}</h1>
                     
                     
                     <div class="card mb-4">
                         <div class="card-header">
                             
-                            Liste de tous nos trajets en cours
+                            Liste des trajets correspondants
                         </div>
                         <div class="card-body">
-                            <table id="trajets" >
+                            <table id= "trajets" >
                                 <thead>
                                     <tr>
                                         <th>Ville de départ</th>
@@ -60,6 +60,7 @@
                                         <th>Status du trajet</th>
                                         <th>Prix</th>
                                         <th>Précisions du Rendez-vous</th>
+                                        <th>Commentaires</th>
                                     </tr>
                                 </thead>
 

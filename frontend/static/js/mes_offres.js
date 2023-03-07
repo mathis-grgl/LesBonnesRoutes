@@ -31,6 +31,7 @@ function charger_trajets(){
             row.append($('<td>').text(trajet.statusTrajet));
             row.append($('<td>').text(trajet.prix + '€' ));
             row.append($('<td>').text(trajet.precisionRdv));
+            row.append($('<td>').text(trajet.commentaires));
             tbody.append(row);
 
 
