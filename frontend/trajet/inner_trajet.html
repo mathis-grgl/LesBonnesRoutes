@@ -32,15 +32,14 @@
 
                       <!-- Les lignes en dessous permettent d'afficher le nom et le prénom et le sexe -->
                         <h3 id="prenom">
-                            Sandy Gehin
                         </h3>
                         
                         <!-- Les lignes en dessous permettent d'afficher les étoiles -->
-                        <i class="fa fa-star yellow-star" aria-hidden="true" id="rating-star-1"></i>
-                        <i class="fa fa-star" aria-hidden="true" id="rating-star-2"></i>
-                        <i class="fa fa-star" aria-hidden="true" id="rating-star-3"></i>
-                        <i class="fa fa-star" aria-hidden="true" id="rating-star-4"></i>
-                        <i class="fa fa-star"  aria-hidden="true"id="rating-star-5"></i>
+                        <i class="fa fa-star yellow-star" aria-hidden="true" id="rating-star-1" style="opacity: 0;"></i>
+                        <i class="fa fa-star" aria-hidden="true" id="rating-star-2" style="opacity: 0;"></i>
+                        <i class="fa fa-star" aria-hidden="true" id="rating-star-3" style="opacity: 0;"></i>
+                        <i class="fa fa-star" aria-hidden="true" id="rating-star-4" style="opacity: 0;"></i>
+                        <i class="fa fa-star"  aria-hidden="true"id="rating-star-5" style="opacity: 0;"></i>
                     </div>
 
                     <div class="col infosDepart">
@@ -56,6 +55,13 @@
                         </h3>
                         <div class="heading">
                             <p class="description" id="arrivee"></p>
+                        </div>
+
+                        <h3>
+                            Places restantes :
+                        </h3>
+                        <div class="heading">
+                            <p class="description" id="placesRestantes"></p>
                         </div>
                     </div>
 
@@ -123,12 +129,15 @@
                         </div>
                     </div>
                 </div>
+                <br>
+                <button class="btn btn-success btn-block text-white" style="width: 90%; margin-left: 5%;" onclick="displayPoPup()">Demander à participer</button>
+                <br>
 
-                <div class="card-body pt-0" id="map" class="map" style="height: 500px;">
-                        <!-- Emplacement pour afficher une map depuis javascript -->
-                        <script src="/static/js/map.js"></script>
-                </div>
               </div>
+            </div>
+            <div class="card-body pt-0 shadow" id="map" class="map" style="height: 500px; margin-top: 20px;">
+                <!-- Emplacement pour afficher une map depuis javascript -->
+                <script src="/static/js/map.js"></script>
             </div>
           </div>
         </div>

@@ -384,7 +384,7 @@ def getConducteur(idTrajet):
         else:
             #On recupere les noms de colonnes
             col_names = [desc[0] for desc in c.description]
-            compte = {col_names[i]: trajet[i] for i in range(len(col_names))}
+            compte = {col_names[i]: compte[i] for i in range(len(col_names))}
             conn.close()
             return jsonify(compte), 200
 
