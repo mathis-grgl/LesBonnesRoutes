@@ -130,7 +130,7 @@
                     </div>
                 </div>
                 <br>
-                <button class="btn btn-success btn-block text-white" style="width: 90%; margin-left: 5%;" onclick="displayPoPup()">Demander à participer</button>
+                <button class="btn btn-success btn-block text-white" style="width: 90%; margin-left: 5%;" onclick="openPopup()">Demander à participer</button>
                 <br>
 
               </div>
@@ -143,3 +143,11 @@
         </div>
     </div>
   </section>
+
+<div id="popup-container">
+    <div id="popup">
+        <textarea placeholder="Saisissez votre texte ici"></textarea>
+        <button class="btn btn-success btn-block text-white" onclick="closePopup()">Fermer</button>
+        <button class="btn btn-success btn-block text-white" onclick="">Envoyer</button>
+    </div>
+</div>
