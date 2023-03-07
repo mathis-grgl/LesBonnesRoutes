@@ -62,3 +62,13 @@ fetch(`/trajet/conducteur/${id}`, {
     }
 })
 .catch(error1 => console.error(error1));
+
+function openPopup() {
+    document.getElementById("popup-container").style.display = "block";
+    //document.body.classList.add("flou");
+}
+
+function closePopup() {
+    document.getElementById("popup-container").style.display = "none";
+    //document.body.classList.remove("flou");
+}
