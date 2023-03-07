@@ -362,7 +362,7 @@ def quitterTrajet(token, idTrajet):
 
 
 
-@trajet_bp.route('/conducteur/<int:idTrajet', methods=['POST'])
+@trajet_bp.route('/conducteur/<int:idTrajet>', methods=['POST'])
 def getConducteur(idTrajet):
     conn = sqlite3.connect('../database.db')
     c = conn.cursor()
