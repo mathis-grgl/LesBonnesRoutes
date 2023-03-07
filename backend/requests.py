@@ -124,67 +124,31 @@ def removeFriend(idGroupe: int, idCompte: int):
 
 
 
-def demandeTrajet(token, idTrajet, nbPlaces):
+
+
+def getConducteur(idTrajet):
     conn = sqlite3.connect('../database.db')
     c = conn.cursor()
-    #On recupere l'id du conducteur
-    c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
-    compte = c.fetchone()
-    if not compte:
+    #On vérifie que le trajet existe
+    c.execute("SELECT idConducteur FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
+    trajet = c.fetchone()
+    if not trajet:
         conn.close()
-        return 1#jsonify({'message': 'Token invalide ou expiré'}), 401
+        return 1#jsonify({'message': 'Ce trajet n\'existe pas'}), 404
     else:
-        idCompte = compte[0]
-        #On verifie que le compte ne participe pas deja au trajet ou n'a pas deja une demande en cours
-        c.execute("SELECT * FROM TRAJET_EN_COURS_PASSAGER NATURAL JOIN TRAJET WHERE TRAJET_EN_COURS_PASSAGER.idCompte = ? OR TRAJET.idConducteur = ?", (idCompte, idCompte))
-        particpe = c.fetchone()
-        c.execute("SELECT * FROM DEMANDE_TRAJET_EN_COURS WHERE idCompte = ?", (idCompte,))
-        demande = c.fetchone()
-        if particpe or demande:
+        idConducteur = trajet[0]
+        #On recupere les infos du conducteur
+        c.execute("SELECT * FROM COMPTE WHERE idCompte = ?", (idConducteur,))
+        compte = c.fetchone()
+        #On verifie que le compte existe bien
+        if not compte:
             conn.close()
-            return 2#jsonify({'message': 'Requête refusée : vous êtes déjà un participant du trajet'}), 403
+            return 2#jsonify({'message': 'Cet utilisateur n\'existe pas'}), 404
         else:
-            #On verifie le nombre de places restantes
-            c.execute("SELECT nbPlacesRestantes FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
-            nbPlacesRestantes = c.fetchone()[0]
-            if nbPlaces > nbPlacesRestantes:
-                conn.close()
-                return 3#jsonify({'message': 'Requête refusée : le nombre de places demandées est supérieure au nb disponible'}), 403
-            else:
-                c.execute("INSERT INTO DEMANDE_TRAJET_EN_COURS VALUES (?, ?, ?, ?)", (idCompte, idTrajet, nbPlaces, 'en cours'))
-                conn.commit()
-                conn.close()
-                return 'OK'#jsonify({'message': 'La demande a bien été prise en compte.'}), 200
-
-#print(demandeTrajet('9f36ad8ef1718c3c2258025e06e7eb2d', 3, 2))
-
-
-def quitterTrajet(token, idTrajet):
-    conn = sqlite3.connect('../database.db')
-    c = conn.cursor()
-    #On recupere l'id du conducteur
-    c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
-    compte = c.fetchone()
-    if not compte:
-        conn.close()
-        return 1#jsonify({'message': 'Token invalide ou expiré'}), 401
-    else:
-        idCompte = compte[0]
-        #On vérifie que l'utilisateur n'est pas le conducteur du trajet
-        c.execute("SELECT idConducteur FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
-        if idCompte == c.fetchone()[0]:
+            #On recupere les noms de colonnes
+            col_names = [desc[0] for desc in c.description]
+            compte = {col_names[i]: compte[i] for i in range(len(col_names))}
             conn.close()
-            return 2#jsonify({'message': 'Requête refusée : vous ne pouvez pas quitter un trajet si vous êtes le conducteur'}), 403
-        else:
-            #On test si l'utilisateur est bien passager du trajet
-            c.execute("SELECT * FROM TRAJET_EN_COURS_PASSAGER WHERE idTrajet = ?", (idTrajet,))
-            if not c.fetchone():
-                conn.close()
-                return 3#jsonify({'message': 'Requête refusée : vous ne pouvez pas quitter un trajet si vous n\'y participez pas'}), 403
-            else:
-                #On peut quitter le trajet
-                c.execute("DELETE FROM TRAJET_EN_COURS_PASSAGER WHERE idTrajet = ? AND idCompte = ?", (idTrajet, idCompte))
-                conn.commit()
-                return 'OK'#jsonify({'message': 'La demande d\'annulation de participation a bien été prise en compte.'}), 200
+            return compte#jsonify(compte), 200
 
-print(quitterTrajet('9f36ad8ef1718c3c2258025e06e7eb2d', 1))
+print(getConducteur(1))

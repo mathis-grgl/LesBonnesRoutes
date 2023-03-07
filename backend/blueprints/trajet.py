@@ -358,3 +358,31 @@ def quitterTrajet(token, idTrajet):
                     c.execute("DELETE FROM TRAJET_EN_COURS_PASSAGER WHERE idTrajet = ? AND idCompte = ?", (idTrajet, idCompte))
                     conn.commit()
                     return jsonify({'message': 'La demande d\'annulation de participation a bien été prise en compte.'}), 200
+
+
+
+@trajet_bp.route('/conducteur/<int:idTrajet', methods=['POST'])
+def getConducteur(idTrajet):
+    conn = sqlite3.connect('../database.db')
+    c = conn.cursor()
+    #On vérifie que le trajet existe
+    c.execute("SELECT idConducteur FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
+    trajet = c.fetchone()
+    if not trajet:
+        conn.close()
+        return jsonify({'message': 'Ce trajet n\'existe pas'}), 404
+    else:
+        idConducteur = trajet[0]
+        #On recupere les infos du conducteur
+        c.execute("SELECT * FROM COMPTE WHERE idCompte = ?", (idConducteur,))
+        compte = c.fetchone()
+        #On verifie que le compte existe bien
+        if not compte:
+            conn.close()
+            return jsonify({'message': 'Cet utilisateur n\'existe pas'}), 404
+        else:
+            #On recupere les noms de colonnes
+            col_names = [desc[0] for desc in c.description]
+            compte = {col_names[i]: trajet[i] for i in range(len(col_names))}
+            conn.close()
+            return jsonify(compte), 200
