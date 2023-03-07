@@ -151,4 +151,34 @@ def getConducteur(idTrajet):
             conn.close()
             return compte#jsonify(compte), 200
 
-print(getConducteur(1))
+#print(getConducteur(1))
+
+def annuleTrajet(token, idTrajet):
+    conn = sqlite3.connect('../database.db')
+    c = conn.cursor()
+    #On recupere l'id du conducteur
+    c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
+    compte = c.fetchone()
+    if not compte:
+        conn.close()
+        return 1#jsonify({'message': 'Token invalide ou expiré'}), 401
+    else:
+        idCompte = compte[0]
+        #On vérifie que l'utilisateur est le conducteur du trajet
+        c.execute("SELECT idConducteur FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
+        trajet = c.fetchone()
+        if not trajet:
+            conn.close()
+            return 2#jsonify({'message': 'Ce trajet n\'existe pas'}), 404
+        else:
+            if idCompte != trajet[0]:
+                conn.close()
+                return 3#jsonify({'message': 'Requête refusée : vous devez être le conducteur pour annuler un trajet'}), 403
+            else:
+                #On peut annuler le trajet
+                c.execute("DELETE FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
+                conn.commit()
+                conn.close()
+                return 'OK'#jsonify({'message': 'Le trajet a bien été annulé.'}), 200
+
+print(annuleTrajet('9f36ad8ef1718c3c2258025e06e7eb2d', 2))
