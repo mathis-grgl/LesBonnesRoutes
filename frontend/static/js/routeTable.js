@@ -1,5 +1,5 @@
-function getAccountTable () {
-    var table = new DataTable('#accountTable', {
+function getRouteTable () {
+    var table = new DataTable('#routeTable', {
         language: {
             "emptyTable": "Aucune donnée disponible dans le tableau",
             "loadingRecords": "Chargement...",
@@ -246,17 +246,17 @@ function getAccountTable () {
             "thousands": " "
         },
         'columns': [
-          { data: 'nom' }, /* index - 0 */
-          { data: 'genre' }, /* index - 1 */
-          { data: 'photo' }, /* index - 2 */
-          { data: 'email' }, /* index - 3 */
-          { data: 'telephone' }, /* index - 4 */
-          { data: 'note' }, /* index - 5 */
+          { data: 'depart' }, /* index - 0 */
+          { data: 'arrivee' }, /* index - 1 */
+          { data: 'date_depart' }, /* index - 2 */
+          { data: 'prix' }, /* index - 3 */
+          { data: 'nb_places_restantes' }, /* index - 4 */
+          { data: 'statut' }, /* index - 5 */
           { data: 'modifier' }, /* index - 6 */
           { data: 'supprimer' } /* index - 7 */
        ],
        'columnDefs': [ {
-          'targets': [2,6,7], /* column index */
+          'targets': [6,7], /* column index */
           'orderable': false, /* true or false */
        }]
     });

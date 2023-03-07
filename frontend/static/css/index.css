@@ -1,7 +1,7 @@
 section[run="dialog"] {
     position: absolute;
-    top: 60%;
-    left: 300px;
+    top: 300%;
+    left: 50px;
     transform: translate(-50%, -50%);
     z-index: 9999;
     background-color: #ffffff;
@@ -87,4 +87,14 @@ section[run="dialog"] {
   #fromSlider {
     height: 0;
     z-index: 1;
+  }
+
+  .displayNumber {
+    display: flex;
+    vertical-align: middle;
+  }
+
+  .inputNumber {
+    margin-top: 7px;
+    margin-left: 5px;
   }

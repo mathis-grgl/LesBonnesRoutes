@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="fr-FR">
+    <head>
+        {% set title='Trajet' %}
+        {% include 'head.html' %}
+        <link rel="stylesheet" href="/static/css/trajet.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.css" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+    </head>
+    <body>
+        {% include 'header.html' %}
+        <script src="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+
+        {% set section_name='Trajet' %}
+        {% include 'inner-page.html' %}
+
+        {% include 'trajet/inner_trajet.html' %}
+
+        {% include 'footer.html' %}
+        
+        {% include 'scripts-required.html' %}
+        <script src="/static/js/trajet.js"></script>
+    </body>
+</html>

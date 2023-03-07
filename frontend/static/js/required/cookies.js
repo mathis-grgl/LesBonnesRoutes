@@ -1,13 +1,15 @@
 // Fonction pour créer un cookie avec un token
 function createTemporaryCookie(token) {
-  document.cookie = "token=" + token + "; max-age=0";
+  document.cookie = "token=" + token + "; path=/";
 }
 
+
 function createInfiniteCookie(token) {
-  // Cookie valide 1 an
+  // Cookie valide 5 jours
   const expirationDate = new Date();
   expirationDate.setFullYear(expirationDate.getFullYear() + 1);
   const expirationString = expirationDate.toUTCString();
+  console.log("token=" + token + "; expires=" + expirationString + "; path=/");
   document.cookie = "token=" + token + "; expires=" + expirationString + "; path=/";
 }
 
@@ -27,5 +29,3 @@ function getCookieToken() {
 function deleteCookie(token) {
   document.cookie = `token=${token}; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;`;
 }
-
-

@@ -44,7 +44,7 @@ body {
   right: 20px;
   transform: translateY(-50%);
   width: 20px;
-  color: #f9f9f9;
+  color: #767676;
   transition: all 0.2s;
 }
 
@@ -379,4 +379,32 @@ input:focus {
 
 .social-container a:hover {
   border: 1px solid #67ac5b;
+}
+
+
+/* Tooltip */
+.tooltip {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 100%;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 0;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
 }

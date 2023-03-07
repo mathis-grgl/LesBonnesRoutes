@@ -1,0 +1,155 @@
+<section class="section privacy-section" id="next">
+    <div class="container">
+        <div class="container-fluid tailleBloc" data-aos="fade-up" data-aos-delay="100">
+          <div class="row">
+            <div class="col-xl-8 mt-3 mb-5 mb-xl-0">
+              <div class="shadow">
+
+
+                <!-- La ligne en dessous permet de garder l'image au dessus du texte -->
+                <!--<div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4"></div>-->
+                
+                <div class="card-body pt-0">
+                  <div class="row">
+                    <div class="col profil">
+                        <!-- Le bloc en dessous permet d'afficher l'image -->
+                        <div class="row justify-content-left">
+                            <img id="image" src="/static/images/person_2.jpg" class="rounded-circle imgtailleprofile">
+                        </div>
+                      <div class="card-profile-stats d-flex justify-content-left">
+
+                        <!-- Les lignes en dessous permettent d'afficher le nombre de trajets -->
+                        <div class="heading" id="nbtrajets"> 
+                          <span class="description">Trajets</span>
+                        </div>
+
+                        <!-- Les lignes en dessous permettent d'afficher le nombre d'avis -->
+                        <div class="heading" id="nbnotes">
+                          <span class="description">Avis</span>
+                        </div>
+
+                      </div>
+
+                      <!-- Les lignes en dessous permettent d'afficher le nom et le prénom et le sexe -->
+                        <h3 id="prenom">
+                        </h3>
+                        
+                        <!-- Les lignes en dessous permettent d'afficher les étoiles -->
+                        <i class="fa fa-star yellow-star" aria-hidden="true" id="rating-star-1" style="opacity: 0;"></i>
+                        <i class="fa fa-star" aria-hidden="true" id="rating-star-2" style="opacity: 0;"></i>
+                        <i class="fa fa-star" aria-hidden="true" id="rating-star-3" style="opacity: 0;"></i>
+                        <i class="fa fa-star" aria-hidden="true" id="rating-star-4" style="opacity: 0;"></i>
+                        <i class="fa fa-star"  aria-hidden="true"id="rating-star-5" style="opacity: 0;"></i>
+                    </div>
+
+                    <div class="col infosDepart">
+                        <h3>
+                            Lieu de départ :
+                        </h3>
+                        <div class="heading">
+                            <p class="description" id="depart"></p>
+                        </div>
+        
+                        <h3>
+                            Lieu d'arrivée :
+                        </h3>
+                        <div class="heading">
+                            <p class="description" id="arrivee"></p>
+                        </div>
+
+                        <h3>
+                            Places restantes :
+                        </h3>
+                        <div class="heading">
+                            <p class="description" id="placesRestantes"></p>
+                        </div>
+                    </div>
+
+                    <div class="col infosDepart">
+                        <h3>
+                            Heure de départ :
+                        </h3>
+                        <div class="heading">
+                            <p class="description" id="heure"></p>
+                        </div>
+        
+                        <h3>
+                            Nombre de places :
+                        </h3>
+                        <div class="heading">
+                            <p class="description" id="places"></p>
+                        </div>
+
+                        <h3>
+                            Date :
+                        </h3>
+                        <div class="heading">
+                            <p class="description" id="date"></p>
+                        </div>
+        
+                        <h3>
+                            Prix :
+                        </h3>
+                        <div class="heading">
+                            <p class="description" id="prix">€</p>
+                        </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                <!-- Affiche une ligne de séparation -->
+                <hr class="my-4">
+
+                <div class="row infosTrajet">
+                    <div class="col">
+                        <h3>
+                            Précision sur le lieu de RDV :
+                        </h3>
+                        <div class="heading">
+                            <p class="description" id="infoLieu"></p>
+                        </div>
+                    </div>
+                    
+                    <div class="col">
+                        <h3>
+                            Contraintes/Commentaires :
+                        </h3>
+                        <div class="heading">
+                            <p class="description" id="contraintes"></p>
+                        </div>
+                    </div>
+                    
+                    <div class="col">
+                        <h3>
+                            Lieu(x) intérmediaire(s) :
+                        </h3>
+                        <div class="heading">
+                            <p class="description" id="lieu"></p>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <button class="btn btn-success btn-block text-white" style="width: 90%; margin-left: 5%;" onclick="openPopup()">Demander à participer</button>
+                <br>
+
+              </div>
+            </div>
+            <div class="card-body pt-0 shadow" id="map" class="map" style="height: 500px; margin-top: 20px;">
+                <!-- Emplacement pour afficher une map depuis javascript -->
+                <script src="/static/js/map.js"></script>
+            </div>
+          </div>
+        </div>
+    </div>
+  </section>
+
+<div id="popup-container">
+    <div id="popup">
+        <textarea placeholder="Saisissez votre texte ici" id="commentary"></textarea>
+        <div class="form_control_container__time">Nombres de places à réserver : </div>
+        <input class="form_control_container__time__input" type="number" id="nbPlacesInput" value="1" min="1" max="5"/>
+        <button class="btn btn-success btn-block text-white" onclick="closePopup()">Fermer</button>
+        <button class="btn btn-success btn-block text-white" onclick="askJourney(event)">Envoyer</button>
+    </div>
+</div>

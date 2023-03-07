@@ -1,0 +1,35 @@
+{
+    "type": "object",
+    "properties": {
+        "nomCompte": {
+            "type": "string",
+            "pattern": "^[A-Za-z-' ]+$"
+        }, 
+        "prenomCompte": {
+            "type": "string",
+            "pattern": "^[A-Za-z-' ]+$"
+        }, 
+        "email": {
+            "type": "string",
+            "pattern": ".+@.+\\.[A-Za-z]{2,}"
+        }, 
+        "genre": {
+            "type": "string",
+            "pattern": "^homme|femme|autre$"
+        }, 
+        "voiture": {
+            "type": "boolean"
+        }, 
+        "telephone": {
+            "type": "string",
+            "pattern": "^[0-9]{10}$"
+        }, 
+        "mdp": {
+            "type": "string",
+            "pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$"
+        }, 
+        "notificationMail": {
+            "type": "boolean"
+        }
+    }
+}
