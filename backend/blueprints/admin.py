@@ -150,6 +150,14 @@ def getRoutes():
 
 
 
+#Modifier un compte côté admin
+@admin_bp.route('/modifCompte/<string:token>/<int:idCompte>')
+def modifCompte(token, idCompte):
+    return None
+
+
+
+
 #Modifier un trajet côté admin
 @admin_bp.route('/modifCompte/<string:token>/<int:idTrajet>', methods=['POST'])
 def modifTrajet(token, idTrajet):

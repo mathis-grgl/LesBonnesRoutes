@@ -185,8 +185,6 @@ def trajetsCompte(token):
         conn.commit()
         conn.close()
 
-        print(trajets)
-
         # Retour de la réponse avec code 200
         return jsonify(trajets), 200
     else:
@@ -302,6 +300,8 @@ def deleteTrajet(token, idTrajet):
 
 @trajet_bp.route('/demandeTrajet/<string:token>/<int:idTrajet>/<int:nbPlaces>', methods=['POST'])
 def demandeTrajet(token, idTrajet, nbPlaces):
+    commentaire = request.get_json().get('commentaire')
+
     conn = sqlite3.connect('../database.db')
     c = conn.cursor()
     #On recupere l'id du conducteur
@@ -328,7 +328,12 @@ def demandeTrajet(token, idTrajet, nbPlaces):
                 conn.close()
                 return jsonify({'message': 'Requête refusée : le nombre de places demandées est supérieure au nb disponible'}), 403
             else:
-                c.execute("INSERT INTO DEMANDE_TRAJET_EN_COURS VALUES (?, ?, ?, ?)", (idCompte, idTrajet, nbPlaces, 'en cours'))
+                #On vérifie s'il y a un commentaire
+                if not commentaire:
+                    c.execute("INSERT INTO DEMANDE_TRAJET_EN_COURS VALUES (?, ?, ?, ?)", (idCompte, idTrajet, nbPlaces, 'en cours'))
+                else:
+                    c.execute("INSERT INTO DEMANDE_TRAJET_EN_COURS VALUES (?, ?, ?, ?, ?)", (idCompte, idTrajet, nbPlaces, 'en cours', commentaire))
+
                 conn.commit()
                 conn.close()
                 return jsonify({'message': 'La demande a bien été prise en compte.'}), 200
