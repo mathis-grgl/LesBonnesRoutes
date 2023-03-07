@@ -69,6 +69,10 @@ def mes_trajets():
 def mes_trajets_crees():
     return render_template('mes_trajets/mes_trajets_crees.html')
 
+@app.route('/creer_trajet')
+def creer_trajet():
+    return render_template('mes_trajets/creer_trajet.html')
+
 
 @app.route('/trajet')
 def trajet():
