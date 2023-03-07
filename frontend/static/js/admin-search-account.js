@@ -34,7 +34,8 @@ $(document).ready(function () {
         // Ajout de la photo
         let tdImg = document.createElement("td");
         let img = document.createElement("img");
-        img.src = "/static/images/person_" + i + ".jpg";
+        if(account.photo != null) img.src = "/static/images/"+account.photo;
+        else img.src = "https://www.w3schools.com/howto/img_avatar.png";
         img.alt = account.nomCompte;
         img.width = 64;
         img.height = 64;
@@ -92,7 +93,7 @@ $(document).ready(function () {
         btnEdit.onclick = () => {
           location.href = "/admin/account/edit/" + account.idCompte;
         }
-        btnEdit.setAttribute("href", "/admin/account/edit/" + account.idCompte);
+        btnEdit.setAttribute("onclick", "onModifyAccount(" + account.idCompte+")");
         btnEdit.setAttribute("data-title", "Edit");
         btnEdit.setAttribute("data-toggle", "modal");
         btnEdit.setAttribute("data-target", "#edit");
@@ -156,4 +157,8 @@ function onDeleteAccount(id) {
       }
     });
   }
+}
+
+function onModifyAccount(id) {
+  location.href = "/admin/account/edit/" + id;
 }
