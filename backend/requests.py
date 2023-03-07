@@ -157,4 +157,32 @@ def acceptInTrajet(token, idCompte, idTrajet, nbPlaces, accept):
             conn.close()
             return 'Ok non'#jsonify({'message': 'La demande a bien été refusée.'}), 200
 
-print(acceptInTrajet('9f36ad8ef1718c3c2258025e06e7eb2d', 1, 3, 2, 'non'))
+#print(acceptInTrajet('9f36ad8ef1718c3c2258025e06e7eb2d', 1, 3, 2, 'non'))
+
+
+def getConducteur(idTrajet):
+    conn = sqlite3.connect('../database.db')
+    c = conn.cursor()
+    #On vérifie que le trajet existe
+    c.execute("SELECT idConducteur FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
+    trajet = c.fetchone()
+    if not trajet:
+        conn.close()
+        return 1#jsonify({'message': 'Ce trajet n\'existe pas'}), 404
+    else:
+        idConducteur = trajet[0]
+        #On recupere les infos du conducteur
+        c.execute("SELECT * FROM COMPTE WHERE idCompte = ?", (idConducteur,))
+        compte = c.fetchone()
+        #On verifie que le compte existe bien
+        if not compte:
+            conn.close()
+            return 2#jsonify({'message': 'Cet utilisateur n\'existe pas'}), 404
+        else:
+            #On recupere les noms de colonnes
+            col_names = [desc[0] for desc in c.description]
+            compte = {col_names[i]: compte[i] for i in range(len(col_names))}
+            conn.close()
+            return compte#jsonify(compte), 200
+
+print(getConducteur(3))
