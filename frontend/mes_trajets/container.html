@@ -1,5 +1,5 @@
 <section class="section privacy-section" id="next">
-    
+
     <div id="layoutSidenav">
         <div id="layoutSidenav_nav">
             <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
@@ -11,10 +11,10 @@
                             Consulter mes trajets à venir
                         </a>
 
-                        <a class="nav-link" href="/mes_trajets_crees">
+                        <!-- <a class="nav-link" href="/mes_trajets_crees">
                             <div class="sb-nav-link-icon"></div>
                             Consulter mes trajets crées
-                        </a>
+                        </a> -->
 
                         <a class="nav-link" href="/creer_trajet">
                             <div class="sb-nav-link-icon"></div>
@@ -26,30 +26,30 @@
                             Consulter mes précédents trajets
                         </a>
 
-                        
-                       
-                        
-                        
-                        
-                        
+
+
+
+
+
+
                     </div>
                 </div>
-                
+
             </nav>
         </div>
         <div id="layoutSidenav_content">
             <main>
                 <div class="container-fluid px-4">
                     <h1 class="mt-4">{{ title }}</h1>
-                    
-                    
+
+
                     <div class="card mb-4">
                         <div class="card-header">
-                            
+
                             Liste des trajets correspondants
                         </div>
                         <div class="card-body">
-                            <table id= "trajets" >
+                            <table id="trajets">
                                 <thead>
                                     <tr>
                                         <th>Ville de départ</th>
@@ -61,7 +61,8 @@
                                         <th>Prix</th>
                                         <th>Précisions du Rendez-vous</th>
                                         <th>Commentaires</th>
-                                        <th>Conducteur ou passager</th>
+                                        <th>Conducteur / Passager</th>
+                                        <th>Actions</th>
 
                                     </tr>
                                 </thead>
@@ -72,6 +73,9 @@
                                 </script>
 
                             </table>
+
+                            
+                            
                         </div>
                     </div>
                 </div>

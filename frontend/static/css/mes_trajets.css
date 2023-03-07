@@ -15,36 +15,74 @@
     padding: 20px;
   } */
   
-  h1 {
-    font-size: 2em;
+  /* * {
     margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+  } */
+  
+  h1 {
+    margin-bottom: 20px;
   }
   
   table {
-    border-collapse: collapse;
     width: 100%;
-    margin-top: 20px;
+    border-collapse: collapse;
+    margin-bottom: 20px;
   }
   
-  thead {
-    background-color: #333;
-    color: #fff;
-  }
-  
-  th,
-  td {
-    text-align: center;
+  th, td {
     padding: 10px;
-    border: 1px solid #ccc;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
   }
   
-  tbody tr:nth-child(even) {
+  th {
     background-color: #f2f2f2;
   }
   
-  tbody tr:hover {
-    background-color: #ddd;
+  .edit-btn,
+  .delete-btn,
+  .details-btn,
+  .cancel-btn {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
   }
+  
+  .edit-btn:hover,
+  .delete-btn:hover,
+  .details-btn:hover,
+  .cancel-btn:hover {
+    color: #555;
+  }
+  
+  .edit-btn i,
+  .delete-btn i,
+  .details-btn i,
+  .cancel-btn i {
+    font-size: 1.2rem;
+  }
+  /* button {
+    margin-right: 10px;
+ } */
+
+ .div-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* créer 3 colonnes de largeur égale */
+  grid-gap: 10px; /* ajouter une marge de 10 pixels entre chaque bouton */
+}
+
+button {
+  width: 70%; /* définir la largeur de chaque bouton à 100% */
+  
+}
+
   
 
 
