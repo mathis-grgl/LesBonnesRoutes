@@ -458,3 +458,91 @@ def acceptInTrajet(token, idCompte, idTrajet, nbPlaces, accept):
         else:
             conn.close()
             return jsonify({'message': 'accept doit être à oui ou non.'}), 403
+
+
+
+
+@trajet_bp.route('/modifTrajet/<string:token>/<int:idTrajet>', methods=['POST'])
+def modifTrajet(token, idTrajet):
+    conn = sqlite3.connect('../database.db')
+    c = conn.cursor()
+    #On recupere l'id du conducteur
+    c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
+    compte = c.fetchone()
+    if not compte:
+        conn.close()
+        return jsonify({'message': 'Token invalide ou expiré'}), 401
+    else:
+        idCompte = compte[0]
+        #On verifie que l'utilisateur est bien le conducteur du trajet et que le trajet existe
+        c.execute("SELECT idConducteur FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
+        trajet = c.fetchone()
+        if not trajet:
+            conn.close()
+            return jsonify({'message': 'Ce trajet n\'existe pas'}), 404
+        else:
+            idConducteur = trajet[0]
+            if not idCompte == idConducteur:
+                conn.close()
+                return jsonify({'message': 'Vous ne pouvez modifier le trajet que si vous êtes conducteur'}), 403
+            else:
+                #On peut modifier le trajet
+                data = request.get_json()
+                heureDepart = data.get('heureDepart')
+                dateDepart = data.get('dateDepart')
+                nbPlaces = data.get('nbPlaces')
+                prix = data.get('prix')
+                commentaires = data.get('commentaires')
+                precisionRdv = data.get('precisionRdv')
+                villeDepart = data.get('villeDepart')
+                villeArrivee = data.get('villeArrivee')
+
+                #On verifie qu'il ne manque pas de donnees
+                if not heureDepart or not dateDepart or not nbPlaces or not prix or not villeDepart or not villeArrivee:
+                    conn.close()
+                    return jsonify({'message': 'Il manque une ou plusieurs informations'}), 401
+                else:
+                    #On recupere les id des villes
+                    c.execute("SELECT idVille FROM VILLE WHERE nomVille = ?", (villeDepart,))
+                    ville = c.fetchone()
+                    if not ville:
+                        conn.close()
+                        return jsonify({'message': 'VilleDepart inexistante'}), 404
+                    else:
+                        villeDepart = ville[0]
+                    c.execute("SELECT idVille FROM VILLE WHERE nomVille = ?", (villeArrivee,))
+                    ville = c.fetchone()
+                    if not ville:
+                        conn.close()
+                        return jsonify({'message': 'VilleArrivee inexistante'}), 404
+                    else:
+                        villeArrivee = ville[0]
+
+                    #On reformate la date
+                    dateDepart = datetime.strptime(dateDepart, '%d %B, %Y').strftime('%Y%m%d')
+
+
+                    query = None
+                    values = ()
+                    if not commentaires:
+                        if not precisionRdv:
+                            query = "UPDATE TRAJET SET heureDepart = ?, dateDepart = ?, nbPlaces = ?, prix = ?, villeDepart = ?, villeArrivee = ? WHERE idTrajet = ?"
+                            values = (heureDepart, dateDepart, nbPlaces, prix, villeDepart, villeArrivee, idTrajet)
+                        else:
+                            query = "UPDATE TRAJET SET heureDepart = ?, dateDepart = ?, nbPlaces = ?, prix = ?, villeDepart = ?, villeArrivee = ?, precisionRdv = ? WHERE idTrajet = ?"
+                            values = (heureDepart, dateDepart, nbPlaces, prix, villeDepart, villeArrivee, precisionRdv, idTrajet)
+                    else:
+                        if not precisionRdv:
+                            query = "UPDATE TRAJET SET heureDepart = ?, dateDepart = ?, nbPlaces = ?, prix = ?, villeDepart = ?, villeArrivee = ?, commentaires = ? WHERE idTrajet = ?"
+                            values = (heureDepart, dateDepart, nbPlaces, prix, villeDepart, villeArrivee, commentaires, idTrajet)
+                        else:
+                            query = "UPDATE TRAJET SET heureDepart = ?, dateDepart = ?, nbPlaces = ?, prix = ?, villeDepart = ?, villeArrivee = ?, commentaires = ?, precisionRdv = ? WHERE idTrajet = ?"
+                            values = (heureDepart, dateDepart, nbPlaces, prix, villeDepart, villeArrivee, commentaires, precisionRdv, idTrajet)
+                    if query:
+                        c.execute(query, values)
+                        conn.commit()
+                        conn.close()
+                        return jsonify({'message': 'Le trajet a bien été modifié.'}), 200
+                    else:
+                        conn.close()
+                        return jsonify({'message': 'Probleme au niveau de la requête'}), 401
