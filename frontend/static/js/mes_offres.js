@@ -40,7 +40,9 @@ function charger_trajets() {
                     ligne.append($('<td>').text(trajet.prix + '€'));
                     ligne.append($('<td>').text(trajet.precisionRdv));
                     ligne.append($('<td>').text(trajet.commentaires));
-                    tbody2.append(ligne);
+                    ligne.append($('<td>').text("Conducteur"));
+
+                    tbody.append(ligne);
 
 
                 } else {
@@ -55,6 +57,8 @@ function charger_trajets() {
                     row.append($('<td>').text(trajet.prix + '€'));
                     row.append($('<td>').text(trajet.precisionRdv));
                     row.append($('<td>').text(trajet.commentaires));
+                    row.append($('<td>').text("Passager"));
+                    
                     tbody.append(row);
 
                 }
