@@ -41,6 +41,22 @@ function charger_trajets() {
                     ligne.append($('<td>').text(trajet.precisionRdv));
                     ligne.append($('<td>').text(trajet.commentaires));
                     ligne.append($('<td>').text("Conducteur"));
+                    ligne.append(
+                        $('<td>').append(
+                            $('<div>').addClass('div-container')
+                                .append(
+                                    $('<button>').addClass('edit-btn')
+                                        .html("<i class='fas fa-edit'></i>"),
+                                    $('<button>').addClass('delete-btn')
+                                        .html("<i class='fas fa-trash'></i>")
+
+                                )
+                        )
+                    );
+
+                    // ligne.append($('<td>').append($('<div>')).addClass('div-container')
+                    // .append($('<button>')).addClass('edit-btn').html("<i class="fas fa-edit"></i>")
+                    // )
 
                     tbody.append(ligne);
 
@@ -58,7 +74,19 @@ function charger_trajets() {
                     row.append($('<td>').text(trajet.precisionRdv));
                     row.append($('<td>').text(trajet.commentaires));
                     row.append($('<td>').text("Passager"));
-                    
+                    row.append(
+                        $('<td>').append(
+                            $('<div>').addClass('div-container')
+                                .append(
+                                    $('<button>').addClass('details-btn')
+                                        .html("<i class='fas fa-info'></i>"),
+                                    $('<button>').addClass('cancel-btn')
+                                        .html("<i class='fas fa-times'></i>")
+
+                                )
+                        )
+                    );
+
                     tbody.append(row);
 
                 }
@@ -70,7 +98,7 @@ function charger_trajets() {
             }
 
             table.append(tbody);
-            table2.append(tbody2);
+            // table2.append(tbody2);
             // let nbCompte = data.length;
             //     let table = $('#accountTable');
             //     let tbody = $("<tbody>");
@@ -193,7 +221,7 @@ $('#forminput').submit(function (event) {
 
     let dateObject = moment(date, 'YYYY/MM/DD');
     let dateFormatted = dateObject.format('D MMMM, YYYY');
-    
+
 
     console.log('test : ' + dateFormatted);
 
@@ -203,14 +231,14 @@ $('#forminput').submit(function (event) {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            'heureDepart' : heure,
-            'dateDepart' : dateFormatted,
-            'nbPlaces' : nbPlaces,
-            'prix' : prix,
-            'commentaires' : commentaires,
-            'precisionRdv' : precision,
-            'villeDepart' : vd,
-            'villeArrivee' : va
+            'heureDepart': heure,
+            'dateDepart': dateFormatted,
+            'nbPlaces': nbPlaces,
+            'prix': prix,
+            'commentaires': commentaires,
+            'precisionRdv': precision,
+            'villeDepart': vd,
+            'villeArrivee': va
         })
     })
         .then(reponse => {
