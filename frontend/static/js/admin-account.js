@@ -15,7 +15,7 @@ $(document).ready(function () {
     // Si l'id de l'utilisateur est null, on affiche une alerte et on redirige vers la page de gestion des comptes
     else if (!id.match(/^[0-9]+$/)) {
         alert("Veuillez sélectionner un utilisateur");
-        window.location.href = "../../search-account";
+        window.location.href = "../search-account";
     } else {
 
 

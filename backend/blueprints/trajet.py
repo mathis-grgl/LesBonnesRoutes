@@ -155,7 +155,7 @@ def trajetsCompte(token):
             SELECT DISTINCT TRAJET.*
             FROM TRAJET
             LEFT JOIN TRAJET_EN_COURS_PASSAGER ON TRAJET.idTrajet = TRAJET_EN_COURS_PASSAGER.idTrajet
-            WHERE TRAJET_EN_COURS_PASSAGER.idCompte = ? OR TRAJET.idConducteur = ?
+            WHERE (TRAJET_EN_COURS_PASSAGER.idCompte = ? OR TRAJET.idConducteur = ?) AND TRAJET.statusTrajet!='termine'
         """
 
         c.execute(query, (idCompte, idCompte))

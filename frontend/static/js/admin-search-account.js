@@ -20,7 +20,6 @@ $(document).ready(function () {
     })
     .then(data => {
       let nbCompte = data.length;
-      let user = [];
       for (let i = 0; i < nbCompte; i++) {
         let account = data[i];
         
@@ -29,7 +28,10 @@ $(document).ready(function () {
 
         // Ajout du nom d'utilisateur
         let tdNom = document.createElement("td");
-        tdNom.textContent = account.nomCompte + ' ' + account.prenomCompte;
+        let aUsername = document.createElement("a");
+        aUsername.href = "account/" + account.idCompte;
+        aUsername.textContent = account.nomCompte + ' ' + account.prenomCompte;;
+        tdNom.appendChild(aUsername);
         tr.appendChild(tdNom);
 
         // Ajout du genre
