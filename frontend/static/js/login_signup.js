@@ -79,9 +79,9 @@ function displayMessage(res, message){
 
 function signIn(event) {
   const form = document.querySelector('#signup-form');
+  event.preventDefault(); // Prevent the default behavior of the button click
 
   if (checkValue('name-sign') && checkValue('last-name-sign') && checkValue("gender-sign") && checkValue('email-sign') && checkValue('phone-sign') &&checkValue("address-sign") && checkValue("city-sign") && checkValue("postal-sign") && checkValue("country-sign") && checkValue('password-sign')) {
-    event.preventDefault(); // Prevent the default behavior of the button click
     
     fetch('/compte/createCompte', {
       method: 'POST',
