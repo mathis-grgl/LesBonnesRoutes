@@ -19,14 +19,11 @@ function charger_trajets() {
             let nbTrajets = data.length;
             console.log(nbTrajets);
             let table = $('#trajets');
-            let table2 = $('#trajets_crees')
             let tbody = $("<tbody>");
-            let tbody2 = $("<tbody>");
             for (let i = 0; i < nbTrajets; i++) {
                 let trajet = data[i];
                 console.log(trajet.idCompte);
                 console.log(trajet.idConducteur);
-
                 if (trajet.idCompte == trajet.idConducteur) {
                     console.log("Le trajet correspond à un trajet que l'utilisateur connecté a crée.")
                     let ligne = $("<tr>");
@@ -53,10 +50,6 @@ function charger_trajets() {
                                 )
                         )
                     );
-
-                    // ligne.append($('<td>').append($('<div>')).addClass('div-container')
-                    // .append($('<button>')).addClass('edit-btn').html("<i class="fas fa-edit"></i>")
-                    // )
 
                     tbody.append(ligne);
 
@@ -104,47 +97,3 @@ function charger_trajets() {
         });
 }
 
-
-
-
-
-
-// Ajouter un écouteur de clic au bouton "Modifier"
-// $(document).on('click', '.edit-btn', function() {
-//     console.log('Le bouton "Modifier" a été cliqué.');
-//   });
-  
-//   // Ajouter un écouteur de clic au bouton "Supprimer"
-//   $(document).on('click', '.delete-btn', function() {
-//     console.log('Le bouton "Supprimer" a été cliqué.');
-//   });
-  
-
-
-
-
-
-
-
-// Ajouter des événements aux boutons
-// $('.edit-btn').on('click', function() {
-//     // Code pour la modification du trajet
-//     event.preventDefault();
-//     console.log('Modifier le trajet');
-//   });
-  
-//   $('.delete-btn').on('click', function() {
-//     // Code pour la suppression du trajet
-//     console.log('Supprimer le trajet');
-//   });
-  
-//   $('.details-btn').on('click', function() {
-//     // Code pour afficher les détails du trajet
-//     console.log('Afficher les détails du trajet');
-//   });
-  
-//   $('.cancel-btn').on('click', function() {
-//     // Code pour annuler la participation au trajet
-//     console.log('Annuler la participation');
-//   });
-  
