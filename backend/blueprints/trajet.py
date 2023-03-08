@@ -267,7 +267,7 @@ def createTrajet(token):
 
 
 
-@trajet_bp.route('/deleteTrajet/<string:token>/<int:idTrajet>', methods=['POST'])
+@trajet_bp.route('/deleteTrajet/<string:token>/<int:idTrajet>', methods=['GET'])
 def deleteTrajet(token, idTrajet):
     conn = sqlite3.connect('../database.db')
     c = conn.cursor()

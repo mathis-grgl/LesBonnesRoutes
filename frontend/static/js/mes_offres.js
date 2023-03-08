@@ -41,12 +41,13 @@ function charger_trajets() {
                     ligne.append($('<td>').text(trajet.commentaires));
                     ligne.append($('<td>').text("Conducteur"));
                     ligne.append(
-                        $('<td>').append(
+                        $('<td>').attr('id', trajet.idTrajet)
+                        .append(
                             $('<div>').addClass('div-container')
                                 .append(
-                                    $('<button>').addClass('edit-btn')
+                                    $('<button>').addClass('edit-btn').attr('id', trajet.idTrajet)
                                         .html("<i class='fas fa-edit'></i>"),
-                                    $('<button>').addClass('delete-btn')
+                                    $('<button>').addClass('delete-btn').attr('id', trajet.idTrajet)
                                         .html("<i class='fas fa-trash'></i>")
 
                                 )
@@ -75,16 +76,16 @@ function charger_trajets() {
                     row.append($('<td>').text("Passager"));
                     row.append(
                         $('<td>').append(
-                            $('<div>').addClass('div-container')
-                                .append(
-                                    $('<button>').addClass('details-btn')
-                                        .html("<i class='fas fa-info'></i>"),
-                                    $('<button>').addClass('cancel-btn')
-                                        .html("<i class='fas fa-times'></i>")
-
-                                )
-                        )
+                                $('<div>').addClass('div-container')
+                                    .append(
+                                        $('<button>').addClass('details-btn').attr('id', trajet.idTrajet)
+                                            .html("<i class='fas fa-info'></i>"),
+                                        $('<button>').addClass('cancel-btn').attr('id', trajet.idTrajet)
+                                            .html("<i class='fas fa-times'></i>")
+                                    )
+                            )
                     );
+                    
 
                     tbody.append(row);
 
