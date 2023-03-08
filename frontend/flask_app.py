@@ -56,7 +56,7 @@ def account():
 def about():
     return render_template('about/about.html')
 
-@app.route('/modifier_trajet')
+@app.route('/modifier_trajet', methods=['POST', 'GET'])
 def modifier_trajet():
     return render_template('editTrajet/editTrajet.html')
 
