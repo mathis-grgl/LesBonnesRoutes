@@ -60,6 +60,10 @@ def about():
 def modifier_trajet():
     return render_template('editTrajet/editTrajet.html')
 
+@app.route('/participants',methods=['POST', 'GET'])
+def participants():
+    return render_template('participants/participants.html')
+
 @app.route('/mes_trajets')
 def mes_trajets():
     return render_template('mes_trajets/mes_trajets.html')
