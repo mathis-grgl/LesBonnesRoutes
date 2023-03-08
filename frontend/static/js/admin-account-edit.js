@@ -1,25 +1,28 @@
 let id = null;
+let token = null;
 
 function onLoad() {
     // Récupération du token admin
-    const token = getCookieToken();
+    token = getCookieToken();
 
     // Si le token est null, on redirige vers la page de connexion
     if (token == null) {
         window.location.href = "../../../login_signup";
+    } 
+    
+    else {
+
+        // get last character of url
+        let url = window.location.href;
+        id = url.substring(url.lastIndexOf('/') + 1);
+
+
+        // Si l'id de l'utilisateur est null, on affiche une alerte et on redirige vers la page de gestion des comptes
+        if (!id.match(/^[0-9]+$/)) {
+            alert("Veuillez sélectionner un utilisateur");
+            window.location.href = "../../search-account";
+        }
     }
-
-    // get last character of url
-    let url = window.location.href;
-    id = url.substring(url.lastIndexOf('/') + 1);
-
-
-    // Si l'id de l'utilisateur est null, on affiche une alerte et on redirige vers la page de gestion des comptes
-    if (!id.match(/^[0-9]+$/)) {
-        alert("Veuillez sélectionner un utilisateur");
-        window.location.href = "admin-search-account.html";
-    }
-    console.log(id);
 }
 
 
@@ -30,6 +33,8 @@ $(document).ready(function () {
     fetch('/admin/users/' + id)
         .then(response => {
             if (!response.ok) {
+                alert("L'utilisateur n'existe pas");
+                location.href = "../../search-account";
                 throw new Error('Network response was not ok');
             }
             return response.json();
@@ -125,7 +130,7 @@ $(document).ready(function () {
             valide = false;
         }
         // Indique si le numéro de téléphone est valide ou non
-        console.log("téléphone : "+ valide);
+        console.log("téléphone : " + valide);
 
         // On récupère le nom de famille
         let nom = $('input[name="nom"]').val();
@@ -137,7 +142,7 @@ $(document).ready(function () {
             valide = false;
         }
         // Indique si le nom est valide ou non
-        console.log("nom : "+ valide);
+        console.log("nom : " + valide);
 
         // On récupère l'adresse mail
         let email = $('input[name="email"]').val();
@@ -149,7 +154,7 @@ $(document).ready(function () {
             valide = false;
         }
         // Indique si l'email est valide ou non
-        console.log("email : "+ valide);
+        console.log("email : " + valide);
 
         // On récupère le prénom
         const prenomRegex = /^([a-zA-Z]{2,}(-[a-zA-Z]{2,})?\s?)+$/;
@@ -161,7 +166,7 @@ $(document).ready(function () {
             valide = false;
         }
         // Indique si le prénom est valide ou non
-        console.log("prenom : "+ valide);
+        console.log("prenom : " + valide);
 
         // On récupère les mot de passes
         let mdp = $('input[name="logpass"]').val();
@@ -197,20 +202,7 @@ $(document).ready(function () {
         }
         // Fin de la vérification des mots de passe
         // Indique si les mots de passe sont valides ou non
-        console.log("mdp : "+ valide);
-
-        // On récupère l'adresse
-        let inputadresse = $('input[name="adresse"]');
-        let adresse = inputadresse.val();
-        const adresseRegex = /^[a-zA-Z0-9 ]{2,}$/;
-        if (!adresse.match(adresseRegex) && adresse !== "") {
-            inputadresse.css('border', '2px solid red');
-            inputadresse.val('');
-            inputadresse.attr('placeholder', 'Adresse invalide');
-            valide = false;
-        }
-        // Indique si l'adresse est valide ou non
-        console.log("adresse : "+ valide);
+        console.log("mdp : " + valide);
 
         // On récupère la ville
         let inputville = $('input[name="ville"]');
@@ -223,7 +215,7 @@ $(document).ready(function () {
             valide = false;
         }
         // Indique si la ville est valide ou non
-        console.log("ville : "+ valide);
+        console.log("ville : " + valide);
 
         // On récupère le code postal
         let cp = $('input[name="codepostal"]').val();
@@ -235,7 +227,7 @@ $(document).ready(function () {
             valide = false;
         }
         // Indique si le code postal est valide ou non
-        console.log("cp : "+ valide);
+        console.log("cp : " + valide);
 
         // On récupère le genre
         let sexe = $('#genre').val();
@@ -244,7 +236,7 @@ $(document).ready(function () {
             valide = false;
         }
         // Indique si le genre est valide ou non
-        console.log("sexe : "+ valide);
+        console.log("sexe : " + valide);
 
         // On récupère les infos liées à la voiture
         let voiture = $('input[name="voiture"]:checked').val();
@@ -255,7 +247,7 @@ $(document).ready(function () {
             $('label[for="Choice1"], label[for="Choice2"], #labelvoiture').css('color', 'red');
         }
         // Indique si la voiture est valide ou non
-        console.log("voiture : "+ valide);
+        console.log("voiture : " + valide);
 
         // On récupère les infos liées aux notifs
         let notif = $('input[name="notif"]:checked').val();
@@ -266,7 +258,7 @@ $(document).ready(function () {
             $('label[for="Choice1"], label[for="Choice2"], #labelnotif').css('color', 'red');
         }
         // Indique si les notifs sont valides ou non
-        console.log("notif : "+ valide);
+        console.log("notif : " + valide);
 
 
 
@@ -276,7 +268,7 @@ $(document).ready(function () {
             alert("Le formulaire n'est pas bon. Veuillez vérifier vos informations.")
         } else {
             // Sinon on envoie les données au serveur.
-            let modif = 'account/modifCompte/' + token + '/' + id;
+            let modif = '../../modifCompte/' + token + '/' + id;
 
             let formData = new FormData($('form')[0]);
 
@@ -302,7 +294,7 @@ $(document).ready(function () {
                 })
             }).then(reponse => {
                 if (reponse.ok) {
-                    alert("Votre compte a bien été modifié.");
+                    alert("Le compte a bien été modifié.");
                     window.location.href = '/admin/search-account';
                 } else {
                     alert("Probleme dans le fetch");
