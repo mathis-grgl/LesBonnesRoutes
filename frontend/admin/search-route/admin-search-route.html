@@ -152,9 +152,9 @@
           let btnEdit = document.createElement("a");
           btnEdit.classList.add("btn", "btn-primary", "btn-xs");
           btnEdit.onclick = () => {
-            location.href = "/admin/route/edit/" + route.idCompte;
+            location.href = "/admin/route/" + route.idTrajet + "/edit/";
           }
-          btnEdit.setAttribute("href", "/admin/route/edit/" + route.idCompte);
+          btnEdit.setAttribute("href", "/admin/route/edit/" + route.idTrajet);
           btnEdit.setAttribute("data-title", "Edit");
           btnEdit.setAttribute("data-toggle", "modal");
           btnEdit.setAttribute("data-target", "#edit");
@@ -176,9 +176,9 @@
           let btnDelete = document.createElement("a");
           btnDelete.classList.add("btn", "btn-danger", "btn-xs");
           btnDelete.onclick = () => {
-            location.href = "/admin/route/delete/" + route.idCompte;
+            location.href = "/admin/route/delete/" + route.idTrajet;
           }
-          btnDelete.setAttribute("href", "/admin/route/delete/" + route.idCompte);
+          btnDelete.setAttribute("href", "/admin/route/delete/" + route.idTrajet);
           btnDelete.setAttribute("data-title", "Delete");
           btnDelete.setAttribute("data-toggle", "modal");
           btnDelete.setAttribute("data-target", "#delete");
