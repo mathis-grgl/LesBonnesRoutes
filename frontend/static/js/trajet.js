@@ -15,6 +15,7 @@ const lieu = document.getElementById("lieu");
 const nbPlacesInput = document.getElementById("nbPlacesInput");
 const commentary = document.getElementById("commentary");
 
+
 // Récuperer infos trajet
 fetch(`/trajet/trajet/${id}`, {
     method: 'POST'
@@ -40,11 +41,14 @@ fetch(`/trajet/conducteur/${id}`, {
     method: 'POST'
 })
 .then(response1 => response1.json())
-.then(data1 => {
-    //console.log(data);
-    /*nbTrajets.innerHTML = data1.nbtrajets + nbTrajets.innerHTML;
-    nbNotes.innerHTML = data1.nbnotes + nbNotes.innerHTML;*/
+.then(async data1 => { 
     nameUser.innerHTML = data1.nomCompte + " " + data1.prenomCompte;
+
+    await checkCurrentUser(data1.idCompte).then(result => {
+      if (result) {
+        document.getElementById("btnAsk").disabled = true;
+      }
+    });    
 
     switch(data1.noteCompte){
         case 1:
@@ -66,6 +70,24 @@ fetch(`/trajet/conducteur/${id}`, {
 })
 .catch(error1 => console.error(error1));
 
+
+async function checkCurrentUser(id){
+  try {
+    const response = await fetch("/compte/getInfoCompte/" + getCookieToken());
+    if (!response.ok) {
+      throw new Error("Erreur lors de l'appel à la fonction get_users: " + response.statusText);
+    }
+    const data = await response.json();
+    nbTrajets.innerHTML = data.nbtrajets + nbTrajets.innerHTML;
+    nbNotes.innerHTML = data.nbnotes + nbNotes.innerHTML;
+    return data.idCompte === id;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+}
+
+
 function openPopup() {
     document.getElementById("popup-container").style.display = "block";
     //document.body.classList.add("flou");
@@ -76,7 +98,7 @@ function closePopup() {
     //document.body.classList.remove("flou");
 }
 
-function askJourney(){
+function askJourney(event){
     event.preventDefault(); // Prevent the default behavior of the button click
   fetch(`/trajet/demandeTrajet/${getCookieToken()}/${id}/${nbPlacesInput.value}`, {
     method: 'POST',
@@ -89,9 +111,10 @@ function askJourney(){
   })
   .then(response => {
     if (response.ok) {
-        closePopup();
+        document.getElementById('popup').innerHTML = "<p>Le message a bien été envoyé</p><button class='btn btn-success btn-block text-white' onclick='closePopup()'>Fermer</button>";
       return response.json();
     } else {
+      document.getElementById('popup').innerHTML = "<p>Le message n'a pas été envoyé</p><button class='btn btn-success btn-block text-white' onclick='closePopup()'>Fermer</button>";
       throw new Error('Erreur : ' + response.status);
     }
   })

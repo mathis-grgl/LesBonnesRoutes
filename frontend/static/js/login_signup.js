@@ -40,7 +40,11 @@ function sendEmail(){
 
   
   if (regex.test(emailLog.value)) {
-    const message = "Bonjour, après une demande de récupération de votre mot de passe, voici un lien pour le récupérer. ";
+    const message = "" + 
+      "<h2>Bonjour, suite à votre demande de récupération de votre mot de passe,<br>" +
+          "cliquez ci dessous pour récuperer votre mot de passe</h2><br>" +
+      "<a href='#' style='border-radius: 10px; border: 0px; background-color: #67ac5b;>Cliquez ici</a>";
+
     const subject = "LBR Récupération mot de passe";
 
     Email.send({
