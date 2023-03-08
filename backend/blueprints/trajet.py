@@ -340,7 +340,7 @@ def demandeTrajet(token, idTrajet, nbPlaces):
 
 
 
-@trajet_bp.route('/quitterTrajet/<string:token>/<int:idTrajet>', methods=['POST'])
+@trajet_bp.route('/quitterTrajet/<string:token>/<int:idTrajet>', methods=['GET'])
 def quitterTrajet(token, idTrajet):
     conn = sqlite3.connect('../database.db')
     c = conn.cursor()
