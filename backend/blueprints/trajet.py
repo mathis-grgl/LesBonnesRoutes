@@ -567,7 +567,7 @@ def modifTrajet(token, idTrajet):
 
 
 #Recuperer toutes les demandes en cours pour un trajets
-@trajet_bp.route('/getDemandesTrajet/<string:token>/<int:idTrajet>', methods = ['POST'])
+@trajet_bp.route('/getDemandesTrajet/<string:token>/<int:idTrajet>', methods = ['GET'])
 def getDemandesTrajet(token, idTrajet):
     conn = sqlite3.connect('../database.db')
     c = conn.cursor()
