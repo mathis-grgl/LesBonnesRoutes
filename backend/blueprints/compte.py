@@ -195,28 +195,19 @@ def modifCompte(token):
     c = conn.cursor()
     c.execute("SELECT COMPTE.idCompte FROM COMPTE inner join TOKEN on COMPTE.idCompte = TOKEN.idCompte WHERE auth_token = ?", (token,))
     compte = c.fetchone()
-    idCompte = compte[0]
-    print("voici l'id du compte en fonction de son token : ", idCompte)
-    print('test')
 
     #Le token est valide et conduit bien a un compte
     if compte:
+        idCompte = compte[0]
         data = request.get_json()
-        print(data)
         email = data.get('email')
-        print(email)
+
         #On verifie l'unicite de l'email
-        idCompte = int(idCompte)
-        # c.execute("SELECT idCompte FROM COMPTE WHERE NOT(idCompte = ?)", idCompte)
-        # c.execute("SELECT idCompte, nomCompte, email FROM COMPTE WHERE NOT (idCompte = ?)", (idCompte,))
-        c.execute("SELECT COUNT(*) FROM COMPTE WHERE email = 'adresse_mail_a_verifier'")
-        test = c.fetchone()
-        print(test[0])
+        c.execute("SELECT idCompte FROM COMPTE WHERE email = ? AND NOT idCompte = ?", (email, idCompte))
+        mail = c.fetchone()
 
-
-        if len(test) > 1:
+        if mail:
             #L'adresse est deja utilisee
-            print("on est ici.")
             conn.close()
             return jsonify({'message': 'L\'adresse mail est déjà utilisée.'}), 400
 
@@ -255,12 +246,9 @@ def modifCompte(token):
             else:
                 notifs = False
 
-            # Est-ce bon ?
-            print("6")
+            
             poster = data.get('photo')
-            print(poster)
-            print("6")
-            if poster :
+            if False :
                 #Il y a une photo : on inserer le nom dans la db
                 nomPhoto = poster.filename
                 c.execute("UPDATE COMPTE SET telephone=?, prenomCompte=?, nomCompte=?, mdp=?, adresse=?, ville=?, pays=?, codePostal=?, genre=?, voiture=?, notificationMail=?, photo=? WHERE idCompte=?",
@@ -351,4 +339,3 @@ def getDemandesEnCours(token):
 
             # Retour de la réponse avec code 200
             return jsonify(trajets), 200
-
