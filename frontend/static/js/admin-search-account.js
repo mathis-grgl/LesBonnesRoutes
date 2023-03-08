@@ -96,9 +96,9 @@ $(document).ready(function () {
         //Création du bouton modifier
         let btnEdit = document.createElement("a");
         btnEdit.classList.add("btn", "btn-primary", "btn-xs");
-        btnEdit.onclick = () => {
-          location.href = "/admin/account/edit/" + account.idCompte;
-        }
+        // btnEdit.onclick = () => {
+        //   location.href = "/admin/account/edit/" + account.idCompte;
+        // }
         btnEdit.setAttribute("onclick", "onModifyAccount(" + account.idCompte+")");
         btnEdit.setAttribute("data-title", "Edit");
         btnEdit.setAttribute("data-toggle", "modal");
@@ -124,9 +124,9 @@ $(document).ready(function () {
         //Création du bouton supprimer
         let btnDelete = document.createElement("a");
         btnDelete.classList.add("btn", "btn-danger", "btn-xs");
-        btnDelete.onclick = () => {
-          location.href = "/admin/account/delete/" + account.idCompte;
-        }
+        // btnDelete.onclick = () => {
+        //   location.href = "/admin/account/delete/" + account.idCompte;
+        // }
         btnDelete.setAttribute("onclick", "onDeleteAccount(" + account.idCompte+")");
         btnDelete.setAttribute("data-title", "Delete");
         btnDelete.setAttribute("data-toggle", "modal");

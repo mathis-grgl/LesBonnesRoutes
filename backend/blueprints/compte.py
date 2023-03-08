@@ -351,3 +351,4 @@ def getDemandesEnCours(token):
 
             # Retour de la réponse avec code 200
             return jsonify(trajets), 200
+

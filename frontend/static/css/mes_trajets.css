@@ -74,13 +74,37 @@
 
  .div-container {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* créer 3 colonnes de largeur égale */
+  grid-template-columns: repeat(3, 1fr); /* créer 3 colonnes de largeur égale */
   grid-gap: 10px; /* ajouter une marge de 10 pixels entre chaque bouton */
 }
 
 button {
-  width: 70%; /* définir la largeur de chaque bouton à 100% */
+  width: 100%; /* définir la largeur de chaque bouton à 100% */
   
+}
+/* 
+button.delete-btn{
+  margin-right: 10px;
+} */
+
+button.cancel-btn {
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+  padding: 0;
+}
+
+button.cancel-btn:nth-child(0) {
+  justify-self: center;
+  vertical-align: middle;
+}
+
+
+button.delete-btn {
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+  padding: 0;
 }
 
   

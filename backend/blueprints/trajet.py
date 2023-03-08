@@ -315,7 +315,7 @@ def demandeTrajet(token, idTrajet, nbPlaces):
         #On verifie que le compte ne participe pas deja au trajet ou n'a pas deja une demande en cours
         c.execute("SELECT * FROM TRAJET_EN_COURS_PASSAGER NATURAL JOIN TRAJET WHERE TRAJET_EN_COURS_PASSAGER.idCompte = ? OR TRAJET.idConducteur = ?", (idCompte, idCompte))
         particpe = c.fetchone()
-        c.execute("SELECT * FROM DEMANDE_TRAJET_EN_COURS WHERE idCompte = ?", (idCompte,))
+        c.execute("SELECT * FROM DEMANDE_TRAJET_EN_COURS WHERE idCompte = ? AND idTrajet = ?", (idCompte,idTrajet))
         demande = c.fetchone()
         if particpe or demande:
             conn.close()
@@ -561,3 +561,49 @@ def modifTrajet(token, idTrajet):
                     else:
                         conn.close()
                         return jsonify({'message': 'Probleme au niveau de la requête'}), 401
+
+
+
+
+
+#Recuperer toutes les demandes en cours pour un trajets
+@trajet_bp.route('/getDemandesTrajet/<string:token>/<int:idTrajet>', methods = ['POST'])
+def getDemandesTrajet(token, idTrajet):
+    conn = sqlite3.connect('../database.db')
+    c = conn.cursor()
+    #On recupere l'id du conducteur
+    c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
+    compte = c.fetchone()
+    if not compte:
+        conn.close()
+        return jsonify({'message': 'Token invalide ou expiré'}), 401
+    else:
+        idCompte = compte[0]
+        #On verifie que l'utilisateur est bien le conducteur du trajet et que le trajet existe
+        c.execute("SELECT idConducteur FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
+        trajet = c.fetchone()
+        if not trajet:
+            conn.close()
+            return jsonify({'message': 'Ce trajet n\'existe pas'}), 404
+        else:
+            idConducteur = trajet[0]
+            if not idCompte == idConducteur:
+                conn.close()
+                return jsonify({'message': 'Vous ne pouvez acceder aux demandes que si vous êtes conducteur'}), 403
+            else:
+                c.execute("SELECT idCompte, nbPlaces, commentaire, nomCompte, prenomCompte, noteCompte FROM DEMANDE_TRAJET_EN_COURS NATURAL JOIN COMPTE WHERE idTrajet = ?", (idTrajet,))
+                rows = c.fetchall()
+                if not rows:
+                    conn.close()
+                    return jsonify({'message': 'Aucune demande en cours'}), 204
+                else:
+                    conn.close()
+                    # Récupération des noms de colonnes
+                    col_names = [desc[0] for desc in c.description]
+
+                    # Conversion de la date dans chaque ligne de résultat
+                    demandes = []
+                    for row in rows:
+                        demande = {col_names[i]: row[i] for i in range(len(col_names))}
+                        demandes.append(demande)
+                    return jsonify(demandes), 200
