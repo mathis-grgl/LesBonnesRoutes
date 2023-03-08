@@ -591,7 +591,7 @@ def getDemandesTrajet(token, idTrajet):
                 conn.close()
                 return jsonify({'message': 'Vous ne pouvez acceder aux demandes que si vous êtes conducteur'}), 403
             else:
-                c.execute("SELECT nbPlaces, commentaire, nomCompte, prenomCompte, noteCompte FROM DEMANDE_TRAJET_EN_COURS NATURAL JOIN COMPTE WHERE idTrajet = ?", (idTrajet,))
+                c.execute("SELECT idCompte, nbPlaces, commentaire, nomCompte, prenomCompte, noteCompte FROM DEMANDE_TRAJET_EN_COURS NATURAL JOIN COMPTE WHERE idTrajet = ?", (idTrajet,))
                 rows = c.fetchall()
                 if not rows:
                     conn.close()
