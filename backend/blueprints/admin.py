@@ -10,8 +10,8 @@ def admin_index():
     return render_template('admin/index/admin-index.html')
 
 
-@admin_bp.route('/account')
-def admin_account():
+@admin_bp.route('/account/<idCompte>')
+def admin_account(idCompte):
     return render_template('admin/account/admin-account.html')
 
 
@@ -66,10 +66,28 @@ def get_user(idCompte):
     col_names = [desc[0] for desc in c.description]
 
     # Création d'une liste de dictionnaires contenant les données
-    user = {col_names[i]: row[i] for i in range(len(col_names))}
+    compte_dict = {col_names[i]: row[i] for i in range(len(col_names))}
+
+    # Récupération du nombre de notes
+    c.execute("SELECT count(distinct(idNote)) as nbnotes FROM NOTE WHERE idCompteNote = ?", (idCompte,))
+
+    # Affectation du nombre de notes à une variable
+    nbnotes = c.fetchone()
+
+    # Ajout du nombre de notes au dictionnaire
+    compte_dict['nbnotes'] = nbnotes[0]
+
+    # Récupération du nombre de trajets
+    c.execute("SELECT count(distinct(idTrajet)) as nbtrajets FROM HISTORIQUE_TRAJET WHERE idCompte = ?", (idCompte,))
+
+    # Affectation du nombre de trajets à une variable
+    nbtrajets = c.fetchone()
+
+    # Ajout du nombre de trajets au dictionnaire
+    compte_dict['nbtrajets'] = nbtrajets[0]
 
     conn.close()
-    return jsonify(user)
+    return jsonify(compte_dict)
 
 
 

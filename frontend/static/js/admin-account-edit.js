@@ -1,7 +1,7 @@
 let id = null;
 let token = null;
 
-function onLoad() {
+$(document).ready(function () {
     // Récupération du token admin
     token = getCookieToken();
 
@@ -23,12 +23,7 @@ function onLoad() {
             window.location.href = "../../search-account";
         }
     }
-}
 
-
-
-
-$(document).ready(function () {
     // On récupère les données de l'utilisateur depuis la BDD
     fetch('/admin/users/' + id)
         .then(response => {
