@@ -28,6 +28,9 @@ def admin_search_route():
 def admin_deconnexion():
     return render_template('admin/deconnexion/admin-deconnexion.html')
 
+@admin_bp.route('/account/edit/<idCompte>')
+def admin_account_edit(idCompte):
+    return render_template('admin/account/edit/admin-account-edit.html')
 
 #Recuperer tous les comptes
 @admin_bp.route('/users')
@@ -48,6 +51,25 @@ def get_users():
 
     conn.close()
     return jsonify(users)
+
+
+
+#Récupérer un compte
+@admin_bp.route('/users/<int:idCompte>')
+def get_user(idCompte):
+    conn = sqlite3.connect('../database.db')
+    c = conn.cursor()
+    c.execute("SELECT * FROM COMPTE WHERE idCompte = ?", (idCompte,))
+    row = c.fetchone()
+
+    # Récupération des noms de colonnes
+    col_names = [desc[0] for desc in c.description]
+
+    # Création d'une liste de dictionnaires contenant les données
+    user = {col_names[i]: row[i] for i in range(len(col_names))}
+
+    conn.close()
+    return jsonify(user)
 
 
 

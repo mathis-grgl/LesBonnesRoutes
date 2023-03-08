@@ -1,0 +1,25 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        {% set title='Admin - Modifier Compte' %}
+        {% include 'head.html' %}
+        <link rel="stylesheet" href="/static/css/admin-account-edit.css">
+        <link rel="stylesheet" href="/static/css/modifprofil.css">
+    </head>
+    <body onload="onLoad()">
+        {% include 'header.html' %}
+
+        {% set section_name='Admin - Modifier compte' %}
+        {% include 'inner-page.html' %}
+
+        {% include 'admin/account/edit/admin-account-edit-section.html' %}
+
+        {% include 'footer.html' %}
+
+        {% include 'scripts-required.html' %}
+        <script src="/static/js/admin-account-edit.js"></script>
+        <script src="/static/js/required/cookies.js"></script>
+        <script src="/static/js/required/jquery-3.3.1.min.js"></script>
+        <script src="/static/js/required/aos.js"></script>
+    </body>
+</html>

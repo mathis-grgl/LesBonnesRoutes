@@ -1,5 +1,11 @@
 tokenAdmin = getCookieToken();
 
+function onLoad(){
+    if(getCookieToken() == null){
+        location.href = "../login_signup";
+    }
+}
+
 $(document).ready(function () {
     var table = getAccountTable();
     $("[data-toggle=tooltip]").tooltip();
@@ -100,7 +106,7 @@ $(document).ready(function () {
 
         //Logo du bouton modifier
         let spanEdit = document.createElement("span");
-        spanEdit.classList.add("fa", "fa-pencil");
+        spanEdit.classList.add("fa", "fa-pencil", "white_button");
 
         //Imbrication des éléments pour le bouton modifier
         btnEdit.appendChild(spanEdit);
