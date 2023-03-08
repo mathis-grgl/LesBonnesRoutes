@@ -33,7 +33,7 @@ $(document).ready(function () {
     fetch('/admin/users/' + id)
         .then(response => {
             if (!response.ok) {
-                alert("L'utilisateur n'existe pas");
+                alert("L'utilisateur n'existe pas"); //Bug éventuel où l'erreur se produit malgré que l'utilisateur existe
                 location.href = "../../search-account";
                 throw new Error('Network response was not ok');
             }

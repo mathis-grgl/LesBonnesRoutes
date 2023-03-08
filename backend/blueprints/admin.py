@@ -185,16 +185,6 @@ def modifCompte(token, idCompte):
         conn.close()
         return jsonify({'message': 'Le token est invalide ou expiré'}), 401
 
-
-    # On récupère le token de idCompte
-    c.execute("SELECT auth_token FROM TOKEN WHERE idCompte = ?", (idCompte,))
-    token = c.fetchone()
-    if not token:
-        #Le compte n'existe pas
-        conn.close()
-        return jsonify({'message': 'Ce compte n\'existe pas'}), 404
-        
-
     data = request.get_json()
     email = data.get('email')
     #On verifie l'unicite de l'email
