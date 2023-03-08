@@ -84,7 +84,7 @@ function displayTrajet(trajets){
           </figure>
           <div class="p-3 text-center room-info">
             <h2>${trajet.villeDepart} - ${trajet.villeArrivee}</h2>
-            <span class="text-uppercase letter-spacing-1">${trajet.prix}€ - ${trajet.nbPlaces} places</span>
+            <span class="text-uppercase letter-spacing-1">${trajet.prix}€ - ${trajet.nbPlacesRestantes} places restantes</span>
           </div>
         </a>
       `;
