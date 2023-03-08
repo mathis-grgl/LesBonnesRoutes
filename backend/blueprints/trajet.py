@@ -15,7 +15,7 @@ def getTrajet(idTrajet):
 
     if not trajet:
         conn.close()
-        return jsonify({'message': 'Trajet non trouvé'}), 404
+        return jsonify({'message': 'Trajet non trouvé'}), 40
 
     else:
 
@@ -607,3 +607,19 @@ def getDemandesTrajet(token, idTrajet):
                         demande = {col_names[i]: row[i] for i in range(len(col_names))}
                         demandes.append(demande)
                     return jsonify(demandes), 200
+
+
+
+
+
+
+# Valider une fin de trajet
+@trajet_bp.route('/terminerTrajet/<string:token>/<int:idTrajet>', methods = ['POST'])
+def terminerTrajet(token, idTrajet):
+    conn = sqlite3.connect('../database.db')
+    c = conn.cursor()
+
+    c.execute("UPDATE TRAJET SET statusTrajet = 'termine' WHERE idTrajet = ?", (idTrajet,))
+    conn.commit()
+    conn.close()
+    return jsonify({'message': 'Le trajet a bien été terminé.'}), 200
