@@ -315,7 +315,7 @@ def demandeTrajet(token, idTrajet, nbPlaces):
         #On verifie que le compte ne participe pas deja au trajet ou n'a pas deja une demande en cours
         c.execute("SELECT * FROM TRAJET_EN_COURS_PASSAGER NATURAL JOIN TRAJET WHERE TRAJET_EN_COURS_PASSAGER.idCompte = ? OR TRAJET.idConducteur = ?", (idCompte, idCompte))
         particpe = c.fetchone()
-        c.execute("SELECT * FROM DEMANDE_TRAJET_EN_COURS WHERE idCompte = ?", (idCompte,))
+        c.execute("SELECT * FROM DEMANDE_TRAJET_EN_COURS WHERE idCompte = ? AND idTrajet = ?", (idCompte,idTrajet))
         demande = c.fetchone()
         if particpe or demande:
             conn.close()
