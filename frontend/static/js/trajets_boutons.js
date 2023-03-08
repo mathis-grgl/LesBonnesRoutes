@@ -12,7 +12,29 @@ $(document).on('click', '.edit-btn', function () {
     console.log('Le bouton "Modifier" a été cliqué.');
     let id = $(this).attr('id');
     console.log(id);
-    window.location.href = '/modifier_trajet' + '?=' +id;
+    // Récupérer l'URL existante
+    let u = new URL(window.location.href);
+    u.searchParams.delete("id");
+    
+    let url = new URL(window.location.href);
+
+    console.log(url);
+
+    url.pathname = '/modifier_trajet';
+    // Ajouter un paramètre "id" à l'URL
+    url.searchParams.set("id", id);
+    
+
+    // console.log(url);
+    // window.location.href = url.href;
+
+    
+
+
+    // Rediriger vers la nouvelle URL avec le paramètre "id"
+    window.location.href = url.href;
+
+    // window.location.href = '/modifier_trajet' + '/' + id;
 
 });
 
@@ -65,6 +87,8 @@ $(document).on('click', '.cancel-btn', function () {
 
     // let id = $(this).attr('id');
     let id = parseInt($(this).attr('id'));
+
+
 
 
     let url = "/trajet/quitterTrajet/" + token + "/" + id;

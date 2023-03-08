@@ -1,0 +1,131 @@
+<section class="section privacy-section" id="next">
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <h1 class="mt-4">{{ title }}</h1>
+
+
+                <div class="card mb-4">
+                    <form id="editTrajet" method="POST">
+                        <!-- <h2>Créer un nouveau trajet</h2> -->
+
+                        <div>
+                            <label for="date-depart">Date de départ :</label>
+                            <input type="date" id="date-depart" name="dateDepart" required>
+                        </div>
+
+                        <div>
+                            <label for="ville-depart">Ville de départ :</label>
+                            <!-- <input type="text" id="ville-depart" name="ville-depart" required> -->
+                            <select id="city_start" name="villeDepart" class="form-control">
+                                <option value=""></option>
+                                <!-- Ajoute d'autres options ici donc ne pas retirer le select-->
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="ville-arrivee">Ville d'arrivée :</label>
+                            <!-- <input type="text" id="ville-arrivee" name="ville-arrivee" required> -->
+                            <select id="city_end" name="villeArrivee" class="form-control">
+                                <option value=""></option>
+                                <!-- Ajoute d'autres options ici donc ne pas retirer le select-->
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="heure-depart">Heure de départ :</label>
+                            <input type="time" id="heure-depart" name="heureDepart" required>
+                        </div>
+
+                        <div>
+                            <label for="nb-places">Nombre de places disponibles :</label>
+                            <input type="number" id="nb-places" name="nbPlaces" required>
+                        </div>
+
+                        <div>
+                            <label for="prix-place">Prix par place :</label>
+                            <input type="number" id="prix-place" name="prix" required>
+                        </div>
+                        <div>
+                            <label for="commentaires">Commentaires :</label>
+                            <textarea id="commentaires" name="commentaires" rows="5" cols="30"></textarea>
+                        </div>
+
+                        <div>
+                            <label for="precision">Précisions :</label>
+                            <textarea id="precision" name="precisionRdv" rows="5" cols="30"></textarea>
+                        </div>
+
+                        <div class="button-container">
+                            <button type="submit">Modifier le trajet</button>
+                        </div>
+                    </form>
+
+                    <style>
+                        form {
+                            width: 500px;
+                            margin: 0 auto;
+                            font-family: Arial, sans-serif;
+                        }
+
+                        h2 {
+                            text-align: center;
+                        }
+
+                        div {
+                            margin: 10px 0;
+                        }
+
+                        label {
+                            display: inline-block;
+                            width: 150px;
+                            font-weight: bold;
+                        }
+
+                        select {
+                            display: inline-block;
+                            width: 150px;
+                            font-weight: bold;
+
+                        }
+
+                        input[type="date"],
+                        input[type="text"],
+                        input[type="time"],
+                        input[type="number"],
+                        textarea {
+                            padding: 5px;
+                            border: 1px solid #ccc;
+                            border-radius: 4px;
+                            box-sizing: border-box;
+                            width: 70%;
+                        }
+
+                        input[type="date"]:focus,
+                        input[type="text"]:focus,
+                        input[type="time"]:focus,
+                        input[type="number"]:focus,
+                        textarea:focus {
+                            outline: none;
+                            border-color: #5bc0de;
+                        }
+
+                        button[type="submit"] {
+                            background-color: #5bc0de;
+                            color: #fff;
+                            border: none;
+                            padding: 10px 20px;
+                            border-radius: 4px;
+                            cursor: pointer;
+                        }
+
+                        .button-container {
+                            text-align: center;
+                        }
+                    </style>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+</section>

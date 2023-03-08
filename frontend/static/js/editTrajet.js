@@ -1,6 +1,16 @@
-const token = getCookieToken();
-console.log(token);
-const createTrajetURL = 'trajet/createTrajet/' + token;
+let token = getCookieToken();
+
+// '/modifTrajet/<string:token>/<int:idTrajet>'
+const test = window.location.href;
+const lastChar = parseInt(test.charAt(test.length - 1));
+console.log(lastChar);
+
+
+const url = '/trajet/modifTrajet/' + token + '/' + lastChar;
+
+const urlInfo = '/trajet/trajetsCompte/' + token;
+
+console.log(url);
 
 // Menu deroulant ville de départ
 const select = document.querySelector("select[name='villeDepart']");
@@ -64,42 +74,75 @@ else {
 }
 
 
+function chargerInfosTrajets() {
+    console.log("On s'apprête à modifier les informations du trajet.");
+
+    fetch(urlInfo)
+        .then(reponse => {
+            if (!reponse.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return reponse.json();
+        })
+        .then(data => {
+            console.log(data);
+            for (let i = 0; i < data.length; i++) {
+                if (data[i].idTrajet == lastChar) {
+                    console.log('on est ici.');
+                    $('#city_start').val(data[i].villeDepart);
+                    $('#city_end').val(data[i].villeArrivee);
+                    console.log('heure : ' + data[i].heureDepart.replace('h', ':'))
+                    $('#heure-depart').val(data[i].heureDepart.replace('h', ':'));
+                    console.log('nbPlaces : ' + data[i].nbPlaces);
+                    console.log('prix : ' + data[i].prix);
+
+                    $('#nb-places').val(data[i].nbPlaces);
+                    $('#prix-place').val(data[i].prix);
+                    $('#commentaires').val(data[i].commentaires);
+                    $('#precision').val(data[i].precisionRdv);
+
+                    let date = data[i].dateDepart;
+                    console.log(date);
+                    let dateObject = moment(date, 'D MMMM, YYYY');
+                    // let dateObject = moment(date, 'YYYY/MM/DD');
+
+                    let dateFormatted = dateObject.format('YYYY-MM-DD');
+                    console.log(dateFormatted);
+
+                    $('#date-depart').val(dateFormatted);
 
 
-$('#forminput').submit(function (event) {
+                }
+            }
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
+
+}
+
+
+$('#editTrajet').submit(function (event) {
     event.preventDefault();
 
+    console.log("on a cliqué sur modif trajet.");
+    let heure = $('#heure-depart').val();
     let date = $('#date-depart').val();
-    console.log(date);
-    let vd = $('#city_start').val();
-    console.log(vd);
-    let va = $('#city_end').val();
-    console.log(va);
-    let heure = $('#heure-depart').val().replace(':', 'h');
-    console.log(heure);
-    let nbPlaces = $('#nb-places').val();
-    console.log(nbPlaces);
-    let prix = $('#prix-place').val();
-    console.log(prix);
-    let commentaires = $('#commentaires').val();
-    console.log(commentaires);
-    let precision = $('#precision').val();
-    console.log(precision);
+    let dateObject = moment(date, 'YYYY-MM-DD');
 
-
-    let dateParts = date.split('-');
-    let jour = dateParts[0];
-    let annee = dateParts[2];
-    let mois = dateParts[1] - 1;
-    //let dateFormatted = dateParts[2] + '/' + dateParts[1] + '/' + dateParts[0];
-
-    let dateObject = moment(date, 'YYYY/MM/DD');
+    // let dateObject = moment(date, 'YYYY/MM/DD');
     let dateFormatted = dateObject.format('D MMMM, YYYY');
+    let nbPlaces = $('#nb-places').val();
+    let prix = $('#prix-place').val();
+    let commentaires = $('#commentaires').val();
+    let precision = $('#precision').val();
+    let vd = $('#city_start').val();
+    let va = $('#city_end').val();
 
 
-    console.log('test : ' + dateFormatted);
 
-    fetch(createTrajetURL, {
+    fetch(url, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -120,19 +163,19 @@ $('#forminput').submit(function (event) {
                 
                 window.location.href = '/mes_trajets';
             } else {
-                alert("Probleme dans le fetch");
+                throw new Error('Network response was not ok');
 
             }
 
         }).catch(error => {
             console.error(error);
         });
+    // /modifTrajet/<string:token>/<int:idTrajet>'
 
 
 
+    // window.location.href = '/mes_trajets';
 
 
 
-
-
-});
+})
