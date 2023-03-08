@@ -39,16 +39,20 @@ function charger_trajets() {
                     ligne.append($('<td>').text("Conducteur"));
                     ligne.append(
                         $('<td>').attr('id', trajet.idTrajet)
-                        .append(
-                            $('<div>').addClass('div-container')
-                                .append(
-                                    $('<button>').addClass('edit-btn').attr('id', trajet.idTrajet)
-                                        .html("<i class='fas fa-edit'></i>"),
-                                    $('<button>').addClass('delete-btn').attr('id', trajet.idTrajet)
-                                        .html("<i class='fas fa-trash'></i>")
+                            .append(
+                                $('<div>').addClass('div-container')
+                                    .append(
+                                        $('<button>').addClass('details-btn').attr('id', trajet.idTrajet)
+                                            .html("<i class='fas fa-users'></i>"),
+                                        $('<button>').addClass('edit-btn').attr('id', trajet.idTrajet)
+                                            .html("<i class='fas fa-edit'></i>"),
+                                        $('<button>').addClass('delete-btn').attr('id', trajet.idTrajet)
+                                            .html("<i class='fas fa-trash'></i>")
+                                        
 
-                                )
-                        )
+
+                                    )
+                            )
                     );
 
                     tbody.append(ligne);
@@ -69,16 +73,15 @@ function charger_trajets() {
                     row.append($('<td>').text("Passager"));
                     row.append(
                         $('<td>').append(
-                                $('<div>').addClass('div-container')
-                                    .append(
-                                        $('<button>').addClass('details-btn').attr('id', trajet.idTrajet)
-                                            .html("<i class='fas fa-info'></i>"),
-                                        $('<button>').addClass('cancel-btn').attr('id', trajet.idTrajet)
-                                            .html("<i class='fas fa-times'></i>")
-                                    )
-                            )
+                            $('<div>').addClass('div-container')
+                                .append(
+
+                                    $('<button>').addClass('cancel-btn').attr('id', trajet.idTrajet)
+                                        .html("<i class='fas fa-times'></i>")
+                                )
+                        )
                     );
-                    
+
 
                     tbody.append(row);
 
@@ -96,4 +99,5 @@ function charger_trajets() {
             console.error(error);
         });
 }
+
 

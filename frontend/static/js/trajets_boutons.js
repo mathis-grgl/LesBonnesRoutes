@@ -12,6 +12,7 @@ $(document).on('click', '.edit-btn', function () {
     console.log('Le bouton "Modifier" a été cliqué.');
     let id = $(this).attr('id');
     console.log(id);
+    window.location.href = '/modifier_trajet' + '?=' +id;
 
 });
 
