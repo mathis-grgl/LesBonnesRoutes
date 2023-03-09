@@ -112,13 +112,11 @@ function signIn(event) {
       if (response.ok) {
         return response.json();
       } else {
-        displayMessage(false, "Erreur lors de la création du compte.");
-        throw new Error('Erreur : ' + response.status);
+        throw new Error(response.status);
       }
     })
     .then(data => {
       if (data.error) {
-        displayMessage(false, "Ce compte existe déjà.");
         console.log(data.error);
         return;
       }
@@ -128,8 +126,22 @@ function signIn(event) {
     })
     .catch(error => {
       console.error('Erreur : ' + error.message);
-      displayMessage(false, "Erreur lors de la création du compte.");
+      switch (error.message){
+        case "409":
+          displayMessage(false, "Ce compte existe déjà.");
+          break;
+
+        case "400":
+          displayMessage(false, "Veuillez rentrer toutes les informations necéssaires.");
+          break;
+
+        default:
+          displayMessage(false, "Erreur lors de la création du compte.");
+          break;
+      }
     });
+  } else {
+    displayMessage(false, "Veuillez rentrer toutes les informations necéssaires.");
   }
 }
 
@@ -215,7 +227,7 @@ function checkValue(val){
       break;
 
     case "gender-sign":
-      if (document.querySelector('input[name=gender-sign]:checked').value != undefined){
+      if (document.querySelector('input[name=gender-sign]:checked') && document.querySelector('input[name=gender-sign]:checked').value != undefined){
         bool = true;
       }
       break;
