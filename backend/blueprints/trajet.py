@@ -647,7 +647,7 @@ def terminerTrajet(token, idTrajet):
 
 
 #Recuperer tous les passagers d'un trajet 
-@trajet_bp.route('/getPassagers/<string:token>/<int:idTrajet>', methods = ['POST'])
+@trajet_bp.route('/getPassagers/<string:token>/<int:idTrajet>', methods = ['GET'])
 def getPassagers(token, idTrajet):
     conn = sqlite3.connect('../database.db')
     c = conn.cursor()
