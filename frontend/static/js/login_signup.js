@@ -86,7 +86,9 @@ function signIn(event) {
   event.preventDefault(); // Prevent the default behavior of the button click
 
   if (checkValue('name-sign') && checkValue('last-name-sign') && checkValue("gender-sign") && checkValue('email-sign') && checkValue('phone-sign') &&checkValue("address-sign") && checkValue("city-sign") && checkValue("postal-sign") && checkValue("country-sign") && checkValue('password-sign')) {
-    
+    // Stockage de la valeur dans une variable booléenne
+    const car = checkValue('checkbox-licence-sign') ? true : false;
+
     fetch('/compte/createCompte', {
       method: 'POST',
       headers: {
@@ -98,7 +100,7 @@ function signIn(event) {
         'gender-sign': document.querySelector("input[name='gender-sign']:checked").value,
         'email-sign': document.querySelector("input[name='email-sign']").value,
         'phone-sign': document.querySelector("input[name='phone-sign']").value,
-        'checkbox-licence-sign': document.querySelector("input[name='checkbox-licence-sign']").value,
+        'checkbox-licence-sign': car,
         'address-sign': document.querySelector("input[name='address-sign']").value,
         'city-sign': document.querySelector("input[name='city-sign']").value,
         'postal-sign': document.querySelector("input[name='postal-sign']").value,
@@ -126,7 +128,7 @@ function signIn(event) {
     })
     .catch(error => {
       console.error('Erreur : ' + error.message);
-      displayMessage(false, "Ce compte existe déjà.");
+      displayMessage(false, "Erreur lors de la création du compte.");
     });
   }
 }

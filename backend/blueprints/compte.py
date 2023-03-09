@@ -43,7 +43,7 @@ def create_compte():
         # On ne précise pas la raison, soucis de sécurité
         return jsonify({'message': 'Une erreur est survenue'}), 409
 
-    if not nom or not prenom or not email or not adresse or not ville or not codePostal or not pays or not genre or not voiture or not telephone or not mdp or not notificationMail:
+    if not nom or not prenom or not email or not adresse or not ville or not codePostal or not pays or not genre or not telephone or not mdp or not notificationMail:
         # Il manque des informations dans la requête
         conn.close()
         return jsonify({'message': 'Informations manquantes'}), 400
