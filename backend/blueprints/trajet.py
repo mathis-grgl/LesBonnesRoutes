@@ -687,3 +687,42 @@ def getPassagers(token, idTrajet):
                         participant = {col_names[i]: row[i] for i in range(len(col_names))}
                         participants.append(participant)
                     return jsonify(participants), 200
+
+
+
+@trajet_bp.route('/deletePassager/<string:token>/<int:idComptePassager>, <int:idTrajet>', methods = ['POST'])
+def deletePassager(token, idComptePassager, idTrajet):
+    conn = sqlite3.connect('../database.db')
+    c = conn.cursor()
+    #On recupere l'id du conducteur
+    c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
+    compte = c.fetchone()
+    if not compte:
+        conn.close()
+        return jsonify({'message': 'Token invalide ou expiré'}), 401
+    else:
+        idCompte = compte[0]
+        #On verifie que l'utilisateur est bien le conducteur du trajet et que le trajet existe
+        c.execute("SELECT idConducteur FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
+        trajet = c.fetchone()
+        if not trajet:
+            conn.close()
+            return jsonify({'message': 'Ce trajet n\'existe pas'}), 404
+        else:
+            idConducteur = trajet[0]
+            if not idCompte == idConducteur:
+                conn.close()
+                return jsonify({'message': 'Vous ne pouvez supprimer un passager que si vous êtes conducteur'}), 403
+            else:
+                #On verifie que le passager participe bien au trajet
+                c.execute("SELECT * FROM TRAJET_EN_COURS_PASSAGER WHERE idCompte = ? AND idTrajet = ?", (idComptePassager, idTrajet))
+                passager = c.fetchone()
+                if not passager:
+                    conn.close()
+                    return jsonify({'message': 'Cet utilisateur ne participe pas au trajet'}), 404
+                else:
+                    #On peut supprimer la participation
+                    c.execute("DELETE FROM TRAJET_EN_COURS_PASSAGER WHERE idCompte = ?", (idComptePassager,))
+                    conn.commit()
+                    conn.close()
+                    return jsonify({'message': 'Le passager a bien été supprimé du trajet'}), 200
