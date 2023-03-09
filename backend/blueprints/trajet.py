@@ -618,8 +618,72 @@ def getDemandesTrajet(token, idTrajet):
 def terminerTrajet(token, idTrajet):
     conn = sqlite3.connect('../database.db')
     c = conn.cursor()
+    #On recupere l'id du conducteur
+    c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
+    compte = c.fetchone()
+    if not compte:
+        conn.close()
+        return jsonify({'message': 'Token invalide ou expiré'}), 401
+    else:
+        idCompte = compte[0]
+        #On verifie que l'utilisateur est bien le conducteur du trajet et que le trajet existe
+        c.execute("SELECT idConducteur FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
+        trajet = c.fetchone()
+        if not trajet:
+            conn.close()
+            return jsonify({'message': 'Ce trajet n\'existe pas'}), 404
+        else:
+            idConducteur = trajet[0]
+            if not idCompte == idConducteur:
+                conn.close()
+                return jsonify({'message': 'Vous ne pouvez valider un trajet que si vous êtes conducteur'}), 403
+            else:
+                c.execute("UPDATE TRAJET SET statusTrajet = 'termine' WHERE idTrajet = ?", (idTrajet,))
+                conn.commit()
+                conn.close()
+                return jsonify({'message': 'Le trajet a bien été terminé.'}), 200
 
-    c.execute("UPDATE TRAJET SET statusTrajet = 'termine' WHERE idTrajet = ?", (idTrajet,))
-    conn.commit()
-    conn.close()
-    return jsonify({'message': 'Le trajet a bien été terminé.'}), 200
+
+
+
+#Recuperer tous les passagers d'un trajet 
+@trajet_bp.route('/getPassagers/<string:token>/<int:idTrajet>', methods = ['POST'])
+def getPassagers(token, idTrajet):
+    conn = sqlite3.connect('../database.db')
+    c = conn.cursor()
+    #On recupere l'id du conducteur
+    c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
+    compte = c.fetchone()
+    if not compte:
+        conn.close()
+        return jsonify({'message': 'Token invalide ou expiré'}), 401
+    else:
+        idCompte = compte[0]
+        #On verifie que l'utilisateur est bien le conducteur du trajet et que le trajet existe
+        c.execute("SELECT idConducteur FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
+        trajet = c.fetchone()
+        if not trajet:
+            conn.close()
+            return jsonify({'message': 'Ce trajet n\'existe pas'}), 404
+        else:
+            idConducteur = trajet[0]
+            if not idCompte == idConducteur:
+                conn.close()
+                return jsonify({'message': 'Vous ne pouvez acceder aux participants que si vous êtes conducteur'}), 403
+            else:
+                c.execute("SELECT idCompte, nbPlaces, nomCompte, prenomCompte, noteCompte FROM TRAJET_EN_COURS_PASSAGER NATURAL JOIN COMPTE WHERE idTrajet = ?", (idTrajet,))
+                rows = c.fetchall()
+                if not rows:
+                    conn.close()
+                    return jsonify({'message': 'Aucun passager pour le moment'}), 204
+                else:
+                    conn.close()
+                    # Récupération des noms de colonnes
+                    col_names = [desc[0] for desc in c.description]
+
+                    # Conversion de la date dans chaque ligne de résultat
+                    participants = []
+                    for row in rows:
+                        participant = {col_names[i]: row[i] for i in range(len(col_names))}
+                        participants.append(participant)
+                    return jsonify(participants), 200
