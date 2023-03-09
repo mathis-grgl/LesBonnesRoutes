@@ -154,7 +154,7 @@ def deleteCompte(token, idCompte):
 
 
 
-@admin_bp.route('/deleteTrajet/<string:token>/<int:idTrajet>', methods=['POST'])
+@admin_bp.route('/deleteTrajet/<string:token>/<int:idTrajet>', methods=['DELETE'])
 def deleteTrajet(token, idTrajet):
     #On verifie que le token est admin
     conn = sqlite3.connect(URI_DATABASE)

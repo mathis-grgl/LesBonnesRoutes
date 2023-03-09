@@ -31,5 +31,6 @@
         "notificationMail": {
             "type": "boolean"
         }
-    }
+    },
+    "additionalProperties": false
 }
