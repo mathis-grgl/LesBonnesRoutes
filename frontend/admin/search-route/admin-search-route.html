@@ -151,10 +151,10 @@
 
           let btnEdit = document.createElement("a");
           btnEdit.classList.add("btn", "btn-primary", "btn-xs");
-          btnEdit.onclick = () => {
-            location.href = "/admin/route/" + route.idTrajet + "/edit/";
-          }
-          btnEdit.setAttribute("href", "/admin/route/edit/" + route.idTrajet);
+          // btnEdit.onclick = () => {
+          //   location.href = "/admin/route/" + route.idTrajet + "/edit/";
+          // }
+          btnEdit.setAttribute("onclick", "onModifyRoute(" + route.idTrajet + ")");
           btnEdit.setAttribute("data-title", "Edit");
           btnEdit.setAttribute("data-toggle", "modal");
           btnEdit.setAttribute("data-target", "#edit");
@@ -175,10 +175,10 @@
 
           let btnDelete = document.createElement("a");
           btnDelete.classList.add("btn", "btn-danger", "btn-xs");
-          btnDelete.onclick = () => {
-            location.href = "/admin/route/delete/" + route.idTrajet;
-          }
-          btnDelete.setAttribute("href", "/admin/route/delete/" + route.idTrajet);
+          // btnDelete.onclick = () => {
+          //   location.href = "/admin/route/delete/" + route.idTrajet;
+          // }
+          btnDelete.setAttribute("onclick", "onDeleteRoute(" + route.idTrajet + ")");
           btnDelete.setAttribute("data-title", "Delete");
           btnDelete.setAttribute("data-toggle", "modal");
           btnDelete.setAttribute("data-target", "#delete");
@@ -197,6 +197,26 @@
         console.error(error);
       });
     });
+
+
+    
+    function onDeleteRoute(id) {
+      if (confirm("Voulez-vous vraiment supprimer ce trajet ?")) {
+        fetch('/admin/deleteTrajet/'+ tokenAdmin + '/' + id, {
+          method: 'DELETE'
+        }).then(response => {
+          if (response.ok) {
+            location.reload();
+          } else {
+            alert("Une erreur est survenue lors de la suppression du trajet.");
+          }
+        });
+      }
+    }
+
+    function onModifyRoute(id) {
+      location.href = "/admin/route/edit/" + id;
+    }
   </script>
 </body>
 </html>

@@ -34,6 +34,10 @@ def admin_deconnexion():
 def admin_account_edit(idCompte):
     return render_template('admin/account/edit/admin-account-edit.html')
 
+@admin_bp.route('/route/edit/<idTrajet>')
+def admin_route_edit(idTrajet):
+    return render_template('admin/route/edit/admin-route-edit.html')
+
 #Recuperer tous les comptes
 @admin_bp.route('/users')
 def get_users():
