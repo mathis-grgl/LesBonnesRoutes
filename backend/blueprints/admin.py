@@ -1,3 +1,5 @@
+URI_DATABASE = '../database.db'
+
 from flask import Blueprint, jsonify, render_template, request
 from datetime import datetime
 import sqlite3
@@ -35,7 +37,7 @@ def admin_account_edit(idCompte):
 #Recuperer tous les comptes
 @admin_bp.route('/users')
 def get_users():
-    conn = sqlite3.connect('../database.db')
+    conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
     c.execute("SELECT * FROM COMPTE")
     rows = c.fetchall()
@@ -57,7 +59,7 @@ def get_users():
 #Récupérer un compte
 @admin_bp.route('/users/<int:idCompte>')
 def get_user(idCompte):
-    conn = sqlite3.connect('../database.db')
+    conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
     c.execute("SELECT * FROM COMPTE WHERE idCompte = ?", (idCompte,))
     row = c.fetchone()
@@ -94,7 +96,7 @@ def get_user(idCompte):
 #Recuperer tous les trajets
 @admin_bp.route('/trajets')
 def get_trajets():
-    conn = sqlite3.connect('../database.db')
+    conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
     c.execute("SELECT * FROM TRAJET")
     rows = c.fetchall()
@@ -122,7 +124,7 @@ def get_trajets():
 @admin_bp.route('/deleteCompte/<string:token>/<int:idCompte>', methods=['DELETE'])
 def deleteCompte(token, idCompte):
     #On verifie que le token est admin
-    conn = sqlite3.connect('../database.db')
+    conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
     c.execute("SELECT isAdmin FROM TOKEN NATURAL JOIN COMPTE WHERE auth_token = ?", (token,))
     admin = c.fetchone()
@@ -148,7 +150,7 @@ def deleteCompte(token, idCompte):
 @admin_bp.route('/deleteTrajet/<string:token>/<int:idTrajet>', methods=['POST'])
 def deleteTrajet(token, idTrajet):
     #On verifie que le token est admin
-    conn = sqlite3.connect('../database.db')
+    conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
     c.execute("SELECT isAdmin FROM TOKEN NATURAL JOIN COMPTE WHERE auth_token = ?", (token,))
     admin = c.fetchone()
@@ -181,7 +183,7 @@ def deleteTrajet(token, idTrajet):
 #Recuperer toutes les villes
 @admin_bp.route('/villes', methods=['GET'])
 def getRoutes():
-    conn = sqlite3.connect('../database.db')
+    conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
     c.execute("SELECT nomVille FROM VILLE")
     rows = c.fetchall()
@@ -194,7 +196,7 @@ def getRoutes():
 @admin_bp.route('/modifCompte/<string:token>/<int:idCompte>', methods=['POST'])
 def modifCompte(token, idCompte):
     #On verifie que le token est admin
-    conn = sqlite3.connect('../database.db')
+    conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
     c.execute("SELECT isAdmin FROM COMPTE INNER JOIN TOKEN on COMPTE.idCompte = TOKEN.idCompte WHERE auth_token = ?", (token,))
     admin = c.fetchone()
@@ -282,7 +284,7 @@ def modifCompte(token, idCompte):
 #Modifier un trajet côté admin
 @admin_bp.route('/modifTrajet/<string:token>/<int:idTrajet>', methods=['POST'])
 def modifTrajet(token, idTrajet):
-    conn = sqlite3.connect('../database.db')
+    conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
     #On recupere l'id du conducteur
     c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))

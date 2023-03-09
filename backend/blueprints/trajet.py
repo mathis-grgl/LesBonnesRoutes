@@ -1,3 +1,5 @@
+URI_DATABASE = '../database.db'
+
 from flask import Blueprint, jsonify, request
 from datetime import datetime
 import sqlite3
@@ -8,7 +10,7 @@ trajet_bp = Blueprint('trajet', __name__)
 #Voir un trajet
 @trajet_bp.route('/trajet/<int:idTrajet>', methods=['POST'])
 def getTrajet(idTrajet):
-    conn = sqlite3.connect('../database.db')
+    conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
     c.execute("SELECT * FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
     trajet = c.fetchone()
@@ -54,7 +56,7 @@ def rechercher():
     prixMin = data.get('lower-prices')
     prixMax = data.get('higher-prices')
 
-    conn = sqlite3.connect('../database.db')
+    conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
     
     query = "SELECT * FROM TRAJET WHERE 1=1"
@@ -142,7 +144,7 @@ def rechercher():
 #Voir la liste des trajets d'un compte avec son token
 @trajet_bp.route('/trajetsCompte/<string:token>', methods=['GET'])
 def trajetsCompte(token):
-    conn = sqlite3.connect('../database.db')
+    conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
     c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
     compte = c.fetchone()
@@ -213,7 +215,7 @@ def createTrajet(token):
     #On reformate la date
     dateDepart = datetime.strptime(dateDepart, '%d %B, %Y').strftime('%Y%m%d')
 
-    conn = sqlite3.connect('../database.db')
+    conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
 
     #On recupere l'id du conducteur
@@ -269,7 +271,7 @@ def createTrajet(token):
 
 @trajet_bp.route('/deleteTrajet/<string:token>/<int:idTrajet>', methods=['GET'])
 def deleteTrajet(token, idTrajet):
-    conn = sqlite3.connect('../database.db')
+    conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
     #On recupere l'id du conducteur
     c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
@@ -302,7 +304,7 @@ def deleteTrajet(token, idTrajet):
 def demandeTrajet(token, idTrajet, nbPlaces):
     commentaire = request.get_json().get('commentaire')
 
-    conn = sqlite3.connect('../database.db')
+    conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
     #On recupere l'id du conducteur
     c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
@@ -342,7 +344,7 @@ def demandeTrajet(token, idTrajet, nbPlaces):
 
 @trajet_bp.route('/quitterTrajet/<string:token>/<int:idTrajet>', methods=['GET'])
 def quitterTrajet(token, idTrajet):
-    conn = sqlite3.connect('../database.db')
+    conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
     #On recupere l'id du conducteur
     c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
@@ -379,7 +381,7 @@ def quitterTrajet(token, idTrajet):
 
 @trajet_bp.route('/conducteur/<int:idTrajet>', methods=['POST'])
 def getConducteur(idTrajet):
-    conn = sqlite3.connect('../database.db')
+    conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
     #On vérifie que le trajet existe
     c.execute("SELECT idConducteur FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
@@ -406,7 +408,7 @@ def getConducteur(idTrajet):
 
 @trajet_bp.route('/annuleTrajet/<string:token>/<int:idTrajet>', methods=['POST'])
 def annuleTrajet(token, idTrajet):
-    conn = sqlite3.connect('../database.db')
+    conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
     #On recupere l'id du conducteur
     c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
@@ -437,7 +439,7 @@ def annuleTrajet(token, idTrajet):
 
 @trajet_bp.route('/acceptInTrajet/<string:token>/<int:idCompte>/<int:idTrajet>/<int:nbPlaces>/<string:accept>', methods=['POST'])
 def acceptInTrajet(token, idCompte, idTrajet, nbPlaces, accept):
-    conn = sqlite3.connect('../database.db')
+    conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
     #On recupere l'id du conducteur
     c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
@@ -479,7 +481,7 @@ def acceptInTrajet(token, idCompte, idTrajet, nbPlaces, accept):
 
 @trajet_bp.route('/modifTrajet/<string:token>/<int:idTrajet>', methods=['POST'])
 def modifTrajet(token, idTrajet):
-    conn = sqlite3.connect('../database.db')
+    conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
     #On recupere l'id du conducteur
     c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
@@ -569,7 +571,7 @@ def modifTrajet(token, idTrajet):
 #Recuperer toutes les demandes en cours pour un trajets
 @trajet_bp.route('/getDemandesTrajet/<string:token>/<int:idTrajet>', methods = ['GET'])
 def getDemandesTrajet(token, idTrajet):
-    conn = sqlite3.connect('../database.db')
+    conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
     #On recupere l'id du conducteur
     c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
@@ -616,7 +618,7 @@ def getDemandesTrajet(token, idTrajet):
 # Valider une fin de trajet
 @trajet_bp.route('/terminerTrajet/<string:token>/<int:idTrajet>', methods = ['POST'])
 def terminerTrajet(token, idTrajet):
-    conn = sqlite3.connect('../database.db')
+    conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
     #On recupere l'id du conducteur
     c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
@@ -649,7 +651,7 @@ def terminerTrajet(token, idTrajet):
 #Recuperer tous les passagers d'un trajet 
 @trajet_bp.route('/getPassagers/<string:token>/<int:idTrajet>', methods = ['GET'])
 def getPassagers(token, idTrajet):
-    conn = sqlite3.connect('../database.db')
+    conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
     #On recupere l'id du conducteur
     c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
@@ -692,7 +694,7 @@ def getPassagers(token, idTrajet):
 
 @trajet_bp.route('/deletePassager/<string:token>/<int:idComptePassager>/<int:idTrajet>', methods = ['POST'])
 def deletePassager(token, idComptePassager, idTrajet):
-    conn = sqlite3.connect('../database.db')
+    conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
     #On recupere l'id du conducteur
     c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
