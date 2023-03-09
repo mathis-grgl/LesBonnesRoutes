@@ -9,6 +9,7 @@ from werkzeug.exceptions import HTTPException
 from jsonschema.exceptions import ValidationError
 
 import databaseManager
+from connection_info import UserInfo
 
 app = flask.Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False
@@ -29,8 +30,8 @@ def handle_exception(e):
     return response
 
 
-def check_datas(authentified:bool=True):
-    def wrapper(f: Callable):
+def check_datas(authentified:bool=True) -> Callable:
+    def wrapper(f: Callable) -> Callable:
         @wraps(f)
         def inner(*args, **kwargs):
             try:
@@ -47,6 +48,8 @@ def check_datas(authentified:bool=True):
                     abort(401, "no token supplied")
                 if not databaseManager.check_token(token):
                     abort(401, "invalid or expired token")
+                user_info = databaseManager.get_UserInfo_from_token(token)
+                return f(user_info, *args, **kwargs)
             return f(*args, **kwargs)
         return inner
     return wrapper
@@ -65,13 +68,13 @@ def new_user() -> tuple[Response, int]:
 
 @app.route("/api/v1/user/<int:user_id>", methods=['PATCH'])
 @check_datas()
-def edit_user(user_id: int) -> Response:
+def edit_user(user_info: UserInfo, user_id: int) -> tuple[Response, int]:
     """
     edit specified data of a user
     """
     data: dict[str, Any] = json.loads(request.data)
-    databaseManager.edit_user(user_id, data)
-    return jsonify()
+    resp, code = databaseManager.edit_user(user_info, user_id, data)
+    return jsonify(resp), code
 
 @app.route("/api/v1/user/<int:user_id>", methods=['DELETE'])
 def delete_user(user_id: int) -> Response:
@@ -93,6 +96,7 @@ def connect_user() -> tuple[Response, int]:
     return jsonify(resp), code
 
 @app.route("/api/v1/user/<int:user_id>", methods=['GET'])
+@check_datas()
 def get_user(user_id: int) -> Response:
     return jsonify()
 

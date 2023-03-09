@@ -8,5 +8,6 @@
             "type": "string"
         }
     },
-    "requiered": ["email", "mdp"]
+    "requiered": ["email", "mdp"],
+    "additionalProperties": false
 }
