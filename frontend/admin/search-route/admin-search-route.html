@@ -79,6 +79,15 @@
   {% include 'footer.html' %}
 
   <script>
+    tokenAdmin = getCookieToken();
+
+    function onLoad(){
+        if(getCookieToken() == null){
+            location.href = "../login_signup";
+        }
+    }
+
+
     $(document).ready(function () {
       var table = getRouteTable();
       $("[data-toggle=tooltip]").tooltip();
@@ -92,7 +101,7 @@
         return reponse.json();
       })
       .then(data => {
-        console.log(data);
+        // console.log(data);
         let nbTrajet = data.length;
         let user = [];
         for (let i = 0; i < nbTrajet; i++) {
@@ -209,6 +218,7 @@
             location.reload();
           } else {
             alert("Une erreur est survenue lors de la suppression du trajet.");
+            console.log(response);
           }
         });
       }
