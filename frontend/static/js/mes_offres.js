@@ -30,6 +30,7 @@ function charger_trajets() {
                     ligne.append($('<td>').text(trajet.villeDepart));
                     ligne.append($('<td>').text(trajet.villeArrivee));
                     ligne.append($('<td>').text(trajet.dateDepart));
+                    console.log(trajet.dateDepart);
                     ligne.append($('<td>').text(trajet.heureDepart));
                     ligne.append($('<td>').text(trajet.nbPlacesRestantes + '/' + trajet.nbPlaces));
                     ligne.append($('<td>').text(trajet.statusTrajet));
@@ -42,6 +43,8 @@ function charger_trajets() {
                             .append(
                                 $('<div>').addClass('div-container')
                                     .append(
+                                        $('<button>').addClass('confirm-btn').attr('id', trajet.idTrajet)
+                                            .html("<i class='fas fa-check'></i>"),
                                         $('<button>').addClass('details-btn').attr('id', trajet.idTrajet)
                                             .html("<i class='fas fa-users'></i>"),
                                         $('<button>').addClass('edit-btn').attr('id', trajet.idTrajet)

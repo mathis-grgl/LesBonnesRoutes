@@ -132,3 +132,58 @@ $(document).on('click', '.cancel-btn', function () {
             })
     }
 });
+
+$(document).on('click', '.confirm-btn', function () {
+    // Récupérer le token de l'utilisateur et l'id du trajet
+    let token = getCookieToken();
+    let id = $(this).attr('id');
+
+    fetch('/trajet/trajet/' + id, {
+        method: 'POST'})
+        .then(reponse => {
+            if (!reponse.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return reponse.json();
+
+        })
+        .then(data => {
+            alert("Vous souhaitez confirmez ?");
+
+            // Affectation du trajet à la variable trajet
+            trajet = data;
+            date = trajet.dateDepart;
+
+            // Créer une date à partir de la date de départ du trajet
+            let targetDate = new Date(date);
+
+            // Créer une date à partir de maintenant
+            let now = new Date();
+
+            // Calcule la différence entre les deux dates
+            let diffMs = now.getTime() - targetDate.getTime();
+
+            // Vérifie si le trajet est à plus de 3 heures
+            let is3HoursOrMore = diffMs >= 60 * 60 * 1000;
+
+            // Si le trajet est à plus de 3 heures, on peut le terminer
+            if(is3HoursOrMore){
+                fetch('trajet/terminerTrajet/' + token + '/'+ id, {
+                    method: 'POST'})
+                    .then(reponse => {
+                        if (!reponse.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return reponse.json();
+
+                    })
+                    .then(data => {
+                        alert("Le trajet a été terminé");
+                        window.location.href = '/mes_trajets';
+                    })
+            } else {
+                alert("Le trajet doit être à plus de 3 heures pour pouvoir être terminé");
+            }
+
+        });
+    });
