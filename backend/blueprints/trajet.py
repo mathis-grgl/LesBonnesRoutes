@@ -1,8 +1,10 @@
 URI_DATABASE = '../database.db'
 
 from flask import Blueprint, jsonify, request
-from datetime import datetime
+from datetime import datetime, timedelta
 import sqlite3
+from apscheduler.schedulers.background import BackgroundScheduler
+import atexit
 
 trajet_bp = Blueprint('trajet', __name__)
 
@@ -728,3 +730,53 @@ def deletePassager(token, idComptePassager, idTrajet):
                     conn.commit()
                     conn.close()
                     return jsonify({'message': 'Le passager a bien été supprimé du trajet'}), 200
+
+
+
+
+
+
+
+# Valider une fin de trajet automatiquement
+def valider_automatiquement_trajet():
+    conn = sqlite3.connect('../database.db')
+    c = conn.cursor()
+
+    c.execute("SELECT * FROM TRAJET WHERE statusTrajet != 'termine'")
+    
+    rows = c.fetchall()
+
+    conn.commit()
+    conn.close()
+
+    # Récupération des noms de colonnes
+    col_names = [desc[0] for desc in c.description]
+
+    # Conversion de la date dans chaque ligne de résultat
+    trajets = []
+    for row in rows:
+        conn = sqlite3.connect('../database.db')
+        c = conn.cursor()
+        trajet = {col_names[i]: row[i] for i in range(len(col_names))}
+
+        # Conversion de la date de la colonne 'dateDepart'
+        dateTrajet = datetime.strptime(trajet['dateDepart'], '%Y%m%d').strftime('%d %B, %Y')
+        dateTrajet = datetime.strptime(dateTrajet, '%d %B, %Y')
+        print("Vérification des trajets en cours")
+        if dateTrajet <= datetime.now() - timedelta(hours=24):
+            c.execute("UPDATE TRAJET SET statusTrajet = 'termine' WHERE idTrajet = ?", (trajet['idTrajet'],))
+            print("Suppression du trajet numéro " + str(trajet['idTrajet']))
+            conn.commit()
+        conn.close()
+
+# Lancement du scheduler
+scheduler = BackgroundScheduler()
+
+# Ajout d'une tâche
+scheduler.add_job(func=valider_automatiquement_trajet, trigger="interval", seconds=60)
+
+# Démarrage du scheduler
+scheduler.start()
+
+# Eteint le scheduler quand on quitte l'application
+atexit.register(lambda: scheduler.shutdown())
