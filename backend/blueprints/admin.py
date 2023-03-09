@@ -109,6 +109,9 @@ def get_trajets():
     for row in rows:
         trajet = {col_names[i]: row[i] for i in range(len(col_names))}
 
+        #On reformate la date
+        trajet['dateDepart'] = datetime.strptime(trajet['dateDepart'], '%Y%m%d').strftime('%d %B, %Y')
+
         # Remplacement des ID des villes par leurs noms
         c.execute("SELECT nomVille FROM VILLE WHERE idVille = ?", (row[10],))
         trajet['villeDepart'] = c.fetchone()[0]
