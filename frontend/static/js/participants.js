@@ -11,6 +11,11 @@ let id = parseInt(params.get('id'));
 console.log(typeof id + ' : ' + id);
 
 let urlDemande = 'trajet/getDemandesTrajet/' + token + '/' + id;
+
+// /getPassagers/<string:token>/<int:idTrajet>'
+let urlParticpants = 'trajet/getPassagers/' + token + '/' + id;
+
+console.log(urlParticpants);
 $(document).ready(function () {
     fetch(urlDemande)
         .then(reponse => {
@@ -31,7 +36,7 @@ $(document).ready(function () {
 
 
                 for (let i = 0; i < data.length; i++) {
-                    displayUserDemande(data, container);
+                    displayUserDemande(data[i], container);
                     // let card = $("<div>").addClass("card").data("participant", data);
 
                     // let cardBody = $("<div>").addClass("card-body");
@@ -72,6 +77,29 @@ $(document).ready(function () {
 
     // faire un autre fetch quand juliette l'aura fait pour afficher les utilisateurs qui participent à ce trajet
 
+    fetch(urlParticpants)
+        .then(reponse => {
+            if (!reponse.ok) {
+                throw new Error('network wasnt ok');
+            }
+            return reponse.json();
+        })
+        .then(data => {
+            console.log(data);
+
+            let container = $("#participants-container");
+            // Remove previous participants
+            container.empty();
+            if (typeof data !== undefined) {
+                for (let i = 0; i < data.length; i++) {
+                    displayParticipants(data[i], container)
+
+                }
+                // location.reload();
+            }
+
+        })
+
 
     // Display the participants and participation requests
     // displayParticipants(participants);
@@ -91,7 +119,7 @@ $(document).ready(function () {
         console.log('Le nombre de places : ' + nbPlaces);
 
 
-        let url = 'trajet/acceptInTrajet/' + token + '/' + participant + '/' + id + '/' + nbPlaces + '/oui';
+        let url = 'trajet/acceptInTrajet/' + token + '/' + participant.idCompte + '/' + id + '/' + participant.nbPlaces + '/oui';
 
         console.log(url);
 
@@ -105,6 +133,17 @@ $(document).ready(function () {
             .then(data => {
                 // code qui dit qu'on l'a accepté donc maintenant il se retrouve dans la liste des personnes participant au trajet
                 // donc maybe refaire un fetch sur les demandes et passagers et display en fonction
+                let container = $("#demandes-container");
+                // Remove previous participants
+                container.empty();
+                // code qui dit qu'on l'a accepté donc maintenant il se retrouve dans la liste des personnes participant au trajet
+                // donc maybe refaire un fetch sur les demandes et passagers et display en fonction
+                console.log(data);
+                for (let i = 0; i < data.length; i++) {
+                    displayUserDemande(data[i], container);
+                    // displayParticipants(data[i], container);
+                }
+                location.reload();
             })
             .catch(error => {
                 console.error(error);
@@ -121,7 +160,7 @@ $(document).ready(function () {
         console.log('Le nombre de places : ' + nbPlaces);
 
 
-        let url = 'trajet/acceptInTrajet/' + token + '/' + participant + '/' + id + '/' + nbPlaces + '/non';
+        let url = 'trajet/acceptInTrajet/' + token + '/' + participant.idCompte + '/' + id + '/' + participant.nbPlaces + '/non';
 
         console.log(url);
 
@@ -133,8 +172,17 @@ $(document).ready(function () {
                 return reponse.json();
             })
             .then(data => {
+                let container = $("#demandes-container");
+                // Remove previous participants
+                container.empty();
                 // code qui dit qu'on l'a accepté donc maintenant il se retrouve dans la liste des personnes participant au trajet
                 // donc maybe refaire un fetch sur les demandes et passagers et display en fonction
+                console.log(data);
+                for (let i = 0; i < data.length; i++) {
+                    displayUserDemande(data[i], container);
+
+                }
+                location.reload();
             })
             .catch(error => {
                 console.error(error);
@@ -150,6 +198,33 @@ $(document).ready(function () {
         const participant = $(this).closest(".card").data("participant");
         console.log(`On vire le passager dont l'id est : ${participant.idCompte}`);
         console.log("Voici son prénom : " + participant.nomCompte + ' ' + participant.prenomCompte);
+
+        // /deletePassager/<string:token>/<int:idComptePassager>, <int:idTrajet>'
+
+        let url = 'trajet/deletePassager/' + token + '/' + participant.idCompte + '/' + id;
+        console.log(url);
+        fetch(url)
+            .then(reponse => {
+                if (!reponse.ok) {
+                    throw new Error('network issue');
+                }
+                return reponse.json();
+            })
+            .then(data => {
+                let container = $("#participants-container");
+                // Remove previous participants
+                container.empty();
+                console.log(data);
+                for (let i = 0; i < data.length; i++) {
+                    displayParticipants(data[i], container);
+
+
+                }
+                location.reload();
+            })
+            .catch(error => {
+                console.error(error);
+            });
     });
 });
 
@@ -159,11 +234,19 @@ function displayUserDemande(data, container) {
 
     let cardBody = $("<div>").addClass("card-body");
 
-    let cardTitle = $("<h5>").addClass("card-title").text(data.nomCompte + ' ' + prenomCompte);
+    let cardTitle = $("<h5>").addClass("card-title").text(data.nomCompte + ' ' + data.prenomCompte);
 
-    let cardText = $("<p>").addClass("card-text").text('Cet utilisateur veut ' + nbPlaces);
+    let cardText = $("<p>").addClass("card-text").text('Cet utilisateur veut ' + data.nbPlaces + ' places.');
 
-    let cardNote = $("<p>").addClass("card-text").text('Cet utilisateur a une note de ' + noteCompte + ' étoiles.');
+    let text = "";
+    if (data.noteCompte == null) {
+        text = "Cet utilisateur n'a pas encore de note.";
+
+    } else {
+        text = 'Cet utilisateur a une note de ' + data.noteCompte + ' étoiles.';
+    }
+
+    let cardNote = $("<p>").addClass("card-text").text(text);
 
     let acceptBtn = $("<button>")
         .addClass("btn btn-success btn-valid")
@@ -182,18 +265,29 @@ function displayUserDemande(data, container) {
 
     container.append(card);
 
+    // container.innerHTML += card[0].outerHTML;
+
 }
 
 function displayParticipants(data, container) {
+    console.log(data);
     let card = $("<div>").addClass("card").data("participant", data);
 
     let cardBody = $("<div>").addClass("card-body");
 
-    let cardTitle = $("<h5>").addClass("card-title").text(data.nomCompte + ' ' + prenomCompte);
+    let cardTitle = $("<h5>").addClass("card-title").text(data.nomCompte + ' ' + data.prenomCompte);
 
-    let cardText = $("<p>").addClass("card-text").text('Cet utilisateur a pris ' + nbPlaces);
+    let cardText = $("<p>").addClass("card-text").text('Cet utilisateur a pris ' + data.nbPlaces + ' places.');
 
-    let cardNote = $("<p>").addClass("card-text").text('Cet utilisateur a une note de ' + noteCompte + ' étoiles.');
+    let text = "";
+    if (data.noteCompte == null) {
+        text = "Cet utilisateur n'a pas encore de note.";
+
+    } else {
+        text = 'Cet utilisateur a une note de ' + data.noteCompte + ' étoiles.';
+    }
+
+    let cardNote = $("<p>").addClass("card-text").text(text);
 
 
 
@@ -205,6 +299,7 @@ function displayParticipants(data, container) {
     card.append(cardBody);
 
     container.append(card);
+    // container.innerHTML += card[0].outerHTML;
 
 }
 
