@@ -690,7 +690,7 @@ def getPassagers(token, idTrajet):
 
 
 
-@trajet_bp.route('/deletePassager/<string:token>/<int:idComptePassager>, <int:idTrajet>', methods = ['POST'])
+@trajet_bp.route('/deletePassager/<string:token>/<int:idComptePassager>/<int:idTrajet>', methods = ['POST'])
 def deletePassager(token, idComptePassager, idTrajet):
     conn = sqlite3.connect('../database.db')
     c = conn.cursor()
