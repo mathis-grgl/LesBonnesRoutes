@@ -1,5 +1,6 @@
 let id = null;
 let token = null;
+let mdp = null;
 
 $(document).ready(function () {
     // Récupération du token admin
@@ -42,7 +43,7 @@ $(document).ready(function () {
             let tel = data.telephone;
             let genre = data.genre;
             let email = data.email;
-            let mdp = data.mdp;
+            mdp = data.mdp;
             let voiture = data.voiture;
             let notif = data.notificationMail;
             let ville = data.ville;
@@ -64,8 +65,6 @@ $(document).ready(function () {
             $('input[name="telephone"]').val(tel);
             $('input[name="nom"]').val(nom);
             $('input[name="prenom"]').val(prenom);
-            $('input[name="logpass"]').val(mdp);
-            $('input[name="logpassconfirm"]').val(mdp);
             $('input[name="email"]').val(email);
             $('input[name="ville"]').val(ville);
             $('input[name="pays"]').val(pays);
@@ -163,42 +162,6 @@ $(document).ready(function () {
         // Indique si le prénom est valide ou non
         console.log("prenom : " + valide);
 
-        // On récupère les mot de passes
-        let mdp = $('input[name="logpass"]').val();
-        let mdpconfirm = $('input[name="logpassconfirm"]').val();
-        const regexmdp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-
-        // On vérifie que les deux mots de passes ne soient pas vides
-        if (mdp.trim().length != 0 && mdpconfirm.trim().length != 0) {
-            // On vérifie que les deux mots de passes ne soient pas invalides
-            if (!mdp.match(regexmdp) || !mdpconfirm.match(regexmdp)) {
-                $('input[name="logpassconfirm"]').css('border', '2px solid red');
-                $('input[name="logpassconfirm"]').val('');
-                $('input[name="logpassconfirm"]').attr('placeholder', 'Mot de passe invalide');
-                $('input[name="logpass"]').val('');
-                $('input[name="logpass"]').attr('placeholder', 'Mot de passe invalide');
-                $('input[name="logpass"]').css('border', '2px solid red');
-                $('#small').css('font-weight', 'bold');
-                $('#small').css('text-decoration', 'underline');
-                valide = false;
-            }
-
-            if (mdp !== mdpconfirm) {
-                $('input[name="logpassconfirm"]').css('border', '2px solid red');
-                $('input[name="logpassconfirm"]').val('');
-                $('input[name="logpassconfirm"]').attr('placeholder', 'Différent du premier mot de passe');
-                $('input[name="logpass"]').val('');
-                $('input[name="logpass"]').attr('placeholder', 'Mot de passe invalide');
-                $('input[name="logpass"]').css('border', '2px solid red');
-                $('#small').css('font-weight', 'bold');
-                $('#small').css('text-decoration', 'underline');
-                valide = false;
-            }
-        }
-        // Fin de la vérification des mots de passe
-        // Indique si les mots de passe sont valides ou non
-        console.log("mdp : " + valide);
-
         // On récupère la ville
         let inputville = $('input[name="ville"]');
         let ville = inputville.val();
@@ -279,7 +242,7 @@ $(document).ready(function () {
                     'telephone': $('input[name="telephone"]').val(),
                     'notif': $('input[name="notif"]:checked').val(),
                     'voiture': $('input[name="voiture"]:checked').val(),
-                    'mdp': $('input[name="logpass"]').val(),
+                    'mdp': mdp,
                     'ville': $('input[name="ville"]').val(),
                     'adresse': $('input[name="adresse"]').val(),
                     'pays': $('input[name="pays"]').val(),
