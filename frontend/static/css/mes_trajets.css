@@ -49,7 +49,8 @@
   .edit-btn,
   .delete-btn,
   .details-btn,
-  .cancel-btn {
+  .cancel-btn,
+  .confirm-btn{
     background-color: transparent;
     border: none;
     cursor: pointer;
@@ -58,14 +59,16 @@
   .edit-btn:hover,
   .delete-btn:hover,
   .details-btn:hover,
-  .cancel-btn:hover {
+  .cancel-btn:hover,
+  .confirm-btn:hover{
     color: #555;
   }
   
   .edit-btn i,
   .delete-btn i,
   .details-btn i,
-  .cancel-btn i {
+  .cancel-btn i,
+  .confirm-btn i{
     font-size: 1.2rem;
   }
   /* button {
@@ -74,7 +77,7 @@
 
  .div-container {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* créer 3 colonnes de largeur égale */
+  grid-template-columns: repeat(4, 1fr); /* créer 3 colonnes de largeur égale */
   grid-gap: 10px; /* ajouter une marge de 10 pixels entre chaque bouton */
 }
 

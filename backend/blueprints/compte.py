@@ -1,3 +1,5 @@
+URI_DATABASE = '../database.db'
+
 from flask import Blueprint, jsonify, request
 from datetime import datetime
 import sqlite3
@@ -30,7 +32,7 @@ def create_compte():
 
 
     # Vérifier si le compte existe déjà dans la base de données
-    conn = sqlite3.connect('../database.db')
+    conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
     c.execute("SELECT * FROM COMPTE WHERE email = ?", (email,))
     compte = c.fetchone()
@@ -76,7 +78,7 @@ def connectCompte():
     email = data.get('email-log')
     mdp = data.get('password-log')
 
-    conn = sqlite3.connect('../database.db')
+    conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
     # Récupérer isAdmin pour le laisser au front est moche
     c.execute(
@@ -105,7 +107,7 @@ def connectCompte():
 #Se deconnecter à un compte avec token
 @compte_bp.route('/deconnectCompte/<string:token>', methods=['POST'])
 def deconnectCompte(token):
-    conn = sqlite3.connect('../database.db')
+    conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
     c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
     compte = c.fetchone()
@@ -132,7 +134,7 @@ def deconnectCompte(token):
 @compte_bp.route('/getInfoCompte/<string:token>', methods=['GET'])
 def getInfoCompte(token):
      # Verif du token + recup id
-    conn = sqlite3.connect('../database.db')
+    conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
     c.execute("SELECT COMPTE.idCompte FROM COMPTE inner join TOKEN on COMPTE.idCompte = TOKEN.idCompte WHERE auth_token = ?", (token,))
     compte = c.fetchone()
@@ -191,7 +193,7 @@ def getInfoCompte(token):
 @compte_bp.route('/modifCompte/<string:token>', methods=['POST'])
 def modifCompte(token):
     #Verif du token + recup id
-    conn = sqlite3.connect('../database.db')
+    conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
     c.execute("SELECT COMPTE.idCompte FROM COMPTE inner join TOKEN on COMPTE.idCompte = TOKEN.idCompte WHERE auth_token = ?", (token,))
     compte = c.fetchone()
@@ -275,7 +277,7 @@ def modifCompte(token):
 @compte_bp.route('/deleteCompte/<string:token>', methods=['DELETE'])
 def delCompte(token):
     #On verifie le token
-    conn = sqlite3.connect('../database.db')
+    conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
     c.execute("SELECT COMPTE.idCompte FROM COMPTE inner join TOKEN on COMPTE.idCompte = TOKEN.idCompte WHERE auth_token = ?", (token,))
     compte = c.fetchone()
@@ -296,7 +298,7 @@ def delCompte(token):
 @compte_bp.route('/getDemandesEnCours/<string:token>', methods = ['POST'])
 def getDemandesEnCours(token):
     #On verifie le token
-    conn = sqlite3.connect('../database.db')
+    conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
     c.execute("SELECT COMPTE.idCompte FROM COMPTE inner join TOKEN on COMPTE.idCompte = TOKEN.idCompte WHERE auth_token = ?", (token,))
     compte = c.fetchone()

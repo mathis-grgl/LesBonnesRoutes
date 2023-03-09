@@ -1,4 +1,3 @@
-
 # A very simple Flask Hello World app for you to get started with...
 
 from flask import Flask, render_template, jsonify
@@ -80,7 +79,6 @@ def creer_trajet():
 @app.route('/trajet')
 def trajet():
     return render_template('trajet/trajet.html')
-
 
 
 # Requetes
