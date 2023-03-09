@@ -116,6 +116,7 @@ function signIn(event) {
     })
     .then(data => {
       if (data.error) {
+        displayMessage(false, "Ce compte existe déjà.");
         console.log(data.error);
         return;
       }
