@@ -253,15 +253,15 @@ def modifCompte(token):
             if False :
                 #Il y a une photo : on inserer le nom dans la db
                 nomPhoto = poster.filename
-                c.execute("UPDATE COMPTE SET telephone=?, prenomCompte=?, nomCompte=?, mdp=?, adresse=?, ville=?, pays=?, codePostal=?, genre=?, voiture=?, notificationMail=?, photo=? WHERE idCompte=?",
-                    (tel, prenom, nom, mdp, adresse, ville, pays, codePostal, genre, voiture, notifs, nomPhoto, idCompte))
+                c.execute("UPDATE COMPTE SET telephone=?, prenomCompte=?, nomCompte=?, mdp=?, adresse=?, ville=?, pays=?, codePostal=?, genre=?, voiture=?, notificationMail=?, photo=?, email=? WHERE idCompte=?",
+                    (tel, prenom, nom, mdp, adresse, ville, pays, codePostal, genre, voiture, notifs, nomPhoto, email, idCompte))
                 conn.commit()
                 conn.close()
                 return jsonify({'message': 'ok'}), 200
             else :
                 #On n'insere pas de photo
-                c.execute("UPDATE COMPTE SET telephone=?, prenomCompte=?, nomCompte=?, mdp=?, adresse=?, ville=?, pays=?, codePostal=?, genre=?, voiture=?, notificationMail=? WHERE idCompte=?",
-                    (tel, prenom, nom, mdp, adresse, ville, pays, codePostal, genre, voiture, notifs, idCompte))
+                c.execute("UPDATE COMPTE SET telephone=?, prenomCompte=?, nomCompte=?, mdp=?, adresse=?, ville=?, pays=?, codePostal=?, genre=?, voiture=?, notificationMail=?, email = ? WHERE idCompte=?",
+                    (tel, prenom, nom, mdp, adresse, ville, pays, codePostal, genre, voiture, notifs, email, idCompte))
                 conn.commit()
                 conn.close()
                 return jsonify({'message': 'ok'}), 200
