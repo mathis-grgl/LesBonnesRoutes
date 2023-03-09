@@ -437,7 +437,7 @@ def annuleTrajet(token, idTrajet):
 
 
 
-@trajet_bp.route('/acceptInTrajet/<string:token>/<int:idCompte>/<int:idTrajet>/<int:nbPlaces>/<string:accept>', methods=['POST'])
+@trajet_bp.route('/acceptInTrajet/<string:token>/<int:idCompte>/<int:idTrajet>/<int:nbPlaces>/<string:accept>', methods=['GET'])
 def acceptInTrajet(token, idCompte, idTrajet, nbPlaces, accept):
     conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
@@ -692,7 +692,7 @@ def getPassagers(token, idTrajet):
 
 
 
-@trajet_bp.route('/deletePassager/<string:token>/<int:idComptePassager>/<int:idTrajet>', methods = ['POST'])
+@trajet_bp.route('/deletePassager/<string:token>/<int:idComptePassager>/<int:idTrajet>', methods = ['GET'])
 def deletePassager(token, idComptePassager, idTrajet):
     conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
