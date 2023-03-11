@@ -48,7 +48,7 @@ def check_datas(authentified:bool=True) -> Callable:
                     abort(401, "no token supplied")
                 if not databaseManager.check_token(token):
                     abort(401, "invalid or expired token")
-                user_info = databaseManager.get_UserInfo_from_token(token)
+                user_info = databaseManager.get_userinfo_from_token(token)
                 return f(user_info, *args, **kwargs)
             return f(*args, **kwargs)
         return inner
@@ -66,7 +66,6 @@ def new_user() -> tuple[Response, int]:
     if code == 409:
         abort(409, "this email is already used with another account")
     return jsonify(resp), code
-
 
 @app.route("/api/v1/user/<int:user_id>", methods=['PATCH'])
 @check_datas()

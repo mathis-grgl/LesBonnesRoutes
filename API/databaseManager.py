@@ -3,7 +3,6 @@ import sqlite3
 from sqlite3 import SQLITE_CONSTRAINT_UNIQUE
 import secrets
 from typing import Final, Optional
-from itertools import cycle
 
 from argon2 import PasswordHasher
 from argon2.exceptions import VerificationError
@@ -110,7 +109,7 @@ def get_user_from_token(token: str) -> Optional[json_dict]:
     return get_user(res[0])
 
 
-def get_UserInfo_from_token(token: str) -> Optional[UserInfo]:
+def get_userinfo_from_token(token: str) -> Optional[UserInfo]:
     if not check_token(token):
         return None
     query = """
