@@ -7,11 +7,6 @@ from __main__ import app, check_datas
 from connection_info import UserInfo
 from database_manager import userManager
 
-print("enfin!")
-
-def prout():
-    print("prout")
-
 @app.route("/api/v1/user", methods=['PUT'])
 @check_datas(authentified=False)
 def new_user() -> tuple[Response, int]:
