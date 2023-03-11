@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from lbr_typing import json_dict
-import databaseManager
+from database_manager import userManager
 
 @dataclass(repr=False, eq=False)
 class UserInfo:
@@ -10,4 +10,4 @@ class UserInfo:
 
     @property
     def user(self) -> json_dict:
-        return databaseManager.get_user(id=self.user_id)
+        return userManager.get_user(id=self.user_id)

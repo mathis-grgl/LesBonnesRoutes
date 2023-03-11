@@ -183,7 +183,3 @@ def delete_user(user_info: UserInfo, user_id: int) -> tuple[json_dict, int]:
     connection.commit()
     connection.close()
     return {}, 204
-
-
-
-
