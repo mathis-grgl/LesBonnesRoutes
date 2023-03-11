@@ -36,7 +36,7 @@ def check_token(token: str) -> bool:
         print("DEBUG: AUCUN TOKEN NE MATCH")
         return False
     expiration = datetime.fromisoformat(result[0])
-    if expiration > datetime.now():
+    if expiration < datetime.now():
         print("DEBUG: TOKEN EXPIRÉ")
         return False
     return True
@@ -123,7 +123,7 @@ def get_UserInfo_from_token(token: str) -> Optional[UserInfo]:
     cursor.execute(query, (token,))
     res = cursor.fetchone()
     if res is None:
-        return
+        return 
     return UserInfo(*res)
 
 
@@ -171,6 +171,19 @@ def connect_user(data: json_dict) -> tuple[json_dict, int]:
     connection.commit()
     connection.close()
     return {"auth_token": token, "user": user}, 200
+
+
+def delete_user(user_info: UserInfo, user_id: int) -> tuple[json_dict, int]:
+    if (not user_info.isAdmin) and (user_info.user_id != user_id):
+        return {}, 403
+    
+    query = """DELETE FROM COMPTE WHERE idCompte = ?"""
+    connection = sqlite3.connect(DATABASE_NAME)
+    cursor = connection.cursor()
+    cursor.execute(query, (user_id,))
+    connection.commit()
+    connection.close()
+    return {}, 204
 
 
 
