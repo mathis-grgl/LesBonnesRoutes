@@ -43,7 +43,7 @@ def create_compte():
         # On ne précise pas la raison, soucis de sécurité
         return jsonify({'message': 'Une erreur est survenue'}), 409
 
-    if not nom or not prenom or not email or not adresse or not ville or not codePostal or not pays or not genre or not voiture or not telephone or not mdp or not notificationMail:
+    if not nom or not prenom or not email or not adresse or not ville or not codePostal or not pays or not genre or not telephone or not mdp or not notificationMail:
         # Il manque des informations dans la requête
         conn.close()
         return jsonify({'message': 'Informations manquantes'}), 400
@@ -253,15 +253,15 @@ def modifCompte(token):
             if False :
                 #Il y a une photo : on inserer le nom dans la db
                 nomPhoto = poster.filename
-                c.execute("UPDATE COMPTE SET telephone=?, prenomCompte=?, nomCompte=?, mdp=?, adresse=?, ville=?, pays=?, codePostal=?, genre=?, voiture=?, notificationMail=?, photo=? WHERE idCompte=?",
-                    (tel, prenom, nom, mdp, adresse, ville, pays, codePostal, genre, voiture, notifs, nomPhoto, idCompte))
+                c.execute("UPDATE COMPTE SET telephone=?, prenomCompte=?, nomCompte=?, mdp=?, adresse=?, ville=?, pays=?, codePostal=?, genre=?, voiture=?, notificationMail=?, photo=?, email=? WHERE idCompte=?",
+                    (tel, prenom, nom, mdp, adresse, ville, pays, codePostal, genre, voiture, notifs, nomPhoto, email, idCompte))
                 conn.commit()
                 conn.close()
                 return jsonify({'message': 'ok'}), 200
             else :
                 #On n'insere pas de photo
-                c.execute("UPDATE COMPTE SET telephone=?, prenomCompte=?, nomCompte=?, mdp=?, adresse=?, ville=?, pays=?, codePostal=?, genre=?, voiture=?, notificationMail=? WHERE idCompte=?",
-                    (tel, prenom, nom, mdp, adresse, ville, pays, codePostal, genre, voiture, notifs, idCompte))
+                c.execute("UPDATE COMPTE SET telephone=?, prenomCompte=?, nomCompte=?, mdp=?, adresse=?, ville=?, pays=?, codePostal=?, genre=?, voiture=?, notificationMail=?, email = ? WHERE idCompte=?",
+                    (tel, prenom, nom, mdp, adresse, ville, pays, codePostal, genre, voiture, notifs, email, idCompte))
                 conn.commit()
                 conn.close()
                 return jsonify({'message': 'ok'}), 200
