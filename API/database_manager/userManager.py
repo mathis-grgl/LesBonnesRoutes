@@ -15,9 +15,6 @@ DATABASE_NAME: Final[str] = "database.db"
 USER_ATTR: Final[tuple[str, ...]] = ("idCompte", "nomCompte", "prenomCompte", "email", "genre", "voiture", "telephone", "notificationMail", "isAdmin")
 USER_PARTIAL_ATTR: Final[tuple[str, ...]] = ("idCompte", "nomCompte", "prenomCompte", "genre", "voiture")
 
-TRAJET_ATTR: Final[tuple[str, ...]] = ()
-TRAJET_PARTIAL_ATTR: Final[tuple[str, ...]] = ()
-
 
 def generate_token() -> str:
     return secrets.token_hex(64)
@@ -89,7 +86,8 @@ def get_user(mail: Optional[str]=None, id: Optional[int]=None, partial: bool=Fal
         raise Exception(f"aucun compte correspondant (id: {id}, email: {mail})")
     result =  dict(zip(members, row))
     result["voiture"] = bool(result["voiture"])
-    result["notificationMail"] = bool(result["notificationMail"])
+    if not partial:
+        result["notificationMail"] = bool(result["notificationMail"])
     return result
 
 

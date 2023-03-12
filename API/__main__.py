@@ -58,5 +58,6 @@ def check_datas(authentified:bool=True) -> Callable:
 
 
 if __name__ == "__main__":
-    import users.users
+    import users
+    import trajets
     app.run()
