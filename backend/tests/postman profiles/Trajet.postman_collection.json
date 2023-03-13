@@ -124,6 +124,35 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "edit",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"nbPlaces\": 12\r\n}"
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/api/v1/trajet/17",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"trajet",
+						"17"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"auth": {
@@ -131,7 +160,7 @@
 		"apikey": [
 			{
 				"key": "value",
-				"value": "ddcce46eefb500410947565b2c0206eaf98cf92754cd39dfe29501cb982f1e9c570211b01502ce168ae86bdd46c95f6c61c2d6d86f701495143660971ed4b166",
+				"value": "8a518cd6de231fbfcdced1f99c69d785794c5227ac4158657d7aad1d8f183b13315df52c9c45cf2b3fc35bd7a41c4952375c32c1ba49b78d44b79c275a17f3d3",
 				"type": "string"
 			},
 			{

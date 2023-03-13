@@ -70,6 +70,8 @@ def get_trajet(id: int) -> json_dict:
     cursor.execute(query, (id,))
     rows = cursor.fetchone()
     connection.close()
+    if rows is None:
+        raise ValueError(f"aucun compte correspondant (id: {id})")
     res: json_dict = dict(zip(TRAJET_ATTR, rows))
     id_conducteur = res.pop("idConducteur")
     try:
@@ -99,6 +101,27 @@ def search_trajet(data: json_dict) -> tuple[json_list, int]:
         res.append(get_trajet(row[0]))
     connection.close()
     return res, 200
+
+
+def edit_trajet(user_info: UserInfo, trajet_id: int, data: json_dict) -> tuple[json_dict, int]:
+    try:
+        trajet = get_trajet(trajet_id)
+    except ValueError:
+        return {}, 400
+    if (not user_info.isAdmin) and (user_info.user_id != trajet["conducteur"]["idCompte"]):
+        return {}, 403
+
+    connection = sqlite3.connect(DATABASE_NAME)
+    cursor = connection.cursor()
+    for param, value in data.items():
+        query = f"""
+            UPDATE TRAJET
+            SET {param} = ?
+            WHERE idTrajet = {trajet_id}"""
+        cursor.execute(query, (value,))
+    connection.commit()
+    connection.close()
+    return get_trajet(trajet_id), 200
 
 
 def delete_trajet(user_info: UserInfo, trajet_id: int) -> tuple[json_dict, int]:
