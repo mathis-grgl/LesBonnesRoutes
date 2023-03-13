@@ -35,3 +35,11 @@ def get_trajet(user_info: UserInfo, trajet_id: int) -> tuple[Response, int]:
     if trajet is None:
         abort(404, f"no trajet found with ID {trajet_id}")
     return jsonify(trajet), 200
+
+@app.route("/api/v1/trajet/<int:trajet_id>", methods=["DELETE"])
+@check_datas()
+def delete_trajet(user_info: UserInfo, trajet_id: int) -> tuple[Response, int]:
+    resp, code = trajetManager.delete_trajet(user_info, trajet_id)
+    if code == 403:
+        abort(403)
+    return jsonify(resp), 204

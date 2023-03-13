@@ -99,3 +99,17 @@ def search_trajet(data: json_dict) -> tuple[json_list, int]:
         res.append(get_trajet(row[0]))
     connection.close()
     return res, 200
+
+
+def delete_trajet(user_info: UserInfo, trajet_id: int) -> tuple[json_dict, int]:
+
+    trajet = get_trajet(trajet_id)
+    if (not user_info.isAdmin) and (user_info.user_id != trajet["conducteur"]["idCompte"]):
+        return {}, 403
+    query = """DELETE FROM TRAJET WHERE idTrajet = ?"""
+    connection = sqlite3.connect(DATABASE_NAME)
+    cursor = connection.cursor()
+    cursor.execute(query, (trajet_id,))
+    connection.commit()
+    connection.close()
+    return {}, 204
