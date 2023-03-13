@@ -83,7 +83,7 @@ def get_user(mail: Optional[str]=None, id: Optional[int]=None, partial: bool=Fal
     row = cursor.fetchone()
     connection.close()
     if row is None:
-        raise Exception(f"aucun compte correspondant (id: {id}, email: {mail})")
+        raise ValueError(f"aucun compte correspondant (id: {id}, email: {mail})")
     result =  dict(zip(members, row))
     result["voiture"] = bool(result["voiture"])
     if not partial:

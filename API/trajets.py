@@ -9,7 +9,7 @@ from database_manager import trajetManager
 
 
 
-@app.route('/api/v1/trajet', methods=['PUT'])
+@app.route("/api/v1/trajet", methods=["PUT"])
 @check_datas()
 def new_trajet(user_info: UserInfo) -> tuple[Response, int]:
     """
@@ -20,3 +20,18 @@ def new_trajet(user_info: UserInfo) -> tuple[Response, int]:
     if code == 400:
         abort(400, "invalid datas")
     return jsonify(resp), code
+
+@app.route("/api/v1/trajet", methods=["GET"])
+@check_datas()
+def search_trajet(user_info: UserInfo) -> tuple[Response, int]:
+    data: dict[str, Any] = json.loads(request.data)
+    resp, code = trajetManager.search_trajet(data)
+    return jsonify(resp), code
+
+@app.route("/api/v1/trajet/<int:trajet_id>", methods=["GET"])
+@check_datas()
+def get_trajet(user_info: UserInfo, trajet_id: int) -> tuple[Response, int]:
+    trajet = trajetManager.get_trajet(trajet_id)
+    if trajet is None:
+        abort(404, f"no trajet found with ID {trajet_id}")
+    return jsonify(trajet), 200
