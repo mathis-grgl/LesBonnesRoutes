@@ -42,8 +42,8 @@ def get_trajet(user_info: UserInfo, trajet_id: int) -> tuple[Response, int]:
 def edit_trajet(user_info: UserInfo, trajet_id: int) -> tuple[Response, int]:
     data: dict[str, Any] = json.loads(request.data)
     resp, code = trajetManager.edit_trajet(user_info, trajet_id, data)
-    if code == 403:
-        abort(403)
+    if code in (403, 404):
+        abort(code)
     return jsonify(resp), code
 
 
@@ -51,6 +51,6 @@ def edit_trajet(user_info: UserInfo, trajet_id: int) -> tuple[Response, int]:
 @check_datas()
 def delete_trajet(user_info: UserInfo, trajet_id: int) -> tuple[Response, int]:
     resp, code = trajetManager.delete_trajet(user_info, trajet_id)
-    if code == 403:
-        abort(403)
+    if code in (403, 404):
+        abort(code)
     return jsonify(resp), 204
