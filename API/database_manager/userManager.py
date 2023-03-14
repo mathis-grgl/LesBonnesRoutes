@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
 import sqlite3
-from sqlite3 import SQLITE_CONSTRAINT_UNIQUE
 import secrets
 from typing import Final, Optional
 
@@ -53,10 +52,9 @@ def new_user(data: json_dict) -> tuple[json_dict, int]:
     try:
         cursor.execute(query, list(data.values()))
         connection.commit()
-    except sqlite3.IntegrityError as e:
-        if e.sqlite_errorcode == SQLITE_CONSTRAINT_UNIQUE:
-            connection.close()
-            return {}, 409
+    except sqlite3.IntegrityError:
+        connection.close()
+        return {}, 409
     finally:
         connection.close()
 
