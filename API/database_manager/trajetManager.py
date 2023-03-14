@@ -1,6 +1,6 @@
 from functools import lru_cache
 import sqlite3
-from typing import Final
+from typing import Final, Optional
 
 from lbr_typing import json_dict, json_list
 from connection_info import UserInfo
@@ -58,7 +58,7 @@ def new_trajet(user_info: UserInfo, data: json_dict) -> tuple[json_dict, int]:
     return res, 200
 
 
-def get_trajet(id: int) -> json_dict:
+def get_trajet(id: int) -> Optional[json_dict]:
 
     connection = sqlite3.connect(DATABASE_NAME)
     cursor = connection.cursor()
@@ -71,13 +71,10 @@ def get_trajet(id: int) -> json_dict:
     rows = cursor.fetchone()
     connection.close()
     if rows is None:
-        raise ValueError(f"aucun compte correspondant (id: {id})")
+        return
     res: json_dict = dict(zip(TRAJET_ATTR, rows))
     id_conducteur = res.pop("idConducteur")
-    try:
-        res["conducteur"] = userManager.get_user(id=id_conducteur, partial=True)
-    except ValueError:
-        raise ValueError(f"aucun trajet correspondant (id: {id})")
+    res["conducteur"] = userManager.get_user(id=id_conducteur, partial=True)
     res["villeDepart"] = get_ville(res["villeDepart"])
     res["villeArrivee"] = get_ville(res["villeArrivee"])
     return res

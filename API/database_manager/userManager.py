@@ -60,10 +60,10 @@ def new_user(data: json_dict) -> tuple[json_dict, int]:
     finally:
         connection.close()
 
-    return get_user(data["email"]), 201
+    return get_user(mail=data["email"]), 201
 
 
-def get_user(mail: Optional[str]=None, id: Optional[int]=None, partial: bool=False) -> json_dict:
+def get_user(mail: Optional[str]=None, id: Optional[int]=None, partial: bool=False) -> Optional[json_dict]:
     if mail is None and id is None:
         raise ValueError("mail or id must be provided")
     if mail is not None and id is not None:
@@ -83,11 +83,12 @@ def get_user(mail: Optional[str]=None, id: Optional[int]=None, partial: bool=Fal
     row = cursor.fetchone()
     connection.close()
     if row is None:
-        raise ValueError(f"aucun compte correspondant (id: {id}, email: {mail})")
+        return None
     result =  dict(zip(members, row))
     result["voiture"] = bool(result["voiture"])
     if not partial:
         result["notificationMail"] = bool(result["notificationMail"])
+        result["isAdmin"] = bool(result["isAdmin"])
     return result
 
 
@@ -161,6 +162,8 @@ def connect_user(data: json_dict) -> tuple[json_dict, int]:
     
     token = generate_token()
     user = get_user(data["email"])
+    if user is None:
+        return {}, 404
     query = "INSERT INTO TOKEN VALUES (?, ?, ?)"
     date = datetime.now()
     date += timedelta(hours=1)
@@ -173,7 +176,8 @@ def connect_user(data: json_dict) -> tuple[json_dict, int]:
 def delete_user(user_info: UserInfo, user_id: int) -> tuple[json_dict, int]:
     if (not user_info.isAdmin) and (user_info.user_id != user_id):
         return {}, 403
-    
+    if user_info.user is None:
+        return {}, 404
     query = """DELETE FROM COMPTE WHERE idCompte = ?"""
     connection = sqlite3.connect(DATABASE_NAME)
     cursor = connection.cursor()
