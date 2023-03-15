@@ -773,7 +773,7 @@ def valider_automatiquement_trajet():
 scheduler = BackgroundScheduler()
 
 # Ajout d'une tâche
-scheduler.add_job(func=valider_automatiquement_trajet, trigger="interval", seconds=60)
+scheduler.add_job(func=valider_automatiquement_trajet, trigger="interval", minutes=60)
 
 # Démarrage du scheduler
 scheduler.start()

@@ -1,17 +1,17 @@
 BEGIN;
 
 INSERT INTO COMPTE(nomCompte, prenomCompte, email, adresse, ville, codePostal, pays, genre, voiture, telephone, mdp, notificationMail)
-    VALUES ('DURAND', 'Olivier', 'olivier@mail.com', '1 Rue Stanislas', 'NANCY', '54000', 'FRANCE', 'homme', 1, '0606060606', '615357e8aff9d46a43391e3699194287ab9658b01633a791355085cfed0e9013edb84055b0b6d05f49bcc3cc33a8bb8601d87ce8586f5aa06372bd8dd83439b4', 0);
+    VALUES ('DURAND', 'Olivier', 'olivier@mail.com', '1 Rue Stanislas', 'NANCY', '54000', 'FRANCE', 'homme', 1, '0606060606', '95e8dcef79ad56c796c894bbf2dcce09c56a44fa648e88a4ce50b4d6e238470f12428f730cc4f16ba59e99e07c51ad716a763ce01f71ff9ec1c7542abd0d6cae', 0);
 INSERT INTO COMPTE(nomCompte, prenomCompte, email, adresse, ville, codePostal, pays, genre, voiture, telephone, mdp, notificationMail)
-    VALUES ('FRANCOIS', 'Marie', 'marie@mail.com', '12 Rue Saint-Dizier', 'NANCY', '54000', 'FRANCE', 'femme', 1, '0606060606', 'fd074d536f373fd8444a8a8e4732745f6d8b5d53988839976e98a2c8e43fd876cd11e0573beb700ce7c054e54be4485c6c29b9ff7179fb49bed3a5e584a80e30', 0);
+    VALUES ('FRANCOIS', 'Marie', 'marie@mail.com', '12 Rue Saint-Dizier', 'NANCY', '54000', 'FRANCE', 'femme', 1, '0606060606', '8871fd083693dfdb7a0768bfa2ddb05ecf3a4a5102627611fea48cbf569e4fa238e4f95ffa75edb8a3f9e462d8525aa5d079eb5bdf028654de9da00ffa509d0a', 0);
 INSERT INTO COMPTE(nomCompte, prenomCompte, email, adresse, ville, codePostal, pays, genre, voiture, telephone, mdp, notificationMail)
-    VALUES ('LEGRAND', 'Paul', 'paul@mail.com', '20 Rue des Carmes', 'NANCY', '54000', 'FRANCE', 'homme', 0, '0606060606', '8c47c604132d485ec6854ffc16e332e5c5cd935136fe31a36a097ea67339206705865c9c3c604cc93b723a42ef3ca4301ac15b61a7d9307e4ec1d5e8b18768f9', 1);
+    VALUES ('LEGRAND', 'Paul', 'paul@mail.com', '20 Rue des Carmes', 'NANCY', '54000', 'FRANCE', 'homme', 0, '0606060606', 'ae35a614392539445a23dde8f72d480d7c068e56a630d4a25d498f516b93c31ee261982586c34dc72c3eeb9f6b335f5de86b8c610f0f2e84955767156fc341b5', 1);
 INSERT INTO COMPTE(nomCompte, prenomCompte, email, adresse, ville, codePostal, pays, genre, voiture, telephone, mdp, notificationMail)
-    VALUES ('PIERRE', 'Harry', 'harry@mail.com', '11 Rue des Tiercelins', 'NANCY', '54000', 'FRANCE', 'autre', 1, '0606060606', '9a48e3ea78f0d13121afa8ea8b3fbb1efd174b73551b432ffc609d289034e35e4fe7eaac7e4f966e398feae56d84580b3868c289f4a33990f2b27e6577552fec', 1);
+    VALUES ('PIERRE', 'Harry', 'harry@mail.com', '11 Rue des Tiercelins', 'NANCY', '54000', 'FRANCE', 'autre', 1, '0606060606', 'aa4ebc2ab2a8e58e7df248f47c93474f500d96c36d6efb172f8303b3cc514550a525d5388ccfc81f03335f054d3af416774da0596fcae1ca9ac31a88b39ad113', 1);
 INSERT INTO COMPTE(nomCompte, prenomCompte, email, adresse, ville, codePostal, pays, genre, voiture, telephone, mdp, notificationMail)
-    VALUES ('DIDIER', 'Sophie', 'sophie@mail.com', '8 Rue Gustave Simon', 'NANCY', '54000', 'FRANCE', 'femme', 0, '0606060606', 'e22092d3df283b27e15c44947df862c8b244433540dc5c58b0ea45da95602db94fc829d007369ae8708069a3d1c3a1cdebf803c5faa976435cf8309e2dafcaf4', 1);
+    VALUES ('DIDIER', 'Sophie', 'sophie@mail.com', '8 Rue Gustave Simon', 'NANCY', '54000', 'FRANCE', 'femme', 0, '0606060606', '93f8556ed792c35de85a6a4036fa4463964f5011e41ab7abb047937163448fc1c15834536008a6ae66a35de2bc7c1f8a2a84ed15b385fcab1ceb50ee7d968c4e', 1);
 INSERT INTO COMPTE(nomCompte, prenomCompte, email, adresse, ville, codePostal, pays, genre, voiture, telephone, mdp, notificationMail, isAdmin)
-    VALUES ('ADMIN', 'Admin', 'admin@mail.com', 'admin', 'ADMIN', '54000', 'FRANCE', 'femme', 0, '0606060606', '10da32bb6cc3a0e32ca9a5855009a661970c92253f1ad899bb3d7e934e35d920e0c2999d60c666b9adbe2ad29a3a7ff916d494b76605e81adcd81c036f2ac610', 0, 1);
+    VALUES ('ADMIN', 'Admin', 'admin@mail.com', 'admin', 'ADMIN', '54000', 'FRANCE', 'femme', 0, '0606060606', '52f81cbcffa9c2fcc51990ea4e579c2f2c15271015df5eb2b8e10ef7ed43e18a9d4c06907549796346f059fa4ac5a3a9c6b29765612c82aa69736814e1e99b7c', 0, 1);
 
 INSERT INTO TRAJET(idConducteur, heureDepart, dateDepart, nbPlaces, prix, nbPlacesRestantes, statusTrajet, commentaires, precisionRdv, villeDepart, villeArrivee)
     VALUES (4, '10h30', '20230414', 5, 7, 3, 'a pourvoir', 'Non fumeur', 'Devant le Leclerc', 30, 27);

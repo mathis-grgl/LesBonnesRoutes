@@ -1,8 +1,8 @@
 let nomuser = $('#nomUser').text();
 console.log("Voici le nom de l'user " + nomuser);
 
-function onLoad(){
-  if(getCookieToken() == null){
+function onLoad() {
+  if (getCookieToken() == null) {
     window.location.href = "login_signup";
   }
 }
@@ -77,10 +77,8 @@ function onLoad(){
 //   });
 
 const token = getCookieToken();
-
+let mdpDeBase = "";
 const url = 'compte/getInfoCompte/' + token;
-console.log(token);
-console.log(url);
 
 fetch(url)
   .then(response => {
@@ -97,7 +95,7 @@ fetch(url)
     let tel = data.telephone;
     let genre = data.genre;
     let email = data.email;
-    let mdp = data.mdp;
+    mdpDeBase = data.mdp;
     let voiture = data.voiture;
     let notif = data.notificationMail;
     let ville = data.ville;
@@ -105,7 +103,6 @@ fetch(url)
     let cp = data.codePostal;
     let adresse = data.adresse;
     console.log(nom + ' ' + prenom);
-    // $('#nomUser').text(nom + ' ' + prenom);
     $("#nomUser").html(nom + " " + prenom).css({
       "font-family": "Arial, sans-serif",
       "font-size": "1.2rem",
@@ -119,8 +116,6 @@ fetch(url)
     $('input[name="telephone"]').val(tel);
     $('input[name="nom"]').val(nom);
     $('input[name="prenom"]').val(prenom);
-    $('input[name="logpass"]').val(mdp);
-    $('input[name="logpassconfirm"]').val(mdp);
     $('input[name="email"]').val(email);
     $('input[name="ville"]').val(ville);
     $('input[name="pays"]').val(pays);
@@ -230,17 +225,16 @@ $('#update-form').submit(function (event) {
   // On récupère les mot de passes
   let inputmdp = $('input[name="logpass"]');
   let mdp = inputmdp.val();
-  console.log("Voici le mdp : " + mdp);
 
   const regexmdp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
   let inputmdpconfirm = $('input[name="logpassconfirm"]');
   let mdpconfirm = inputmdpconfirm.val();
-  console.log("Voici le mdp de confirm : " + mdpconfirm);
 
 
   if (mdp.trim().length == 0 || mdpconfirm.trim().length == 0) {
-    console.log('on ne fait rien.')
+    mdp = mdpDeBase;
+    console.log(mdp);
   } else {
     if (!mdp.match(regexmdp) || !mdpconfirm.match(regexmdp)) {
       // alert('Les deux mdp ne sont pas pareils.');
@@ -332,8 +326,6 @@ $('#update-form').submit(function (event) {
 
   // On récupère les infos liées à la voiture
   let voiture = $('input[name="voiture"]:checked').val();
-  console.log(voiture);
-
 
   if (voiture === "oui") {
     voiture = 1;
@@ -345,13 +337,10 @@ $('#update-form').submit(function (event) {
 
   }
 
-  console.log('Nouvelle info pour la voiture : ' + voiture);
-
 
 
   // On récupère les infos liées aux notifs
   let notif = $('input[name="notif"]:checked').val();
-  console.log(notif);
 
   if (notif === "oui") {
     notif = 1;
@@ -363,8 +352,6 @@ $('#update-form').submit(function (event) {
     $('label[for="Choice1"], label[for="Choice2"], #labelnotif').css('color', 'red');
   }
 
-  console.log('Nouvelle info pour la notif : ' + notif);
-
   let inputimage = $('input[name="poster"]').prop('files');
   if (inputimage && inputimage.length > 0) {
     let image = inputimage[0];
@@ -375,7 +362,6 @@ $('#update-form').submit(function (event) {
     console.log(image.type);
 
   }
-
 
 
   if (!valide) {
@@ -396,16 +382,16 @@ $('#update-form').submit(function (event) {
         'nom': document.querySelector("input[name='nom']").value,
         'email': document.querySelector("input[name='email']").value,
         'prenom': document.querySelector("input[name='prenom']").value,
-        'telephone' : $('input[name="telephone"]').val(),
+        'telephone': $('input[name="telephone"]').val(),
         'notif': $('input[name="notif"]:checked').val(),
         'voiture': $('input[name="voiture"]:checked').val(),
-        'mdp': $('input[name="logpass"]').val(),
+        'mdp': mdp,
         'ville': $('input[name="ville"]').val(),
         'adresse': $('input[name="adresse"]').val(),
         'pays': $('input[name="pays"]').val(),
         'codepostal': $('input[name="codepostal"]').val(),
         'genre': $('#genre').val(),
-        'photo' : $('input[name="poster"]').prop('files')
+        'photo': $('input[name="poster"]').prop('files')
 
 
         // 'checkbox-licence-sign': document.querySelector("input[name='checkbox-licence-sign']").value,
@@ -417,6 +403,7 @@ $('#update-form').submit(function (event) {
       })
     }).then(reponse => {
       if (reponse.ok) {
+        console.log(mdp);
         alert("Votre compte a bien été modifié.");
         window.location.href = '/account';
       } else {

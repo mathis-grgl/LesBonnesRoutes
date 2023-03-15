@@ -197,8 +197,29 @@ def getInfoCompte(token):
         return jsonify({'message': 'Token invalide ou expiré.'}), 401
 
 
+# Récupère le nom d'un compte avec son id
+@compte_bp.route('/getNomCompte/<string:id>', methods=['GET'])
+def getNomCompte(id):
+    conn = sqlite3.connect(URI_DATABASE)
+    c = conn.cursor()
+    c.execute("SELECT nomCompte, prenomCompte FROM COMPTE WHERE idCompte = ?", (id,))
+    compte = c.fetchone()
 
+    # L'id est valide et conduit bien a un compte
+    if compte:
+        nomCompte = compte[0] + " " + compte[1]
 
+        # Création d'un dictionnaire contenant les données
+        compte_dict = {"nomCompte" : nomCompte}
+
+        # Fermeture de la connexion
+        conn.close()
+
+        # Envoi de la réponse en JSON avec code 200 et le compte
+        return jsonify(compte_dict), 200
+    else:
+        conn.close()
+        return jsonify({'message': 'Token invalide ou expiré.'}), 401
 
 
 #Modifier son compte avec son token
@@ -230,8 +251,9 @@ def modifCompte(token):
             prenom = data.get('prenom')
             nom = data.get('nom')
             mdp = data.get('mdp')
-            mdp = mdp.encode()
-            mdp = sha512(mdp).hexdigest()
+            if mdp:
+                mdp = mdp.encode()
+                mdp = sha512(mdp).hexdigest()
             adresse = data.get('adresse')
             ville = data.get('ville')
             pays = data.get('pays')
