@@ -3,17 +3,19 @@ from typing import Any, Callable
 import json
 
 import flask
-from flask import abort, request, jsonify, Response
+from flask import abort, request
 import jsonschema
 from werkzeug.exceptions import HTTPException
 from jsonschema.exceptions import ValidationError
 
-import databaseManager
-from connection_info import UserInfo
+from database_manager import userManager
 
 app = flask.Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False
 app.config["debug"] = True
+
+def get_app() -> flask.Flask:
+    return app
 
 @app.errorhandler(HTTPException)
 def handle_exception(e):
@@ -46,59 +48,19 @@ def check_datas(authentified:bool=True) -> Callable:
                 token = request.headers.get("auth_token")
                 if token is None:
                     abort(401, "no token supplied")
-                if not databaseManager.check_token(token):
+                if not userManager.check_token(token):
                     abort(401, "invalid or expired token")
-                user_info = databaseManager.get_UserInfo_from_token(token)
+                user_info = userManager.get_userinfo_from_token(token)
                 return f(user_info, *args, **kwargs)
             return f(*args, **kwargs)
         return inner
     return wrapper
 
 
-@app.route("/api/v1/user", methods=['PUT'])
-@check_datas(authentified=False)
-def new_user() -> tuple[Response, int]:
-    """
-    creation of a new user
-    """
-    data: dict[str, Any] = json.loads(request.data)
-    resp, code = databaseManager.new_user(data)
-    return jsonify(resp), code
-
-
-@app.route("/api/v1/user/<int:user_id>", methods=['PATCH'])
-@check_datas()
-def edit_user(user_info: UserInfo, user_id: int) -> tuple[Response, int]:
-    """
-    edit specified data of a user
-    """
-    data: dict[str, Any] = json.loads(request.data)
-    resp, code = databaseManager.edit_user(user_info, user_id, data)
-    return jsonify(resp), code
-
-@app.route("/api/v1/user/<int:user_id>", methods=['DELETE'])
-def delete_user(user_id: int) -> Response:
-    """
-    remove a user from database (require auth token and password)
-    """
-    return jsonify()
-
-@app.route("/api/v1/user", methods=['POST'])
-@check_datas(authentified=False)
-def connect_user() -> tuple[Response, int]:
-    """
-    answer with a token for future connections
-    """
-    data = json.loads(request.data)
-    resp, code = databaseManager.connect_user(data)
-    if resp == {}:
-        abort(401, "invalid email or password")
-    return jsonify(resp), code
-
-@app.route("/api/v1/user/<int:user_id>", methods=['GET'])
-@check_datas()
-def get_user(user_id: int) -> Response:
-    return jsonify()
-
 if __name__ == "__main__":
+    # debug
+    from install_db import install_db
+    
+    import users
+    import trajets
     app.run()

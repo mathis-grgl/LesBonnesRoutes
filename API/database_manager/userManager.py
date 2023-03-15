@@ -1,9 +1,7 @@
 from datetime import datetime, timedelta
 import sqlite3
-from sqlite3 import SQLITE_CONSTRAINT_UNIQUE
 import secrets
 from typing import Final, Optional
-from itertools import cycle
 
 from argon2 import PasswordHasher
 from argon2.exceptions import VerificationError
@@ -15,9 +13,6 @@ DATABASE_NAME: Final[str] = "database.db"
 
 USER_ATTR: Final[tuple[str, ...]] = ("idCompte", "nomCompte", "prenomCompte", "email", "genre", "voiture", "telephone", "notificationMail", "isAdmin")
 USER_PARTIAL_ATTR: Final[tuple[str, ...]] = ("idCompte", "nomCompte", "prenomCompte", "genre", "voiture")
-
-TRAJET_ATTR: Final[tuple[str, ...]] = ()
-TRAJET_PARTIAL_ATTR: Final[tuple[str, ...]] = ()
 
 
 def generate_token() -> str:
@@ -36,7 +31,7 @@ def check_token(token: str) -> bool:
         print("DEBUG: AUCUN TOKEN NE MATCH")
         return False
     expiration = datetime.fromisoformat(result[0])
-    if expiration > datetime.now():
+    if expiration < datetime.now():
         print("DEBUG: TOKEN EXPIRÉ")
         return False
     return True
@@ -57,17 +52,16 @@ def new_user(data: json_dict) -> tuple[json_dict, int]:
     try:
         cursor.execute(query, list(data.values()))
         connection.commit()
-    except sqlite3.IntegrityError as e:
-        if e.sqlite_errorcode == SQLITE_CONSTRAINT_UNIQUE:
-            connection.close()
-            return {}, 409
+    except sqlite3.IntegrityError:
+        connection.close()
+        return {}, 409
     finally:
         connection.close()
 
-    return get_user(data["email"]), 201
+    return get_user(mail=data["email"]), 201
 
 
-def get_user(mail: Optional[str]=None, id: Optional[int]=None, partial: bool=False) -> json_dict:
+def get_user(mail: Optional[str]=None, id: Optional[int]=None, partial: bool=False) -> Optional[json_dict]:
     if mail is None and id is None:
         raise ValueError("mail or id must be provided")
     if mail is not None and id is not None:
@@ -87,10 +81,12 @@ def get_user(mail: Optional[str]=None, id: Optional[int]=None, partial: bool=Fal
     row = cursor.fetchone()
     connection.close()
     if row is None:
-        raise Exception(f"aucun compte correspondant (id: {id}, email: {mail})")
+        return None
     result =  dict(zip(members, row))
     result["voiture"] = bool(result["voiture"])
-    result["notificationMail"] = bool(result["notificationMail"])
+    if not partial:
+        result["notificationMail"] = bool(result["notificationMail"])
+        result["isAdmin"] = bool(result["isAdmin"])
     return result
 
 
@@ -110,7 +106,7 @@ def get_user_from_token(token: str) -> Optional[json_dict]:
     return get_user(res[0])
 
 
-def get_UserInfo_from_token(token: str) -> Optional[UserInfo]:
+def get_userinfo_from_token(token: str) -> Optional[UserInfo]:
     if not check_token(token):
         return None
     query = """
@@ -123,7 +119,7 @@ def get_UserInfo_from_token(token: str) -> Optional[UserInfo]:
     cursor.execute(query, (token,))
     res = cursor.fetchone()
     if res is None:
-        return
+        return 
     return UserInfo(*res)
 
 
@@ -164,6 +160,8 @@ def connect_user(data: json_dict) -> tuple[json_dict, int]:
     
     token = generate_token()
     user = get_user(data["email"])
+    if user is None:
+        return {}, 404
     query = "INSERT INTO TOKEN VALUES (?, ?, ?)"
     date = datetime.now()
     date += timedelta(hours=1)
@@ -173,5 +171,15 @@ def connect_user(data: json_dict) -> tuple[json_dict, int]:
     return {"auth_token": token, "user": user}, 200
 
 
-
-
+def delete_user(user_info: UserInfo, user_id: int) -> tuple[json_dict, int]:
+    if (not user_info.isAdmin) and (user_info.user_id != user_id):
+        return {}, 403
+    if user_info.user is None:
+        return {}, 404
+    query = """DELETE FROM COMPTE WHERE idCompte = ?"""
+    connection = sqlite3.connect(DATABASE_NAME)
+    cursor = connection.cursor()
+    cursor.execute(query, (user_id,))
+    connection.commit()
+    connection.close()
+    return {}, 204
