@@ -4,6 +4,7 @@ from flask import Blueprint, jsonify, request
 from datetime import datetime
 import sqlite3
 import secrets
+from hashlib import sha512
 
 compte_bp = Blueprint('compte', __name__)
 
@@ -29,6 +30,11 @@ def create_compte():
     noteCompte = "2.5"
     photo = "non"
 
+    # Encodage du mot de passe
+    mdp = mdp.encode()
+
+    # Hashage du mot de passe
+    mdp = sha512(mdp).hexdigest()
 
 
     # Vérifier si le compte existe déjà dans la base de données
@@ -43,7 +49,7 @@ def create_compte():
         # On ne précise pas la raison, soucis de sécurité
         return jsonify({'message': 'Une erreur est survenue'}), 409
 
-    if not nom or not prenom or not email or not adresse or not ville or not codePostal or not pays or not genre or not telephone or not mdp or not notificationMail:
+    if not nom or not prenom or not email or not adresse or not ville or not codePostal or not pays or not genre or not telephone or not mdp:
         # Il manque des informations dans la requête
         conn.close()
         return jsonify({'message': 'Informations manquantes'}), 400
@@ -77,6 +83,12 @@ def connectCompte():
     data = request.get_json()
     email = data.get('email-log')
     mdp = data.get('password-log')
+
+    # Encodage du mot de passe
+    mdp = mdp.encode()
+
+    # Hashage du mot de passe
+    mdp = sha512(mdp).hexdigest()
 
     conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
@@ -218,6 +230,8 @@ def modifCompte(token):
             prenom = data.get('prenom')
             nom = data.get('nom')
             mdp = data.get('mdp')
+            mdp = mdp.encode()
+            mdp = sha512(mdp).hexdigest()
             adresse = data.get('adresse')
             ville = data.get('ville')
             pays = data.get('pays')
