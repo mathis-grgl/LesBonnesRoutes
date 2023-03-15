@@ -82,31 +82,104 @@ function displayMessage(res, message){
 
 
 function signIn(event) {
-  const form = document.querySelector('#signup-form');
+  event.preventDefault(); // Prevent the default behavior of the button click
+  const formData = new FormData();
+  const fileInput = document.querySelector("input[name='file-sign']");
+  const file = fileInput.files[0];
+  const fileExtension = file.name.split('.').pop();
+  const fileName = `${document.querySelector("input[name='name-sign']").value}-${document.querySelector("input[name='last-name-sign']").value}-${Date.now()}.${fileExtension}`;
+
+  // Create a new File object with the unique name
+  const newFile = new File([file], fileName, { type: file.type });
+
+  // Append the new file to the form data
+  formData.append('file-sign', newFile);
+
+  if (checkValue('name-sign') && checkValue('last-name-sign') && checkValue("gender-sign") && checkValue('email-sign') && checkValue('phone-sign') &&checkValue("address-sign") && checkValue("city-sign") && checkValue("postal-sign") && checkValue("country-sign") && checkValue('password-sign')) {
+    // Stockage de la valeur dans une variable booléenne
+    const car = checkValue('checkbox-licence-sign') ? true : false;
+
+    // Append the rest of the form data to the form data
+    formData.append('name-sign', document.querySelector("input[name='name-sign']").value);
+    formData.append('last-name-sign', document.querySelector("input[name='last-name-sign']").value);
+    formData.append('gender-sign', document.querySelector("input[name='gender-sign']:checked").value);
+    formData.append('email-sign', document.querySelector("input[name='email-sign']").value);
+    formData.append('phone-sign', document.querySelector("input[name='phone-sign']").value);
+    formData.append('checkbox-licence-sign', car);
+    formData.append('address-sign', document.querySelector("input[name='address-sign']").value);
+    formData.append('city-sign', document.querySelector("input[name='city-sign']").value);
+    formData.append('postal-sign', document.querySelector("input[name='postal-sign']").value);
+    formData.append('country-sign', document.querySelector("input[name='country-sign']").value);
+    formData.append('password-sign', document.querySelector("input[name='password-sign']").value);
+
+    fetch('/compte/createCompte', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error(response.status);
+      }
+    })
+    .then(data => {
+      if (data.error) {
+        console.log(data.error);
+        return;
+      }
+
+      container.classList.remove("right-panel-active");
+      displayMessage(true, "Votre compte a bien été créé.");
+    })
+    .catch(error => {
+      console.error('Erreur : ' + error.message);
+      switch (error.message){
+        case "409":
+          displayMessage(false, "Ce compte existe déjà.");
+          break;
+
+        case "400":
+          displayMessage(false, "Veuillez rentrer toutes les informations nécessaires.");
+          break;
+
+        default:
+          displayMessage(false, "Erreur lors de la création du compte.");
+          break;
+      }
+    });
+  } else {
+    displayMessage(false, "Veuillez rentrer toutes les informations nécessaires.");
+  }
+}
+
+
+
+/*function signIn(event) {
   event.preventDefault(); // Prevent the default behavior of the button click
 
   if (checkValue('name-sign') && checkValue('last-name-sign') && checkValue("gender-sign") && checkValue('email-sign') && checkValue('phone-sign') &&checkValue("address-sign") && checkValue("city-sign") && checkValue("postal-sign") && checkValue("country-sign") && checkValue('password-sign')) {
     // Stockage de la valeur dans une variable booléenne
     const car = checkValue('checkbox-licence-sign') ? true : false;
 
+    // Création d'un objet FormData pour envoyer les données du formulaire, y compris le fichier
+    const formData = new FormData();
+    formData.append('name-sign', document.querySelector("input[name='name-sign']").value);
+    formData.append('last-name-sign', document.querySelector("input[name='last-name-sign']").value);
+    formData.append('gender-sign', document.querySelector("input[name='gender-sign']:checked").value);
+    formData.append('email-sign', document.querySelector("input[name='email-sign']").value);
+    formData.append('phone-sign', document.querySelector("input[name='phone-sign']").value);
+    formData.append('checkbox-licence-sign', car);
+    formData.append('address-sign', document.querySelector("input[name='address-sign']").value);
+    formData.append('city-sign', document.querySelector("input[name='city-sign']").value);
+    formData.append('postal-sign', document.querySelector("input[name='postal-sign']").value);
+    formData.append('country-sign', document.querySelector("input[name='country-sign']").value);
+    formData.append('password-sign', document.querySelector("input[name='password-sign']").value);
+    formData.append('file-sign', document.querySelector("input[name='file-sign']").files[0]);
+
     fetch('/compte/createCompte', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        'name-sign': document.querySelector("input[name='name-sign']").value,
-        'last-name-sign': document.querySelector("input[name='last-name-sign']").value,
-        'gender-sign': document.querySelector("input[name='gender-sign']:checked").value,
-        'email-sign': document.querySelector("input[name='email-sign']").value,
-        'phone-sign': document.querySelector("input[name='phone-sign']").value,
-        'checkbox-licence-sign': car,
-        'address-sign': document.querySelector("input[name='address-sign']").value,
-        'city-sign': document.querySelector("input[name='city-sign']").value,
-        'postal-sign': document.querySelector("input[name='postal-sign']").value,
-        'country-sign': document.querySelector("input[name='country-sign']").value,
-        'password-sign': document.querySelector("input[name='password-sign']").value
-      })
+      body: formData
     })
     .then(response => {
       if (response.ok) {
@@ -143,7 +216,8 @@ function signIn(event) {
   } else {
     displayMessage(false, "Veuillez rentrer toutes les informations necéssaires.");
   }
-}
+}*/
+
 
 
 

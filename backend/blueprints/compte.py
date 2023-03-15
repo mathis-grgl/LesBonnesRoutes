@@ -1,34 +1,50 @@
 URI_DATABASE = '../database.db'
 
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, Flask, jsonify, request
 from datetime import datetime
+from io import BytesIO
 import sqlite3
 import secrets
+import os
+from werkzeug.utils import secure_filename
 from hashlib import sha512
 
 compte_bp = Blueprint('compte', __name__)
+
+app = Flask(__name__, template_folder=".")
+
+UPLOAD_FOLDER = 'static/images/profils'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 #Créer un compte
 @compte_bp.route('/createCompte', methods=['POST'])
 def create_compte():
     print("Othelo")
-    data = request.get_json()
-    # Récupérer les données envoyées dans la requête
-    nom = data.get('name-sign')
-    prenom = data.get('last-name-sign')
-    email = data.get('email-sign')
-    adresse = data.get('address-sign')
-    ville = data.get('city-sign')
-    codePostal = data.get('postal-sign')
-    pays = data.get('country-sign')
-    genre = data.get('gender-sign')
-    voiture = data.get('checkbox-licence-sign')
-    telephone = data.get('phone-sign')
-    mdp = data.get('password-sign')
-    #notificationMail = data.get('notificationMail')
-    notificationMail = "1"
-    noteCompte = "2.5"
-    photo = "non"
+    nom = request.form.get('name-sign')
+    prenom = request.form.get('last-name-sign')
+    email = request.form.get('email-sign')
+    adresse = request.form.get('address-sign')
+    ville = request.form.get('city-sign')
+    codePostal = request.form.get('postal-sign')
+    pays = request.form.get('country-sign')
+    genre = request.form.get('gender-sign')
+    voiture = request.form.get('checkbox-licence-sign')
+    telephone = request.form.get('phone-sign')
+    mdp = request.form.get('password-sign')
+    notificationMail = '1'
+    noteCompte = '2.5'
+
+    if 'file-sign' in request.files:
+        file = request.files['file-sign']
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+        # Récupérer le nom de fichier pour la photo
+        photo = secure_filename(request.files['file-sign'].filename)
+    else:
+        photo = None
+
+
 
     # Encodage du mot de passe
     mdp = mdp.encode()
@@ -55,8 +71,8 @@ def create_compte():
         return jsonify({'message': 'Informations manquantes'}), 400
 
     # Insérer le compte dans la base de données
-    c.execute("INSERT INTO COMPTE (nomCompte, prenomCompte, email, adresse, ville, codePostal, pays, genre, voiture, telephone, mdp, notificationMail) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-              (nom, prenom, email, adresse, ville, codePostal, pays, genre, voiture, telephone, mdp, notificationMail))
+    c.execute("INSERT INTO COMPTE (nomCompte, prenomCompte, email, adresse, ville, codePostal, pays, genre, voiture, telephone, mdp, notificationMail, photo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+              (nom, prenom, email, adresse, ville, codePostal, pays, genre, voiture, telephone, mdp, notificationMail, photo))
 
     # Recupération de l'id du compte    
     c.execute(

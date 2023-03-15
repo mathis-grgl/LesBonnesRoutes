@@ -36,6 +36,21 @@ function applyData() {
                 let nbnotes = user.nbnotes;
                 let nbtrajets = user.nbtrajets;
                 let photo = user.photo;
+                // Cas de la photo
+                /*if (photo != null) {
+                    fetch(photo)
+                    .then(response => response.blob())
+                    .then(blob => {
+                        document.querySelector("img[id=image]").src = URL.createObjectURL(blob); // Modification à apporter
+                    });
+                }*/
+                if (data.photo != null) {
+                    // Convertir la photo encodée en base64 en objet Image
+                    const img = new Image();
+                    img.src = 'static/images/profils/' + data.photo;
+                    // Afficher l'image
+                    document.querySelector("img[id=image]").src = img.src;
+                }
                 let noteCompte = parseInt(user.noteCompte);
                 
                 // Cas de l'adresse
@@ -85,20 +100,14 @@ function applyData() {
                         break;
                 }
 
-                // Cas de la photo
-                if (photo != null) 
-                    $('#image').attr('src', photo);
-
                 // Cas de la note
                 for (i = 1; i <= noteCompte; ++i) {
                     $('#rating-star-' + i).css('color', '#f8ce0b');
                 }
             });
 
-    }
-}
-
-
+    }  
+}        
 
 
 function onDelete() {
