@@ -126,13 +126,34 @@ function chargerInfosTrajets() {
 $('#editTrajet').submit(function (event) {
     event.preventDefault();
 
+    let valide = true;
     console.log("on a cliqué sur modif trajet.");
     let heure = $('#heure-depart').val();
     let date = $('#date-depart').val();
     let dateObject = moment(date, 'YYYY-MM-DD');
 
+    let dateParts = date.split('-');
+    let jour = dateParts[2];
+    let today = new Date();
+    let tjour = today.getDate();
+    let diff = jour - tjour;
+    console.log('voici la diff : ' + diff);
+
+
+    let dateFormatted;
+    if (diff > 1) {
+        console.log('Les deux dates sont espacées d\'au moins 24 heures');
+        dateFormatted = dateObject.format('D MMMM, YYYY');
+    } else {
+        valide = false;
+        console.log('Les deux dates sont espacées de moins de 24 heures');
+        $('#date-depart').css('border', '2px solid red');
+        $('#1').empty();
+        $('#1').append($('<b>').text("La date doit être dans plus de 24h."));
+    }
+
     // let dateObject = moment(date, 'YYYY/MM/DD');
-    let dateFormatted = dateObject.format('D MMMM, YYYY');
+
     let nbPlaces = $('#nb-places').val();
     let prix = $('#prix-place').val();
     let commentaires = $('#commentaires').val();
@@ -140,36 +161,60 @@ $('#editTrajet').submit(function (event) {
     let vd = $('#city_start').val();
     let va = $('#city_end').val();
 
+    if (nbPlaces < 0) {
+        valide = false;
+        $('#nb-places').css('border', '2px solid red');
+        $('#2').empty();
+        $('#2').append($('<b>').text("Vous devez rentrer un nombre de places positif."));
 
 
-    fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            'heureDepart': heure,
-            'dateDepart': dateFormatted,
-            'nbPlaces': nbPlaces,
-            'prix': prix,
-            'commentaires': commentaires,
-            'precisionRdv': precision,
-            'villeDepart': vd,
-            'villeArrivee': va
+    }
+
+    if (prix < 0) {
+        valide = false;
+        $('#prix-place').css('border', '2px solid red');
+        $('#3').empty();
+        $('#3').append($('<b>').text("Vous devez rentrer un prix positif."));
+    }
+
+
+
+
+
+    if (valide) {
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                'heureDepart': heure,
+                'dateDepart': dateFormatted,
+                'nbPlaces': nbPlaces,
+                'prix': prix,
+                'commentaires': commentaires,
+                'precisionRdv': precision,
+                'villeDepart': vd,
+                'villeArrivee': va
+            })
         })
-    })
-        .then(reponse => {
-            if (reponse.ok) {
-                
-                window.location.href = '/mes_trajets';
-            } else {
-                throw new Error('Network response was not ok');
+            .then(reponse => {
+                if (reponse.ok) {
 
-            }
+                    window.location.href = '/mes_trajets';
+                } else {
+                    throw new Error('Network response was not ok');
 
-        }).catch(error => {
-            console.error(error);
-        });
+                }
+
+            }).catch(error => {
+                console.error(error);
+            });
+
+    }else{
+        alert("Il y a un problème avec le formulaire.")
+    }
+
     // /modifTrajet/<string:token>/<int:idTrajet>'
 
 

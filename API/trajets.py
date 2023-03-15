@@ -47,6 +47,16 @@ def edit_trajet(user_info: UserInfo, trajet_id: int) -> tuple[Response, int]:
     return jsonify(resp), code
 
 
+@app.route("/api/v1/trajet/<int:trajet_id>/passengers", methods=["PUT"])
+@check_datas()
+def add_passengers(user_info: UserInfo, trajet_id: int) -> tuple[Response, int]:
+    data: dict[str, Any] = json.loads(request.data)
+    resp, code = trajetManager.add_passengers(user_info, trajet_id, data)
+    if code in (403, 404, 409):
+        abort(code)
+    return jsonify(resp), code
+
+
 @app.route("/api/v1/trajet/<int:trajet_id>", methods=["DELETE"])
 @check_datas()
 def delete_trajet(user_info: UserInfo, trajet_id: int) -> tuple[Response, int]:

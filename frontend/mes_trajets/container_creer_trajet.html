@@ -50,12 +50,14 @@
                             <div>
                                 <label for="date-depart">Date de départ :</label>
                                 <input type="date" id="date-depart" name="dateDepart" required>
+                                </br>
+                                <small id="1"></small>
                             </div>
 
                             <div>
                                 <label for="ville-depart">Ville de départ :</label>
                                 <!-- <input type="text" id="ville-depart" name="ville-depart" required> -->
-                                <select id="city_start" name="villeDepart" class="form-control">
+                                <select id="city_start" name="villeDepart" class="form-control" required>
                                     <option value=""></option>
                                     <!-- Ajoute d'autres options ici donc ne pas retirer le select-->
                                 </select>
@@ -64,7 +66,7 @@
                             <div>
                                 <label for="ville-arrivee">Ville d'arrivée :</label>
                                 <!-- <input type="text" id="ville-arrivee" name="ville-arrivee" required> -->
-                                <select id="city_end" name="villeArrivee" class="form-control">
+                                <select id="city_end" name="villeArrivee" class="form-control" required>
                                     <option value=""></option>
                                     <!-- Ajoute d'autres options ici donc ne pas retirer le select-->
                                 </select>
@@ -78,11 +80,15 @@
                             <div>
                                 <label for="nb-places">Nombre de places disponibles :</label>
                                 <input type="number" id="nb-places" name="nbPlaces" required>
+                                </br>
+                                <small id="2"></small>
                             </div>
 
                             <div>
                                 <label for="prix-place">Prix par place :</label>
                                 <input type="number" id="prix-place" name="prix" required>
+                                </br>
+                                <small id="3"></small>
                             </div>
                             <div>
                                 <label for="commentaires">Commentaires :</label>
