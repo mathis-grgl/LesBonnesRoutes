@@ -1,0 +1,14 @@
+{
+    "type": "object",
+    "properties": {
+        "idPassagers": {
+            "type": "array",
+            "items": {
+                "type": "integer",
+                "minimum": 1
+            }
+        }
+    },
+    "requiered": ["idPassagers"],
+    "additionalProperties": false
+}

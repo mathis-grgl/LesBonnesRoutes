@@ -146,3 +146,28 @@ def delete_trajet(user_info: UserInfo, trajet_id: int) -> tuple[json_dict, int]:
     connection.commit()
     connection.close()
     return {}, 204
+
+def add_passengers(user_info: UserInfo, trajet_id: int, data: json_dict) -> tuple[json_dict, int]:
+    trajet = get_trajet(trajet_id, partial=True)
+    if trajet is None:
+        print("DEBUG: trajet n'existe pas")
+        return {}, 404
+    if (not user_info.isAdmin) and (user_info.user_id != trajet["conducteur"]["idCompte"]):
+        return {}, 403
+    if any(user is None for user in map(userManager.get_user, data["idPassagers"])):
+        print("DEBUG: utilisateur n'existe pas")
+        return {}, 404
+    query = """
+    INSERT
+    INTO TRAJET_EN_COURS_PASSAGER
+    VALUES(?, ?)"""
+    connection = sqlite3.connect(DATABASE_NAME)
+    cursor = connection.cursor()
+    try:
+        cursor.execute(query, (trajet_id,))
+        connection.commit()
+    except sqlite3.IntegrityError:
+        return {}, 409
+    connection.close()
+
+    return get_trajet(trajet_id), 200
