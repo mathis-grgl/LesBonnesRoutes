@@ -59,7 +59,7 @@ def check_datas(authentified:bool=True) -> Callable:
 
 if __name__ == "__main__":
     # debug
-    from install_db import install_db
+    # from install_db import install_db
     
     import users
     import trajets

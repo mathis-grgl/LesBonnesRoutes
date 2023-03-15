@@ -58,7 +58,7 @@ def new_trajet(user_info: UserInfo, data: json_dict) -> tuple[json_dict, int]:
     return res, 200
 
 
-def get_trajet(id: int) -> Optional[json_dict]:
+def get_trajet(id: int, partial: bool=False) -> Optional[json_dict]:
 
     connection = sqlite3.connect(DATABASE_NAME)
     cursor = connection.cursor()
@@ -69,14 +69,26 @@ def get_trajet(id: int) -> Optional[json_dict]:
     """
     cursor.execute(query, (id,))
     rows = cursor.fetchone()
-    connection.close()
+    
     if rows is None:
+        connection.close()
         return
     res: json_dict = dict(zip(TRAJET_ATTR, rows))
     id_conducteur = res.pop("idConducteur")
     res["conducteur"] = userManager.get_user(id=id_conducteur, partial=True)
     res["villeDepart"] = get_ville(res["villeDepart"])
     res["villeArrivee"] = get_ville(res["villeArrivee"])
+    
+    if not partial:
+        query = """
+        SELECT idCompte
+        FROM TRAJET_EN_COURS_PASSAGER
+        WHERE idTrajet = ?"""
+        cursor.execute(query, (id,))
+        rows = cursor.fetchall()
+        res["passagers"] = [userManager.get_user(id=i[0], partial=True) for i in rows]
+
+    connection.close() 
     return res
 
 
@@ -95,13 +107,13 @@ def search_trajet(data: json_dict) -> tuple[json_list, int]:
     rows = cursor.fetchall()
     res = []
     for row in rows:
-        res.append(get_trajet(row[0]))
+        res.append(get_trajet(row[0], partial=True))
     connection.close()
     return res, 200
 
 
 def edit_trajet(user_info: UserInfo, trajet_id: int, data: json_dict) -> tuple[json_dict, int]:
-    trajet = get_trajet(trajet_id)
+    trajet = get_trajet(trajet_id, partial=True)
     if trajet is None:
         return {}, 404
     if (not user_info.isAdmin) and (user_info.user_id != trajet["conducteur"]["idCompte"]):
@@ -122,7 +134,7 @@ def edit_trajet(user_info: UserInfo, trajet_id: int, data: json_dict) -> tuple[j
 
 def delete_trajet(user_info: UserInfo, trajet_id: int) -> tuple[json_dict, int]:
 
-    trajet = get_trajet(trajet_id)
+    trajet = get_trajet(trajet_id, partial=True)
     if trajet is None:
         return {}, 404
     if (not user_info.isAdmin) and (user_info.user_id != trajet["conducteur"]["idCompte"]):
