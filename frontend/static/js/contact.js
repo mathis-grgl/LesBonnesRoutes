@@ -1,5 +1,7 @@
-const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
+const regexMail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const regexTel = /^0[1-9]([-. ]?[0-9]{2}){4}$/;
+const regexName = /^[a-zA-ZÀ-ÿ]+$/;
+const regexMessageNotEmpty = /^.{1,}$/;
 
 $('#formcontact').submit(function (event) {
 
@@ -9,12 +11,12 @@ $('#formcontact').submit(function (event) {
     let tel = $('#phone').val();
     let message = $('#message').val();
 
-    console.log(name);
+    /*console.log(name);
     console.log(mail);
     console.log(tel);
-    console.log(message);
+    console.log(message);*/
     let subject = "Contacter LBR";
-    if (mail.match(regex)) {
+    if (mail.match(regexMail) && name.match(regexName) && tel.match(regexTel) && message.match(regexMessageNotEmpty)) {
         Email.send({
             Host: "smtp.elasticemail.com",
             Port: 2525,
@@ -33,6 +35,8 @@ $('#formcontact').submit(function (event) {
                 displayMessage(false);
             }
         );
+    } else {
+        displayMessage(false);
     }
 
 
@@ -43,6 +47,7 @@ function displayMessage(res) {
         $('#okok').text("L'email a été envoyé.");
     } else {
         $('#okok').text("L'email n'a pas été envoyé.");
+        //   console.log("L'email n'a pas été envoyé.");
         //   emailSending.innerHTML = "Le mail de récupération n'a pas été envoyé, vérifiez bien votre email et réessayez."
         //   emailSending.style.display = "flex";
         //   emailSending.style.backgroundColor = "#ff5140";
