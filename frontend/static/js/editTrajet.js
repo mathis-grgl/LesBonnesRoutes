@@ -169,7 +169,7 @@ $('#editTrajet').submit(function (event) {
     let vd = $('#city_start').val();
     let va = $('#city_end').val();
 
-    if (nbPlaces < 0) {
+    if (nbPlaces <= 0) {
         valide = false;
         $('#nb-places').css('border', '2px solid red');
         $('#2').empty();

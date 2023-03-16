@@ -361,6 +361,8 @@ def delCompte(token):
     else:
         idCompte = compte[0]
         c.execute("DELETE FROM COMPTE WHERE idCompte = ?", (idCompte,))
+        c.execute("DELETE FROM TRAJET WHERE idConducteur = ?", (idCompte,))
+        c.execute("DELETE FROM TRAJET_EN_COURS_PASSAGER WHERE idCompte = ?", (idCompte,))
         conn.commit()
         conn.close()
         return jsonify({'message': 'Le compte a bien été supprimé'}), 200
