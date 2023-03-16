@@ -251,7 +251,7 @@ def modifCompte(token):
     #Le token est valide et conduit bien a un compte
     if compte:
         idCompte = compte[0]
-        data = request.get_json()
+        data = request.form
         email = data.get('email')
 
         #On verifie l'unicite de l'email
@@ -301,23 +301,33 @@ def modifCompte(token):
             else:
                 notifs = False
 
-            
-            poster = data.get('photo')
-            if False :
-                #Il y a une photo : on inserer le nom dans la db
-                nomPhoto = poster.filename
-                c.execute("UPDATE COMPTE SET telephone=?, prenomCompte=?, nomCompte=?, mdp=?, adresse=?, ville=?, pays=?, codePostal=?, genre=?, voiture=?, notificationMail=?, photo=?, email=? WHERE idCompte=?",
-                    (tel, prenom, nom, mdp, adresse, ville, pays, codePostal, genre, voiture, notifs, nomPhoto, email, idCompte))
-                conn.commit()
-                conn.close()
-                return jsonify({'message': 'ok'}), 200
-            else :
-                #On n'insere pas de photo
-                c.execute("UPDATE COMPTE SET telephone=?, prenomCompte=?, nomCompte=?, mdp=?, adresse=?, ville=?, pays=?, codePostal=?, genre=?, voiture=?, notificationMail=?, email = ? WHERE idCompte=?",
-                    (tel, prenom, nom, mdp, adresse, ville, pays, codePostal, genre, voiture, notifs, email, idCompte))
-                conn.commit()
-                conn.close()
-                return jsonify({'message': 'ok'}), 200
+            if 'poster' in request.files:
+                if not os.path.exists(UPLOAD_FOLDER):
+                    os.makedirs(UPLOAD_FOLDER, mode=0o777, exist_ok=True)
+                else:
+                    c = conn.cursor()
+                    c.execute("SELECT * FROM COMPTE inner join TOKEN on COMPTE.idCompte = TOKEN.idCompte WHERE auth_token = ?", (token,))
+                    compte = c.fetchone()
+                    if os.path.exists("static/images/profils/" + compte[15]):
+                        os.remove("static/images/profils/" + compte[15])
+
+                file = request.files['poster']
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+                # Récupérer le nom de fichier pour la photo
+                photo = secure_filename(request.files['poster'].filename)
+            else:
+                photo = None
+
+            print("Photo : " + photo)
+
+            #On insere les données
+            c.execute("UPDATE COMPTE SET telephone=?, prenomCompte=?, nomCompte=?, mdp=?, adresse=?, ville=?, pays=?, codePostal=?, genre=?, voiture=?, notificationMail=?, email=?, photo=? WHERE idCompte=?",
+                (tel, prenom, nom, mdp, adresse, ville, pays, codePostal, genre, voiture, notifs, email, photo, idCompte))
+            conn.commit()
+            conn.close()
+            return jsonify({'message': 'ok'}), 200
 
     else:
         print('on rentre pas dans le if compte')

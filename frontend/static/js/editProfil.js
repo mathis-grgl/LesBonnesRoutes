@@ -367,10 +367,52 @@ $('#update-form').submit(function (event) {
   if (!valide) {
     alert("Le formulaire n'est pas bon. Veuillez vérifier vos informations.")
   } else {
+    const formData = new FormData();
+
+    const fileInput = document.querySelector("input[name='poster']");
+    const file = fileInput.files[0];
+    const fileExtension = file.name.split('.').pop();
+    const fileName = `${document.querySelector("input[name='nom']").value}-${document.querySelector("input[name='prenom']").value}-${Date.now()}.${fileExtension}`;
+
+    // Create a new File object with the unique name
+    const newFile = new File([file], fileName, { type: file.type });
+
+    formData.append('poster', newFile);
+
+    // Ajoutez les champs du formulaire à l'objet FormData
+    formData.append('nom', document.querySelector("input[name='nom']").value);
+    formData.append('email', document.querySelector("input[name='email']").value);
+    formData.append('prenom', document.querySelector("input[name='prenom']").value);
+    formData.append('telephone', $('input[name="telephone"]').val());
+    formData.append('notif', $('input[name="notif"]:checked').val());
+    formData.append('voiture', $('input[name="voiture"]:checked').val());
+    formData.append('mdp', mdp);
+    formData.append('ville', $('input[name="ville"]').val());
+    formData.append('adresse', $('input[name="adresse"]').val());
+    formData.append('pays', $('input[name="pays"]').val());
+    formData.append('codepostal', $('input[name="codepostal"]').val());
+    formData.append('genre', $('#genre').val());
+
     // mettre ici le code pour update les données.
     let modif = 'compte/modifCompte/' + token;
     console.log(modif);
 
+    // Envoyez la requête
+    fetch(modif, {
+      method: 'POST',
+      body: formData
+    }).then(reponse => {
+      if (reponse.ok) {
+        console.log(mdp);
+        alert("Votre compte a bien été modifié.");
+        window.location.href = '/account';
+      } else {
+        alert("Probleme dans le fetch");
+      }
+    }).catch(error => {
+      console.error(error);
+    })
+    /*
     let formData = new FormData($('form')[0]);
     console.log(formData.has('voiture'));
     fetch(modif, {
@@ -412,7 +454,9 @@ $('#update-form').submit(function (event) {
       }
     }).catch(error => {
       console.error(error);
-    })
+    })*/
+    // Créez une nouvelle instance de FormData
+
 
     //   fetch(modif, {
     //     method: 'POST',
