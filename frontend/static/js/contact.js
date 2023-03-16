@@ -44,9 +44,9 @@ $('#formcontact').submit(function (event) {
 
 function displayMessage(res) {
     if (res) {
-        $('#okok').text("L'email a été envoyé.");
+        $('#okok').text("L'email a été envoyé.").css('color', 'red');
     } else {
-        $('#okok').text("L'email n'a pas été envoyé.");
+        $('#okok').text("L'email n'a pas été envoyé.").css('color', 'red');
         //   console.log("L'email n'a pas été envoyé.");
         //   emailSending.innerHTML = "Le mail de récupération n'a pas été envoyé, vérifiez bien votre email et réessayez."
         //   emailSending.style.display = "flex";
