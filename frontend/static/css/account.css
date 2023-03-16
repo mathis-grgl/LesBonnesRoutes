@@ -25,7 +25,9 @@
 
 .imgtailleprofile{
   width: 10%;
-  /*height: 10%;*/
+  height: auto;
+  border-radius: 50%;
+  clip-path: circle(50%);
 }
 
 .card-body {

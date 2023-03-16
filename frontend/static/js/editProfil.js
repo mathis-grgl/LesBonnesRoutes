@@ -370,14 +370,18 @@ $('#update-form').submit(function (event) {
     const formData = new FormData();
 
     const fileInput = document.querySelector("input[name='poster']");
-    const file = fileInput.files[0];
-    const fileExtension = file.name.split('.').pop();
-    const fileName = `${document.querySelector("input[name='nom']").value}-${document.querySelector("input[name='prenom']").value}-${Date.now()}.${fileExtension}`;
+    if (fileInput.files.length > 0){
+      const file = fileInput.files[0];
+      const fileExtension = file.name.split('.').pop();
+      const fileName = `${document.querySelector("input[name='nom']").value}-${document.querySelector("input[name='prenom']").value}-${Date.now()}.${fileExtension}`;
+    
+      // Create a new File object with the unique name
+      const newFile = new File([file], fileName, { type: file.type });
 
-    // Create a new File object with the unique name
-    const newFile = new File([file], fileName, { type: file.type });
-
-    formData.append('poster', newFile);
+      formData.append('poster', newFile);
+    } else {
+      formData.append('poster', null);
+    }
 
     // Ajoutez les champs du formulaire à l'objet FormData
     formData.append('nom', document.querySelector("input[name='nom']").value);

@@ -308,7 +308,7 @@ def modifCompte(token):
                     c = conn.cursor()
                     c.execute("SELECT * FROM COMPTE inner join TOKEN on COMPTE.idCompte = TOKEN.idCompte WHERE auth_token = ?", (token,))
                     compte = c.fetchone()
-                    if os.path.exists("static/images/profils/" + compte[15]):
+                    if compte[15] and os.path.exists("static/images/profils/" + compte[15]):
                         os.remove("static/images/profils/" + compte[15])
 
                 file = request.files['poster']
@@ -318,9 +318,11 @@ def modifCompte(token):
                 # Récupérer le nom de fichier pour la photo
                 photo = secure_filename(request.files['poster'].filename)
             else:
-                photo = None
+                c = conn.cursor()
+                c.execute("SELECT * FROM COMPTE inner join TOKEN on COMPTE.idCompte = TOKEN.idCompte WHERE auth_token = ?", (token,))
+                compte = c.fetchone()
+                photo = compte[15]
 
-            print("Photo : " + photo)
 
             #On insere les données
             c.execute("UPDATE COMPTE SET telephone=?, prenomCompte=?, nomCompte=?, mdp=?, adresse=?, ville=?, pays=?, codePostal=?, genre=?, voiture=?, notificationMail=?, email=?, photo=? WHERE idCompte=?",
@@ -341,6 +343,14 @@ def modifCompte(token):
 def delCompte(token):
     #On verifie le token
     conn = sqlite3.connect(URI_DATABASE)
+
+    #On supprime la photo
+    c = conn.cursor()
+    c.execute("SELECT * FROM COMPTE inner join TOKEN on COMPTE.idCompte = TOKEN.idCompte WHERE auth_token = ?", (token,))
+    compte = c.fetchone()
+    if compte[15] and os.path.exists("static/images/profils/" + compte[15]):
+        os.remove("static/images/profils/" + compte[15])
+
     c = conn.cursor()
     c.execute("SELECT COMPTE.idCompte FROM COMPTE inner join TOKEN on COMPTE.idCompte = TOKEN.idCompte WHERE auth_token = ?", (token,))
     compte = c.fetchone()
