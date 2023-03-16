@@ -1,5 +1,4 @@
 const token = getCookieToken();
-console.log(token);
 const createTrajetURL = 'trajet/createTrajet/' + token;
 
 // Menu deroulant ville de départ
@@ -18,7 +17,7 @@ else {
             }
         })
         .then(data => {
-            console.log(data.length);
+            (data.length);
             // data contient un tableau avec les noms de toutes les villes
             data.forEach(res => {
                 const city = document.createElement('option');
@@ -72,21 +71,13 @@ $('#forminput').submit(function (event) {
     let valide = true;
 
     let date = $('#date-depart').val();
-    console.log(date);
     let vd = $('#city_start').val();
-    console.log(vd);
     let va = $('#city_end').val();
-    console.log(va);
     let heure = $('#heure-depart').val().replace(':', 'h');
-    console.log(heure);
     let nbPlaces = $('#nb-places').val();
-    console.log(nbPlaces);
     let prix = $('#prix-place').val();
-    console.log(prix);
     let commentaires = $('#commentaires').val();
-    console.log(commentaires);
     let precision = $('#precision').val();
-    console.log(precision);
 
     if (nbPlaces < 0) {
         valide = false;
@@ -96,7 +87,7 @@ $('#forminput').submit(function (event) {
 
     }
 
-    if (prix < 0) {
+    if (prix <= 0) {
         valide = false;
         $('#prix-place').css('border', '2px solid red');
         $('#3').empty();
@@ -104,41 +95,31 @@ $('#forminput').submit(function (event) {
     }
 
 
-    let dateParts = date.split('-');
-    let jour = dateParts[2];
-    let annee = dateParts[2];
-    let mois = dateParts[1] - 1;
-    //let dateFormatted = dateParts[2] + '/' + dateParts[1] + '/' + dateParts[0];
+
 
     let dateObject = moment(date, 'YYYY/MM/DD');
     let dateFormatted = dateObject.format('D MMMM, YYYY');
 
     let today = new Date();
-    let tjour = today.getDate();
-    let diff = jour - tjour;
-    console.log('voici la diff : ' + diff);
-    
+    let todayms = today.getTime();
+    let dateString = date + "T" + $('#heure-depart').val() + ":00Z";
+
+    let autreDate = new Date(dateString);
+    let autreDateMS = autreDate.getTime();
 
 
-    // let diff = date2.getTime() - date1.getTime();
+    let differenceMS = autreDateMS - todayms;
 
-    // Convertir la différence en heures
-    
-
-    // Vérifier si la différence est supérieure à 24 heures
-    if (diff > 1) {
-        console.log('Les deux dates sont espacées d\'au moins 24 heures');
+    if (differenceMS > (24 * 60 * 60 * 1000)) {
+        // Il y a plus de 24 heures d'écart entre les deux dates
+        console.log("Il y a plus de 24 heures d'écart entre la date d'aujourd'hui et l'autre date.");
     } else {
-        valide = false; 
-        console.log('Les deux dates sont espacées de moins de 24 heures');
+        // Il n'y a pas plus de 24 heures d'écart entre les deux dates
+        valide = false;
         $('#date-depart').css('border', '2px solid red');
         $('#1').empty();
         $('#1').append($('<b>').text("La date doit être dans plus de 24h."));
     }
-
-
-
-    console.log('test : ' + dateFormatted);
 
     if (valide) {
 
@@ -171,7 +152,7 @@ $('#forminput').submit(function (event) {
                 console.error(error);
             });
 
-    }else{
+    } else {
         alert('Certains champs sont mal remplis dans le formulaire.');
     }
 

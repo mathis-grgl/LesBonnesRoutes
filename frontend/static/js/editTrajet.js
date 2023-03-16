@@ -132,25 +132,33 @@ $('#editTrajet').submit(function (event) {
     let date = $('#date-depart').val();
     let dateObject = moment(date, 'YYYY-MM-DD');
 
-    let dateParts = date.split('-');
-    let jour = dateParts[2];
-    let today = new Date();
-    let tjour = today.getDate();
-    let diff = jour - tjour;
-    console.log('voici la diff : ' + diff);
 
+    let today = new Date();
+    let todayms = today.getTime();
+    let dateString = date + "T" + heure + ":00Z";
+    console.log(dateString);
+
+    let autreDate = new Date(dateString);
+    console.log(autreDate);
+    let autreDateMS = autreDate.getTime();
+
+
+    let differenceMS = autreDateMS - todayms;
 
     let dateFormatted;
-    if (diff > 1) {
-        console.log('Les deux dates sont espacées d\'au moins 24 heures');
+    if (differenceMS > (24 * 60 * 60 * 1000)) {
+        // Il y a plus de 24 heures d'écart entre les deux dates
+        console.log("Il y a plus de 24 heures d'écart entre la date d'aujourd'hui et l'autre date.");
         dateFormatted = dateObject.format('D MMMM, YYYY');
+        
     } else {
+        // Il n'y a pas plus de 24 heures d'écart entre les deux dates
         valide = false;
-        console.log('Les deux dates sont espacées de moins de 24 heures');
         $('#date-depart').css('border', '2px solid red');
         $('#1').empty();
         $('#1').append($('<b>').text("La date doit être dans plus de 24h."));
     }
+
 
     // let dateObject = moment(date, 'YYYY/MM/DD');
 
