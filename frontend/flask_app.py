@@ -93,4 +93,4 @@ app.register_blueprint(trajet_bp, url_prefix='/trajet')
 
 
 if __name__ == '__main__':
-    app.run(threaded=True, debug=True, port=8080)
+    app.run(threaded=True, debug=True, port=5050)

@@ -13,6 +13,7 @@ compte_bp = Blueprint('compte', __name__)
 
 app = Flask(__name__, template_folder=".")
 
+#Chemin pour enregistrer les photos
 UPLOAD_FOLDER = 'static/images/profils'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -35,6 +36,9 @@ def create_compte():
     noteCompte = '2.5'
 
     if 'file-sign' in request.files:
+        if not os.path.exists(UPLOAD_FOLDER):
+            os.makedirs(UPLOAD_FOLDER, mode=0o777, exist_ok=True)
+
         file = request.files['file-sign']
         filename = secure_filename(file.filename)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
@@ -44,14 +48,11 @@ def create_compte():
     else:
         photo = None
 
-
-
     # Encodage du mot de passe
     mdp = mdp.encode()
 
     # Hashage du mot de passe
     mdp = sha512(mdp).hexdigest()
-
 
     # Vérifier si le compte existe déjà dans la base de données
     conn = sqlite3.connect(URI_DATABASE)

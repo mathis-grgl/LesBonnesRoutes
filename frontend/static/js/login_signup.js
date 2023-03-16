@@ -7,23 +7,65 @@ const emailSending = document.querySelector("div[name='email-sending']");
 const checkKeepLog = document.querySelector("input[name='checkbox-remember-log']");
 
 // Bouton voir/cacher mot de passe
+// Recherchez tous les éléments d'icône d'œil
+const eyeIcons = document.querySelectorAll('.password-icon');
+//feather.replace();
+// Pour chaque icône d'œil, ajoutez un gestionnaire d'événement "click"
+/*eyeIcons.forEach(icon => {
+  feather.replace(icon);
+  icon.addEventListener('click', () => {
+    // Trouvez le champ de mot de passe parent
+    const passwordField = icon.parentNode.previousElementSibling;
+    console.log("Type : " + passwordField);
+
+    // Modifiez le type d'entrée pour montrer/cacher le mot de passe
+    if (passwordField.type === 'password') {
+      passwordField.type = 'text';
+      icon.dataset.feather = 'eye-off';
+    } else {
+      passwordField.type = 'password';
+      icon.dataset.feather = 'eye';
+    }
+
+    // Rafraîchir l'icône Feather pour prendre en compte les changements
+    feather.replace(icon);
+  });
+});*/
+
+
+/*
 feather.replace();
+const eyeLog = document.querySelector(".eye");
+const eyeoffLog = document.querySelector(".eye-off");
+const passwordFieldLog = document.querySelector("input[name=password-log]");
+/*
+const eyeSign = document.querySelector(".feather-eye-sign");
+const eyeoffSign = document.querySelector(".feather-eye-off-sign");
+const passwordFieldSign = document.querySelector("input[name=password-sign]");
 
-const eye = document.querySelector(".feather-eye");
-const eyeoff = document.querySelector(".feather-eye-off");
-const passwordField = document.querySelector("input[name=password-log]");
-
-eye.addEventListener("click", () => {
-  eye.style.display = "none";
-  eyeoff.style.display = "block";
-  passwordField.type = "text";
+eyeLog.addEventListener("click", () => {
+  eyeLog.style.display = "none";
+  eyeoffLog.style.display = "block";
+  passwordFieldLog.type = "text";
 });
 
-eyeoff.addEventListener("click", () => {
-  eyeoff.style.display = "none";
-  eye.style.display = "block";
-  passwordField.type = "password";
+eyeoffLog.addEventListener("click", () => {
+  eyeoffLog.style.display = "none";
+  eyeLog.style.display = "block";
+  passwordFieldLog.type = "password";
+});*/
+
+/*eyeSign.addEventListener("click", () => {
+  eyeSign.style.display = "none";
+  eyeoffSign.style.display = "block";
+  passwordFieldSign.type = "text";
 });
+
+eyeoffSign.addEventListener("click", () => {
+  eyeoffSign.style.display = "none";
+  eyeSign.style.display = "block";
+  passwordFieldSign.type = "password";
+});*/
 
 
 // Boutons se connecter et s'inscrire
@@ -154,73 +196,6 @@ function signIn(event) {
 }
 
 
-
-/*function signIn(event) {
-  event.preventDefault(); // Prevent the default behavior of the button click
-
-  if (checkValue('name-sign') && checkValue('last-name-sign') && checkValue("gender-sign") && checkValue('email-sign') && checkValue('phone-sign') &&checkValue("address-sign") && checkValue("city-sign") && checkValue("postal-sign") && checkValue("country-sign") && checkValue('password-sign')) {
-    // Stockage de la valeur dans une variable booléenne
-    const car = checkValue('checkbox-licence-sign') ? true : false;
-
-    // Création d'un objet FormData pour envoyer les données du formulaire, y compris le fichier
-    const formData = new FormData();
-    formData.append('name-sign', document.querySelector("input[name='name-sign']").value);
-    formData.append('last-name-sign', document.querySelector("input[name='last-name-sign']").value);
-    formData.append('gender-sign', document.querySelector("input[name='gender-sign']:checked").value);
-    formData.append('email-sign', document.querySelector("input[name='email-sign']").value);
-    formData.append('phone-sign', document.querySelector("input[name='phone-sign']").value);
-    formData.append('checkbox-licence-sign', car);
-    formData.append('address-sign', document.querySelector("input[name='address-sign']").value);
-    formData.append('city-sign', document.querySelector("input[name='city-sign']").value);
-    formData.append('postal-sign', document.querySelector("input[name='postal-sign']").value);
-    formData.append('country-sign', document.querySelector("input[name='country-sign']").value);
-    formData.append('password-sign', document.querySelector("input[name='password-sign']").value);
-    formData.append('file-sign', document.querySelector("input[name='file-sign']").files[0]);
-
-    fetch('/compte/createCompte', {
-      method: 'POST',
-      body: formData
-    })
-    .then(response => {
-      if (response.ok) {
-        return response.json();
-      } else {
-        throw new Error(response.status);
-      }
-    })
-    .then(data => {
-      if (data.error) {
-        console.log(data.error);
-        return;
-      }
-
-      container.classList.remove("right-panel-active");
-      displayMessage(true, "Votre compte a bien été crée.");
-    })
-    .catch(error => {
-      console.error('Erreur : ' + error.message);
-      switch (error.message){
-        case "409":
-          displayMessage(false, "Ce compte existe déjà.");
-          break;
-
-        case "400":
-          displayMessage(false, "Veuillez rentrer toutes les informations necéssaires.");
-          break;
-
-        default:
-          displayMessage(false, "Erreur lors de la création du compte.");
-          break;
-      }
-    });
-  } else {
-    displayMessage(false, "Veuillez rentrer toutes les informations necéssaires.");
-  }
-}*/
-
-
-
-
 function connect(event){
   event.preventDefault(); // Prevent the default behavior of the button click
   fetch('/compte/connectCompte', {
@@ -270,16 +245,6 @@ function checkValue(val){
   var bool = false;
 
   switch(val){
-    case "email-log":
-      regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!regex.test(variable.value)){
-        variable.style.setProperty("border", "1px solid #ff0000");
-      } else {
-        variable.style.setProperty("border", "1px solid #000000");
-        bool = true
-      }    
-      break;
-
     case "name-sign":
       regex = /^[A-Za-z\-' ]+$/;
       if (!regex.test(variable.value)){
