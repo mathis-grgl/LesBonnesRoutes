@@ -2,8 +2,27 @@ const token = getCookieToken();
 const url = 'trajet/trajetsCompte/' + token;
 const createTrajetURL = 'trajet/createTrajet/' + token;
 const getCompteURL = 'compte/getNomCompte/';
+const infoCompte = 'compte/getInfoCompte/' + token;
 
 function charger_trajets() {
+
+    fetch(infoCompte)
+    .then(reponse => {
+        if(!reponse.ok){
+            throw new Error(reponse);
+        }
+        return reponse.json();
+    })
+    .then(data=>{
+        console.log(data);
+        let voiture = data.voiture;
+        if(voiture == "false"){
+            $('#creer').remove();
+        }
+    })
+    .catch(error=>{
+        console.error(error);
+    })
     fetch(url)
         .then(reponse => {
             if (!reponse.ok) {
@@ -14,6 +33,7 @@ function charger_trajets() {
         .then(data => {
 
             // Récupération du nombre de trajets
+            console.log(data);
             let nbTrajets = data.length;
 
             let table = $('#trajets');
