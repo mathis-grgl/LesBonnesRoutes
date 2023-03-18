@@ -1,4 +1,5 @@
 URI_DATABASE = '../database.db'
+import json
 from flask import Blueprint, jsonify, render_template, request
 import sqlite3
 
@@ -187,3 +188,36 @@ def modifNom(token, idGroupe, nouveauNom):
     conn.commit()
     conn.close()
     return jsonify({'message': 'Le nom du groupe a bien été modifié.'}), 200
+
+
+
+@ami_bp.route('/getMembers/<int:idGroupe>', methods=['GET'])
+def getMembers(idGroupe):
+    #On vérifie que le groupe existe bien
+    conn = sqlite3.connect(URI_DATABASE)
+    c = conn.cursor()
+    c.execute("SELECT * FROM GROUPE WHERE idGroupe = ?", (idGroupe,))
+    groupe = c.fetchone()
+    if not groupe:
+        conn.close()
+        return jsonify({'message': 'Groupe inexistant'}), 404
+
+    #On peut récupérer les membres
+    c.execute("""SELECT DISTINCT COMPTE.* FROM COMPTE 
+                INNER JOIN AMI_GROUPE ON COMPTE.idCompte = AMI_GROUPE.idCompte 
+                INNER JOIN GROUPE ON AMI_GROUPE.idGroupe = GROUPE.idGroupe
+                WHERE GROUPE.idGroupe = ? """, (idGroupe,))
+    
+    results = []
+    for row in c.fetchall():
+        # Convertir chaque ligne en un dictionnaire
+        row_dict = {
+            'idCompte': row[0],
+            'nomCompte': row[1],
+            'prenomCompte': row[2],
+            'email': row[3]
+        }
+        results.append(row_dict)
+
+    conn.close()
+    return jsonify(results), 200
