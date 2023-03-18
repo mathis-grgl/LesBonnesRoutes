@@ -426,3 +426,100 @@ def getDemandesEnCours(token):
 
             # Retour de la réponse avec code 200
             return jsonify(trajets), 200
+
+
+
+@compte_bp.route('/getNotifs/<string:token>', methods=['GET'])
+def getNotifs(token):
+    #On verifie le token
+    conn = sqlite3.connect(URI_DATABASE)
+    c = conn.cursor()
+    c.execute("SELECT COMPTE.idCompte FROM COMPTE inner join TOKEN on COMPTE.idCompte = TOKEN.idCompte WHERE auth_token = ?", (token,))
+    compte = c.fetchone()
+
+    if not compte:
+        conn.close()
+        return jsonify({'message': 'Token invalide ou expiré.'}), 401
+   
+    idCompte = compte[0]
+    #On peut recuperer les notifications
+    c.execute("""
+    SELECT NOTIFICATION.idNotification, messageNotification, nomCompte, prenomCompte FROM NOTIF_RECUE 
+        inner join NOTIFICATION on NOTIF_RECUE.idNotification = NOTIFICATION.idNotification
+        inner join COMPTE on NOTIFICATION.idCompteEnvoyeur = COMPTE.idCompte
+        WHERE NOTIF_RECUE.idCompte = ? """, (idCompte,))
+
+    rows = c.fetchall()
+
+    # Récupération des noms de colonnes
+    col_names = [desc[0] for desc in c.description]
+
+    # Création d'une liste de dictionnaires contenant les données
+    notifs = []
+    for row in rows:
+        notif = {col_names[i]: row[i] for i in range(len(col_names))}
+
+        if row[0] in [id[0] for id in c.execute("SELECT idNotification FROM NOTIF_TRAJET")]:
+            notif['typeNotif'] = 'Trajet'
+            notif['idTrajet'] = [groupe[0] for groupe in c.execute("SELECT idTrajet FROM NOTIFICATION NATURAL JOIN NOTIF_TRAJET WHERE idNotification=?", (row[0],))][0]
+        elif row[0] in [id[0] for id in c.execute("SELECT idNotification FROM NOTIF_GROUPE")]:
+            notif['typeNotif'] = 'Groupe'
+            notif['nomGroupe'] = [groupe[0] for groupe in c.execute("SELECT nomGroupe FROM NOTIFICATION NATURAL JOIN NOTIF_GROUPE INNER JOIN GROUPE ON NOTIF_GROUPE.idGroupe = GROUPE.idGroupe WHERE idNotification=?", (row[0],))][0]
+        else:
+            notif['typeNotif'] = None
+
+        notifs.append(notif)
+        
+    conn.close()
+    return jsonify(notifs)
+
+
+compte_bp.route('/suppNotif/<string:token>/<int:idNotif>', methods=['POST'])
+def suppNotif(token, idNotif):
+    #On verifie le token
+    conn = sqlite3.connect(URI_DATABASE)
+    c = conn.cursor()
+    c.execute("SELECT COMPTE.idCompte FROM COMPTE inner join TOKEN on COMPTE.idCompte = TOKEN.idCompte WHERE auth_token = ?", (token,))
+    compte = c.fetchone()
+
+    if not compte:
+        conn.close()
+        return jsonify({'message': 'Token invalide ou expiré.'}), 401
+   
+    idCompte = compte[0]
+
+    #On vérifie que le compte est bien receveur de la notif
+    c.execute("SELECT * FROM NOTIF_RECUE WHERE idCompte = ? AND idNotification = ?", (idCompte, idNotif))
+    receveur = c.fetchone()
+    if not receveur:
+        conn.close()
+        return jsonify({'message': 'Vous n\'êtes pas autorisé à supprimer cette notification.'}), 403
+
+    #On peut supprimer la notif
+    c.execute("DELETE FROM NOTIFICATION WHERE idNotification = ?", (idNotif,))
+    conn.commit()
+    conn.close()
+    return jsonify({'message': 'La notification a bien été supprimé.'}), 200
+
+
+compte_bp.route('/suppAllNotif/<string:token>', methods=['POST'])
+def suppAllNotif(token):
+    #On verifie le token
+    conn = sqlite3.connect(URI_DATABASE)
+    c = conn.cursor()
+    c.execute("SELECT COMPTE.idCompte FROM COMPTE inner join TOKEN on COMPTE.idCompte = TOKEN.idCompte WHERE auth_token = ?", (token,))
+    compte = c.fetchone()
+
+    if not compte:
+        conn.close()
+        return jsonify({'message': 'Token invalide ou expiré.'}), 401
+   
+    idCompte = compte[0]
+
+    #On peut supprimer les notifs
+    c.execute("DELETE FROM NOTIF_RECUE WHERE idCompte = ?", (idCompte,))
+    conn.commit()
+    conn.close()
+    return jsonify({'message': 'Les notifications ont bien été supprimées.'}), 200
+
+

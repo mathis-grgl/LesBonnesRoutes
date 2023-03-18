@@ -210,9 +210,11 @@ def createTrajet(token):
     precisionRdv = data.get('precisionRdv')
     villeDepart = data.get('villeDepart')
     villeArrivee = data.get('villeArrivee')
+    typeTrajet = data.get('typeTrajet')
 
     if not heureDepart or not dateDepart or not nbPlaces or not prix or not villeDepart or not villeArrivee:
-        return jsonify({'message': 'I*l manque une ou plusieurs infos'}), 401
+        return jsonify({'message': 'Il manque une ou plusieurs infos'}), 401
+        
 
     #On reformate la date
     dateDepart = datetime.strptime(dateDepart, '%d %B, %Y').strftime('%Y%m%d')
@@ -262,6 +264,19 @@ def createTrajet(token):
                 values = (idCompte, heureDepart, dateDepart, nbPlaces, nbPlaces, prix, 'A pourvoir', villeDepart, villeArrivee, commentaires, precisionRdv)
         if query:
             c.execute(query, values)
+
+            #On vérifie si le trajet est prive
+            if typeTrajet:
+                #On recupere l'id de ce trajet (donc le plus grand) puis insertion dans la table
+                sql = "SELECT MAX(idTrajet) FROM TRAJET"
+                idTrajet = c.execute(sql).fetchone()[0]
+
+                if typeTrajet == 'Prive':
+                    idGroupe = data.get('idGroupe')
+                    c.execute("INSERT INTO TRAJET_PRIVE VALUES (?, ?)", (idTrajet, idGroupe))
+                else:
+                    c.execute("INSERT INTO TRAJET_PUBLIC VALUES (?)", (idTrajet,))
+                    
             conn.commit()
             conn.close()
             return jsonify({'message': 'Le trajet a bien été créé.'}), 200
