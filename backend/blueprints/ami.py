@@ -75,3 +75,51 @@ def addMember(token, idGroupe, idAmi):
     conn.commit()
     conn.close()
     return jsonify({'message': 'L\'ami a bien été ajouté au groupe.'}), 200
+
+
+#Supprimer un membre du groupe d'amis
+@ami_bp.route('/removeMember/<string:token>/<int:idGroupe>/<int:idAmi>', methods=['POST'])
+def removeMember(token, idGroupe, idAmi):
+    #On verifie le token
+    conn = sqlite3.connect(URI_DATABASE)
+    c = conn.cursor()
+    c.execute("SELECT COMPTE.idCompte FROM COMPTE inner join TOKEN on COMPTE.idCompte = TOKEN.idCompte WHERE auth_token = ?", (token,))
+    compte = c.fetchone()
+
+    if not compte:
+        conn.close()
+        return jsonify({'message': 'Token invalide ou expiré.'}), 401
+    
+    idCompte = compte[0]
+
+    #On vérifie que le createur ne veut pas se supprimer lui-même
+    if idCompte == idAmi:
+        conn.close()
+        return jsonify({'message': 'Le créateur du groupe ne peut pas se supprimer lui-même.'}), 403
+
+    #On vérifie que le compte est bien le créateur du groupe
+    c.execute("SELECT * FROM GROUPE WHERE idCreateur = ?", (idCompte,))
+    createur = c.fetchone()
+    if not createur:
+        conn.close()
+        return jsonify({'message': 'Seul le createur du groupe peut modifier le groupe'}), 403
+    
+    #On vérifie que l'ami existe bien
+    c.execute("SELECT nomCompte FROM COMPTE WHERE idCompte = ?", (idAmi,))
+    ami = c.fetchone()
+    if not ami:
+        conn.close()
+        return jsonify({'message': 'L\'ami spécifié n\'existe pas'}), 404
+
+    #On vérifie que l'ami fait bien parti du groupe
+    c.execute("SELECT nomCompte FROM COMPTE INNER JOIN AMI_GROUPE ON COMPTE.idCompte = AMI_GROUPE.idCompte WHERE AMI_GROUPE.idGroupe = ? AND COMPTE.idCompte = ?", (idGroupe, idAmi))
+    participe = c.fetchone()
+    if not participe:
+        conn.close()
+        return jsonify({'message': 'Cet ami ne fait pas parti de ce groupe'}), 403
+
+    #On peut supprimer l'ami
+    c.execute("DELETE FROM AMI_GROUPE WHERE idGroupe = ? AND idCompte = ?", (idGroupe, idAmi))
+    conn.commit()
+    conn.close()
+    return jsonify({'message': 'L\'ami a bien été supprimé du groupe.'}), 200
