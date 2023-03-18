@@ -1,5 +1,6 @@
 URI_DATABASE = '../database.db'
 
+from werkzeug.routing import Rule
 from flask import Blueprint, jsonify, render_template, request
 from datetime import datetime
 import sqlite3
@@ -97,12 +98,17 @@ def get_user(idCompte):
 
 
 
-#Recuperer tous les trajets
-@admin_bp.route('/trajets')
-def get_trajets():
+#Recuperer tous les trajets avec le type
+@admin_bp.route('/trajets/<string:typeTrajet>')
+def get_trajets(typeTrajet=None):
     conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
-    c.execute("SELECT * FROM TRAJET")
+    if typeTrajet == 'Prive':
+        c.execute("SELECT * FROM TRAJET NATURAL JOIN TRAJET_PRIVE")
+    elif typeTrajet == 'Public':
+        c.execute("SELECT * FROM TRAJET NATURAL JOIN TRAJET_PUBLIC")
+    else:
+        c.execute("SELECT * FROM TRAJET")
     rows = c.fetchall()
 
     # Récupération des noms de colonnes
