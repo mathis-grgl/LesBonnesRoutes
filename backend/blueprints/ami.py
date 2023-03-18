@@ -28,7 +28,50 @@ def createGroupe(token, nomGroupe):
         return jsonify({'message': 'Nom de groupe déjà pris.'}), 400
 
     #On peut créer le groupe
-    c.execute("INSERT INTO GROUPE(idCompte, nomGroupe, nbPersonnes) VALUES (?, ?, 1)", (idCompte, nomGroupe))
+    c.execute("INSERT INTO GROUPE(idCreateur, nomGroupe, nbPersonnes) VALUES (?, ?, 1)", (idCompte, nomGroupe))
     conn.commit()
     return jsonify({'message': 'Le groupe a bien été créé.'}), 200
 
+
+
+#Ajouter un membre au groupe d'amis
+@ami_bp.route('/addMember/<string:token>/<int:idGroupe>/<int:idAmi>', methods=['POST'])
+def addMember(token, idGroupe, idAmi):
+    #On verifie le token
+    conn = sqlite3.connect(URI_DATABASE)
+    c = conn.cursor()
+    c.execute("SELECT COMPTE.idCompte FROM COMPTE inner join TOKEN on COMPTE.idCompte = TOKEN.idCompte WHERE auth_token = ?", (token,))
+    compte = c.fetchone()
+
+    if not compte:
+        conn.close()
+        return jsonify({'message': 'Token invalide ou expiré.'}), 401
+    
+    idCompte = compte[0]
+
+    #On vérifie que le compte est bien le créateur du groupe
+    c.execute("SELECT * FROM GROUPE WHERE idCreateur = ?", (idCompte,))
+    createur = c.fetchone()
+    if not createur:
+        conn.close()
+        return jsonify({'message': 'Seul le createur du groupe peut modifier le groupe'}), 403
+    
+    #On vérifie que l'ami existe bien
+    c.execute("SELECT nomCompte FROM COMPTE WHERE idCompte = ?", (idAmi,))
+    ami = c.fetchone()
+    if not ami:
+        conn.close()
+        return jsonify({'message': 'L\'ami spécifié n\'existe pas'}), 404
+
+    #On vérifie que l'ami ne fait pas déjà parti du groupe
+    c.execute("SELECT nomCompte FROM COMPTE INNER JOIN AMI_GROUPE ON COMPTE.idCompte = AMI_GROUPE.idCompte WHERE AMI_GROUPE.idGroupe = ? AND COMPTE.idCompte = ?", (idGroupe, idAmi))
+    participe = c.fetchone()
+    if participe:
+        conn.close()
+        return jsonify({'message': 'Cet ami fait déjà parti de ce groupe'}), 403
+
+    #On peut ajouter l'ami
+    c.execute("INSERT INTO AMI_GROUPE VALUES (?, ?)", (idAmi, idGroupe))
+    conn.commit()
+    conn.close()
+    return jsonify({'message': 'L\'ami a bien été ajouté au groupe.'}), 200
