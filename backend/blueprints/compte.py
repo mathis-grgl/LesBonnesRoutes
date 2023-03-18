@@ -35,6 +35,12 @@ def create_compte():
     notificationMail = '1'
     noteCompte = '2.5'
 
+    #On convertie le champ voiture
+    if voiture == 'true':
+        voiture = 1
+    else:
+        voiture = 0
+
     if 'file-sign' in request.files:
         if not os.path.exists(UPLOAD_FOLDER):
             os.makedirs(UPLOAD_FOLDER, mode=0o777, exist_ok=True)
