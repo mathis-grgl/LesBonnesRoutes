@@ -51,7 +51,7 @@ def addMember(token, idGroupe, idAmi):
     idCompte = compte[0]
 
     #On vérifie que le compte est bien le créateur du groupe
-    c.execute("SELECT * FROM GROUPE WHERE idCreateur = ?", (idCompte,))
+    c.execute("SELECT * FROM GROUPE WHERE idCreateur = ? AND idGroupe = ?", (idCompte, idGroupe))
     createur = c.fetchone()
     if not createur:
         conn.close()
@@ -99,7 +99,7 @@ def removeMember(token, idGroupe, idAmi):
         return jsonify({'message': 'Le créateur du groupe ne peut pas se supprimer lui-même.'}), 403
 
     #On vérifie que le compte est bien le créateur du groupe
-    c.execute("SELECT * FROM GROUPE WHERE idCreateur = ?", (idCompte,))
+    c.execute("SELECT * FROM GROUPE WHERE idCreateur = ? AND idGroupe = ?", (idCompte, idGroupe))
     createur = c.fetchone()
     if not createur:
         conn.close()
@@ -141,7 +141,7 @@ def supprimerGroupe(token, idGroupe):
     idCompte = compte[0]
 
     #On vérifie que le compte est bien le créateur du groupe
-    c.execute("SELECT * FROM GROUPE WHERE idCreateur = ?", (idCompte,))
+    c.execute("SELECT * FROM GROUPE WHERE idCreateur = ? AND idGroupe = ?", (idCompte, idGroupe))
     createur = c.fetchone()
     if not createur:
         conn.close()
@@ -152,3 +152,38 @@ def supprimerGroupe(token, idGroupe):
     conn.commit()
     conn.close()
     return jsonify({'message': 'Le groupe a bien été supprimé.'}), 200
+
+
+@ami_bp.route('/modifNom/<string:token>/<int:idGroupe>/<string:nouveauNom>', methods=['GET'])
+def modifNom(token, idGroupe, nouveauNom):
+    #On verifie le token
+    conn = sqlite3.connect(URI_DATABASE)
+    c = conn.cursor()
+    c.execute("SELECT COMPTE.idCompte FROM COMPTE inner join TOKEN on COMPTE.idCompte = TOKEN.idCompte WHERE auth_token = ?", (token,))
+    compte = c.fetchone()
+
+    if not compte:
+        conn.close()
+        return jsonify({'message': 'Token invalide ou expiré.'}), 401
+    
+    idCompte = compte[0]
+
+    #On vérifie que le compte est bien le créateur du groupe
+    c.execute("SELECT * FROM GROUPE WHERE idCreateur = ? AND idGroupe = ?", (idCompte, idGroupe))
+    createur = c.fetchone()
+    if not createur:
+        conn.close()
+        return jsonify({'message': 'Seul le createur du groupe peut modifier le groupe'}), 403
+
+    #On vérifie que le nom n'est pas déjà pris
+    c.execute("SELECT idGroupe FROM GROUPE WHERE nomGroupe = ? AND idGroupe != ?", (nouveauNom, idGroupe))
+    res = c.fetchone()
+    if res:
+        conn.close()
+        return jsonify({'message': 'Nom de groupe déjà pris.'}), 400
+
+    #On peut modifier le nom du groupe
+    c.execute("UPDATE GROUPE SET nomGroupe = ? WHERE idGroupe = ?", (nouveauNom, idGroupe))
+    conn.commit()
+    conn.close()
+    return jsonify({'message': 'Le nom du groupe a bien été modifié.'}), 200
