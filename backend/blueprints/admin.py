@@ -100,7 +100,7 @@ def get_user(idCompte):
 
 #Recuperer tous les trajets avec le type
 @admin_bp.route('/trajets/<string:typeTrajet>')
-def get_trajets(typeTrajet=None):
+def get_trajets(typeTrajet):
     conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
     if typeTrajet == 'Prive':

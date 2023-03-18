@@ -137,6 +137,16 @@ def rechercher():
         c.execute("SELECT nomVille FROM VILLE WHERE idVille = ?", (trajet['villeArrivee'],))
         trajet['villeArrivee'] = c.fetchone()[0]
 
+        # Ajouter le type de trajet en fonction de la table dans laquelle se trouve l'idTrajet
+        if row[0] in [id[0] for id in c.execute("SELECT idTrajet FROM TRAJET_PRIVE")]:
+            trajet['typeTrajet'] = 'prive'
+            #On recupere le nom du groupe
+            trajet['nomGroupe'] = [groupe[0] for groupe in c.execute("SELECT nomGroupe FROM TRAJET_PRIVE NATURAL JOIN GROUPE WHERE idTrajet=?", (row[0],))][0]
+        elif row[0] in [id[0] for id in c.execute("SELECT idTrajet FROM TRAJET_PUBLIC")]:
+            trajet['typeTrajet'] = 'public'
+        else:
+            trajet['typeTrajet'] = None
+
 
     conn.close()
     return jsonify(trajets)
@@ -276,7 +286,7 @@ def createTrajet(token):
                     c.execute("INSERT INTO TRAJET_PRIVE VALUES (?, ?)", (idTrajet, idGroupe))
                 else:
                     c.execute("INSERT INTO TRAJET_PUBLIC VALUES (?)", (idTrajet,))
-                    
+
             conn.commit()
             conn.close()
             return jsonify({'message': 'Le trajet a bien été créé.'}), 200

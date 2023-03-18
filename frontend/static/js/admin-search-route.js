@@ -12,7 +12,7 @@ $(document).ready(function () {
     $("[data-toggle=tooltip]").tooltip();
 
     // Ajout des trajets depuis la BDD
-    fetch("/admin/trajets/'all'")
+    fetch('/admin/trajets/all')
     .then(reponse => {
     if (!reponse.ok) {
         throw new Error('Network response was not ok');

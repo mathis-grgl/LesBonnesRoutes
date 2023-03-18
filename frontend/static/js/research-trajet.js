@@ -1,5 +1,5 @@
 // Afficher les offres du moment
-fetch("/admin/trajets/'Public'")
+fetch("/admin/trajets/Public")
   .then(response => response.json())
   .then(data => {
     displayTrajet(data);
