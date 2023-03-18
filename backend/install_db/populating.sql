@@ -44,7 +44,7 @@ INSERT INTO DEMANDE_TRAJET_EN_COURS VALUES (2, 4, 2, 'en cours', 'bonjour, je pe
 INSERT INTO DEMANDE_TRAJET_EN_COURS VALUES (1, 5, 3, 'en cours', NULL);
 
 
-INSERT INTO GROUPE(nomGroupe, nbPersonnes) VALUES ('Les Vosgiens', 3);
+INSERT INTO GROUPE(nomGroupe, idCompte, nbPersonnes) VALUES ('Les Vosgiens', 1, 3);
 
 INSERT INTO AMI_GROUPE VALUES(2, 1);
 INSERT INTO AMI_GROUPE VALUES(4, 1);

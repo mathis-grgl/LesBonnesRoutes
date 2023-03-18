@@ -54,6 +54,8 @@ def create_compte():
     else:
         photo = None
 
+
+
     # Encodage du mot de passe
     mdp = mdp.encode()
 
@@ -76,6 +78,7 @@ def create_compte():
         # Il manque des informations dans la requête
         conn.close()
         return jsonify({'message': 'Informations manquantes'}), 400
+
 
     # Insérer le compte dans la base de données
     c.execute("INSERT INTO COMPTE (nomCompte, prenomCompte, email, adresse, ville, codePostal, pays, genre, voiture, telephone, mdp, notificationMail, photo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
@@ -172,12 +175,13 @@ def getInfoCompte(token):
     conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
     c.execute("SELECT COMPTE.idCompte FROM COMPTE inner join TOKEN on COMPTE.idCompte = TOKEN.idCompte WHERE auth_token = ?", (token,))
+    print(token)
     compte = c.fetchone()
-    idCompte = compte[0]
-    print("voici l'id du compte en fonction de son token : ", idCompte)
 
     # Le token est valide et conduit bien a un compte
     if compte:
+        idCompte = compte[0]
+        print("voici l'id du compte en fonction de son token : ", idCompte)
         idCompte = int(idCompte)
 
         # Récupération des données du compte

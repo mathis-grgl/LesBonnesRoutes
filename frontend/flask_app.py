@@ -85,10 +85,12 @@ def trajet():
 from backend.blueprints.compte import compte_bp
 from backend.blueprints.trajet import trajet_bp
 from backend.blueprints.admin import admin_bp
+from backend.blueprints.ami import ami_bp
 
 app.register_blueprint(admin_bp, url_prefix='/admin')
 app.register_blueprint(compte_bp, url_prefix='/compte')
 app.register_blueprint(trajet_bp, url_prefix='/trajet')
+app.register_blueprint(ami_bp, url_prefix='/ami')
 
 
 
