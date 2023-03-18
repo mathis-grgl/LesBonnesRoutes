@@ -121,6 +121,18 @@ def get_trajets():
         trajet['villeDepart'] = c.fetchone()[0]
         c.execute("SELECT nomVille FROM VILLE WHERE idVille = ?", (row[11],))
         trajet['villeArrivee'] = c.fetchone()[0]
+
+        # Ajouter le type de trajet en fonction de la table dans laquelle se trouve l'idTrajet
+        if row[0] in [id[0] for id in c.execute("SELECT idTrajet FROM TRAJET_PRIVE")]:
+            trajet['typeTrajet'] = 'prive'
+            #On recupere le nom du groupe
+            trajet['nomGroupe'] = [groupe[0] for groupe in c.execute("SELECT nomGroupe FROM TRAJET_PRIVE NATURAL JOIN GROUPE WHERE idTrajet=?", (row[0],))][0]
+        elif row[0] in [id[0] for id in c.execute("SELECT idTrajet FROM TRAJET_PUBLIC")]:
+            trajet['typeTrajet'] = 'public'
+        else:
+            trajet['typeTrajet'] = None
+
+
         trajets.append(trajet)
 
     conn.close()
@@ -441,3 +453,102 @@ def modifNom(token, idGroupe, nouveauNom):
     conn.commit()
     conn.close()
     return jsonify({'message': 'Le nom du groupe a bien été modifié.'}), 200
+
+
+#Ajouter un membre au groupe d'amis
+@admin_bp.route('/addMember/<string:token>/<int:idGroupe>/<int:idAmi>', methods=['POST'])
+def addMember(token, idGroupe, idAmi):
+    #On verifie que le token existe et est admin
+    conn = sqlite3.connect(URI_DATABASE)
+    c = conn.cursor()
+    c.execute("SELECT isAdmin FROM TOKEN NATURAL JOIN COMPTE WHERE auth_token = ?", (token,))
+    admin = c.fetchone()
+    if not admin:
+        conn.close()
+        return jsonify({'message': 'Le token est invalide ou expiré'}), 401
+    
+    isAdmin = admin[0]
+    if not isAdmin:
+        conn.close()
+        return jsonify({'message': 'Le token n\'est pas admin'}), 401
+    
+    #On vérifie que l'ami existe bien
+    c.execute("SELECT nomCompte FROM COMPTE WHERE idCompte = ?", (idAmi,))
+    ami = c.fetchone()
+    if not ami:
+        conn.close()
+        return jsonify({'message': 'L\'ami spécifié n\'existe pas'}), 404
+
+    #On vérifie que l'ami ne fait pas déjà parti du groupe
+    c.execute("SELECT nomCompte FROM COMPTE INNER JOIN AMI_GROUPE ON COMPTE.idCompte = AMI_GROUPE.idCompte WHERE AMI_GROUPE.idGroupe = ? AND COMPTE.idCompte = ?", (idGroupe, idAmi))
+    participe = c.fetchone()
+    if participe:
+        conn.close()
+        return jsonify({'message': 'Cet ami fait déjà parti de ce groupe'}), 403
+
+    #On peut ajouter l'ami
+    c.execute("INSERT INTO AMI_GROUPE VALUES (?, ?)", (idAmi, idGroupe))
+    conn.commit()
+    conn.close()
+    return jsonify({'message': 'L\'ami a bien été ajouté au groupe.'}), 200
+
+
+#Supprimer un membre du groupe d'amis
+@admin_bp.route('/removeMember/<string:token>/<int:idGroupe>/<int:idAmi>', methods=['POST'])
+def removeMember(token, idGroupe, idAmi):
+    #On verifie que le token existe et est admin
+    conn = sqlite3.connect(URI_DATABASE)
+    c = conn.cursor()
+    c.execute("SELECT isAdmin FROM TOKEN NATURAL JOIN COMPTE WHERE auth_token = ?", (token,))
+    admin = c.fetchone()
+    if not admin:
+        conn.close()
+        return jsonify({'message': 'Le token est invalide ou expiré'}), 401
+    
+    isAdmin = admin[0]
+    if not isAdmin:
+        conn.close()
+        return jsonify({'message': 'Le token n\'est pas admin'}), 401
+    
+    #On vérifie que l'ami existe bien
+    c.execute("SELECT nomCompte FROM COMPTE WHERE idCompte = ?", (idAmi,))
+    ami = c.fetchone()
+    if not ami:
+        conn.close()
+        return jsonify({'message': 'L\'ami spécifié n\'existe pas'}), 404
+
+    #On vérifie que l'ami fait bien parti du groupe
+    c.execute("SELECT nomCompte FROM COMPTE INNER JOIN AMI_GROUPE ON COMPTE.idCompte = AMI_GROUPE.idCompte WHERE AMI_GROUPE.idGroupe = ? AND COMPTE.idCompte = ?", (idGroupe, idAmi))
+    participe = c.fetchone()
+    if not participe:
+        conn.close()
+        return jsonify({'message': 'Cet ami ne fait pas parti de ce groupe'}), 403
+
+    #On peut supprimer l'ami
+    c.execute("DELETE FROM AMI_GROUPE WHERE idGroupe = ? AND idCompte = ?", (idGroupe, idAmi))
+    conn.commit()
+    conn.close()
+    return jsonify({'message': 'L\'ami a bien été supprimé du groupe.'}), 200
+
+
+@admin_bp.route('/supprimerGroupe/<string:token>/<int:idGroupe>', methods=['GET'])
+def supprimerGroupe(token, idGroupe):
+    #On verifie que le token existe et est admin
+    conn = sqlite3.connect(URI_DATABASE)
+    c = conn.cursor()
+    c.execute("SELECT isAdmin FROM TOKEN NATURAL JOIN COMPTE WHERE auth_token = ?", (token,))
+    admin = c.fetchone()
+    if not admin:
+        conn.close()
+        return jsonify({'message': 'Le token est invalide ou expiré'}), 401
+    
+    isAdmin = admin[0]
+    if not isAdmin:
+        conn.close()
+        return jsonify({'message': 'Le token n\'est pas admin'}), 401
+
+    #On peut supprimer le groupe
+    c.execute("DELETE FROM GROUPE WHERE idGroupe = ?", (idGroupe,))
+    conn.commit()
+    conn.close()
+    return jsonify({'message': 'Le groupe a bien été supprimé.'}), 200
