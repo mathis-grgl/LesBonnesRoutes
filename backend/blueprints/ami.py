@@ -30,6 +30,7 @@ def createGroupe(token, nomGroupe):
     #On peut créer le groupe
     c.execute("INSERT INTO GROUPE(idCreateur, nomGroupe, nbPersonnes) VALUES (?, ?, 1)", (idCompte, nomGroupe))
     conn.commit()
+    conn.close()
     return jsonify({'message': 'Le groupe a bien été créé.'}), 200
 
 
@@ -123,3 +124,31 @@ def removeMember(token, idGroupe, idAmi):
     conn.commit()
     conn.close()
     return jsonify({'message': 'L\'ami a bien été supprimé du groupe.'}), 200
+
+
+@ami_bp.route('/supprimerGroupe/<string:token>/<int:idGroupe>', methods=['GET'])
+def supprimerGroupe(token, idGroupe):
+    #On verifie le token
+    conn = sqlite3.connect(URI_DATABASE)
+    c = conn.cursor()
+    c.execute("SELECT COMPTE.idCompte FROM COMPTE inner join TOKEN on COMPTE.idCompte = TOKEN.idCompte WHERE auth_token = ?", (token,))
+    compte = c.fetchone()
+
+    if not compte:
+        conn.close()
+        return jsonify({'message': 'Token invalide ou expiré.'}), 401
+    
+    idCompte = compte[0]
+
+    #On vérifie que le compte est bien le créateur du groupe
+    c.execute("SELECT * FROM GROUPE WHERE idCreateur = ?", (idCompte,))
+    createur = c.fetchone()
+    if not createur:
+        conn.close()
+        return jsonify({'message': 'Seul le createur du groupe peut modifier le groupe'}), 403
+
+    #On peut supprimer le groupe
+    c.execute("DELETE FROM GROUPE WHERE idGroupe = ?", (idGroupe,))
+    conn.commit()
+    conn.close()
+    return jsonify({'message': 'Le groupe a bien été supprimé.'}), 200
