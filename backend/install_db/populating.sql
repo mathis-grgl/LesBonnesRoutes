@@ -122,5 +122,6 @@ INSERT INTO VILLE(nomVille, codePostal) VALUES('Villeurbanne', 69100);
 
 /* Pour les test sur compte */
 INSERT INTO TOKEN VALUES (1, '9f36ad8ef1718c3c2258025e06e7eb2d', 'exp');
+INSERT INTO TOKEN VALUES (6, '2258025e06e7eb2d9f36ad8ef1718c3c', 'exp');
 
 COMMIT;

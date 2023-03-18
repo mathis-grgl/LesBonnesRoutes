@@ -218,7 +218,7 @@ def modifCompte(token, idCompte):
     idCompte = int(idCompte)
     # c.execute("SELECT idCompte FROM COMPTE WHERE NOT(idCompte = ?)", idCompte)
     # c.execute("SELECT idCompte, nomCompte, email FROM COMPTE WHERE NOT (idCompte = ?)", (idCompte,))
-    c.execute("SELECT COUNT(*) FROM COMPTE WHERE email = 'adresse_mail_a_verifier'")
+    c.execute("SELECT COUNT(*) FROM COMPTE WHERE email = ?", (email,))
     test = c.fetchone()
     print(test[0])
 
@@ -376,3 +376,68 @@ def modifTrajet(token, idTrajet):
                     else:
                         conn.close()
                         return jsonify({'message': 'Probleme au niveau de la requête'}), 401
+
+
+
+@admin_bp.route('/getGroupes/<string:token>', methods=['GET'])
+def getGroupes(token):
+    #On verifie que le token existe et est admin
+    conn = sqlite3.connect(URI_DATABASE)
+    c = conn.cursor()
+    c.execute("SELECT isAdmin FROM TOKEN NATURAL JOIN COMPTE WHERE auth_token = ?", (token,))
+    admin = c.fetchone()
+    if not admin:
+        conn.close()
+        return jsonify({'message': 'Le token est invalide ou expiré'}), 401
+    
+    isAdmin = admin[0]
+    if not isAdmin:
+        conn.close()
+        return jsonify({'message': 'Le token n\'est pas admin'}), 401
+
+    c.execute("SELECT idGroupe, nomGroupe FROM GROUPE")
+
+    rows = c.fetchall()
+
+    # Création d'une liste de dictionnaires contenant les résultats
+    result = []
+    for row in rows:
+        result.append({
+            "idGroupe": row[0],
+            "nomGroupe": row[1]
+        })
+
+    conn.close()
+
+    return jsonify(result), 200
+
+
+@admin_bp.route('/modifNom/<string:token>/<int:idGroupe>/<string:nouveauNom>', methods=['GET'])
+def modifNom(token, idGroupe, nouveauNom):
+    #On verifie que le token existe et est admin
+    conn = sqlite3.connect(URI_DATABASE)
+    c = conn.cursor()
+    c.execute("SELECT isAdmin FROM TOKEN NATURAL JOIN COMPTE WHERE auth_token = ?", (token,))
+    admin = c.fetchone()
+    if not admin:
+        conn.close()
+        return jsonify({'message': 'Le token est invalide ou expiré'}), 401
+    
+    isAdmin = admin[0]
+    if not isAdmin:
+        conn.close()
+        return jsonify({'message': 'Le token n\'est pas admin'}), 401
+
+
+    #On vérifie que le nom n'est pas déjà pris
+    c.execute("SELECT idGroupe FROM GROUPE WHERE nomGroupe = ? AND idGroupe != ?", (nouveauNom, idGroupe))
+    res = c.fetchone()
+    if res:
+        conn.close()
+        return jsonify({'message': 'Nom de groupe déjà pris.'}), 400
+
+    #On peut modifier le nom du groupe
+    c.execute("UPDATE GROUPE SET nomGroupe = ? WHERE idGroupe = ?", (nouveauNom, idGroupe))
+    conn.commit()
+    conn.close()
+    return jsonify({'message': 'Le nom du groupe a bien été modifié.'}), 200
