@@ -1,12 +1,13 @@
 <section class="section privacy-section" id="next">
 
+
     <div id="layoutSidenav">
         <div id="layoutSidenav_nav">
             <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
                 <div class="sb-sidenav-menu">
                     <div class="nav">
                         <div class="sb-sidenav-menu-heading">Groupe d'amis</div>
-                        <a class="nav-link" href="/ami/mes_groupes_damis">
+                        <a class="nav-link" href="/ami/groupes">
                             <div class="sb-nav-link-icon"></div>
                             Consulter mes groupes d'amis
                         </a>
@@ -18,7 +19,7 @@
 
                         <a class="nav-link" href="/ami/creer_groupe_damis">
                             <div class="sb-nav-link-icon"></div>
-                            Créer un groupe d'amis
+                            Modifier un groupe d'amis
                         </a>
 
 
@@ -31,27 +32,20 @@
             <main>
                 <div class="container-fluid px-4">
                     <h1 class="mt-4">{{ title }}</h1>
+                    <form id="ajouter_amis" method="post">
 
-
-                    <div class="card mb-4">
-                        <div class="card-header">
-
-                            Liste des groupes d'amis
+                        <div class="form-group">
+                            <label for="select-users">Utilisateurs :</label>
+                            <select id="select-users" name="select-users[]" multiple required>
+                            </select>
                         </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-sm-6">
+                        <button type="submit">Ajouter membre au groupe d'amis</button>
+                    </form>
 
-                                    <div id="groupes-container" class="card-group">
-                                        <!-- Participants will be added here dynamically with JavaScript -->
-                                    </div>
-                                </div>
-
-                            </div>
-
-                        </div>
-                    </div>
                 </div>
+
+
+
             </main>
         </div>
     </div>
@@ -61,4 +55,12 @@
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"
         crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
+
+
+
+
+
+
+
 </section>

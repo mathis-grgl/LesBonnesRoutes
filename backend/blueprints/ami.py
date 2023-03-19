@@ -18,6 +18,10 @@ def creer_groupe():
 def modifier_groupe():
     return render_template('editGroupe/editGroupe.html')
 
+@ami_bp.route('/ajouter_amis', methods=['POST', 'GET'])
+def ajouter_ami():
+    return render_template('ajouterAmis/ajouterAmis.html')
+
 
 #Créer un groupe d'ami
 @ami_bp.route('/createGroupe/<string:token>', methods=['POST'])

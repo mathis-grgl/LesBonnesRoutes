@@ -40,29 +40,21 @@ $(document).on('click', '.edit-group', function () {
     url.pathname = '/ami/modifier_groupe';
     url.searchParams.set("id", id);
     window.location.href = url.href;
-
-
-    // console.log('Le bouton "details" a été cliqué.');
-    // let id = $(this).attr('id');
-    // console.log(id);
-    // let u = new URL(window.location.href);
-    // u.searchParams.delete("id");
-
-    // let url = new URL(window.location.href);
-
-    // console.log(url);
-
-    // url.pathname = '/trajet/participants';
-    // // Ajouter un paramètre "id" à l'URL
-    // url.searchParams.set("id", id);
-
-
-    // // console.log(url);
-    // // window.location.href = url.href;
-
-
-
-
-    // // Rediriger vers la nouvelle URL avec le paramètre "id"
-    // window.location.href = url.href;
 });
+
+
+$(document).on('click', '.add-members', function () {
+    console.log("on a clique ajouter membres");
+    let id = $(this).attr('id');
+    let u = new URL(window.location.href);
+    u.searchParams.delete("id");
+    let url = new URL(window.location.href);
+    console.log(url);
+    url.pathname = '/ami/ajouter_amis';
+    url.searchParams.set("id", id);
+    window.location.href = url.href;
+
+
+});
+
+

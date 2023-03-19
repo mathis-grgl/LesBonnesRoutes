@@ -17,8 +17,9 @@ function charger_groupes() {
             let container = $("#groupes-container");
             // Remove previous participants
             container.empty();
-            for (let i = 0; i < data.length ; i++){
+            for (let i = 0; i < data.length; i++) {
                 displayGroupes(data[i], container);
+
             }
 
 
@@ -51,6 +52,7 @@ function displayGroupes(data, container) {
     let removeBtn = $("<button>")
         .addClass("delete-group").attr('id', data.idGroupe)
         .html('<i class="fas fa-trash"></i>');
+
 
     cardDiv.append(acceptBtn, rejectBtn, removeBtn);
 
