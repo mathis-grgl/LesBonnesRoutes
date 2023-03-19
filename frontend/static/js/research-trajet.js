@@ -78,9 +78,12 @@ function displayTrajet(trajets){
         const coordsArr = await getCoordinates(trajet.villeArrivee);
         const trajetElement = document.createElement('div');
         trajetElement.classList.add('col-md-6', 'col-lg-4');
-        trajetElement.innerHTML = `
-          <a href="/trajet?id=${trajet.idTrajet}" class="room">
-            <figure class="img-wrap">
+
+        let tmp = `<a href="/trajet?id=${trajet.idTrajet}" class="room">`;
+        if(trajet.typeTrajet == "prive") tmp += `<div class="p-3 text-center room-info">
+          <span class="text-uppercase letter-spacing-1">Groupe : ${trajet.nomGroupe}</span>
+          </div>`;
+        tmp += `<figure class="img-wrap">
               <img src="https://maps.geoapify.com/v1/staticmap?style=osm-carto&width=480&height=480&center=lonlat:${coordsDep.longitude},${coordsDep.latitude}&zoom=8.468&marker=lonlat:-${coordsArr.longitude},${coordsArr.latitude};color:%23ff0000;size:medium&apiKey=28ed3d4ce3664398aa6e2f080d227bbc" alt="Free website template" class="img-fluid mb-3">
             </figure>
             <div class="p-3 text-center room-info">
@@ -89,6 +92,8 @@ function displayTrajet(trajets){
             </div>
           </a>
         `;
+
+        trajetElement.innerHTML = tmp;
         trajetsContainer.appendChild(trajetElement);
       }
     });
