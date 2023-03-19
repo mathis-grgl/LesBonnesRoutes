@@ -225,3 +225,30 @@ def getMembers(idGroupe):
 
     conn.close()
     return jsonify(results), 200
+
+
+@ami_bp.route('/getGroupes/<string:token>', methods=['GET'])
+def getGroupes(token):
+    #On verifie le token
+    conn = sqlite3.connect(URI_DATABASE)
+    c = conn.cursor()
+    c.execute("SELECT COMPTE.idCompte FROM COMPTE inner join TOKEN on COMPTE.idCompte = TOKEN.idCompte WHERE auth_token = ?", (token,))
+    compte = c.fetchone()
+
+    if not compte:
+        conn.close()
+        return jsonify({'message': 'Token invalide ou expiré.'}), 401
+    
+    idCompte = compte[0]
+
+    #On eput récupérer les groupes
+    c.execute("SELECT GROUPE.idGroupe, GROUPE.nomGroupe, GROUPE.nbPersonnes, COMPTE.nomCompte, COMPTE.prenomCompte FROM AMI_GROUPE JOIN GROUPE ON AMI_GROUPE.idGroupe = GROUPE.idGroupe JOIN COMPTE ON GROUPE.idCreateur = COMPTE.idCompte WHERE AMI_GROUPE.idCompte = ?", (idCompte,))
+    res = c.fetchall()
+    groupes = []
+    
+    for groupe in res:
+        groupes.append({'idGroupe' : groupe[0], 'nomGroupe' : groupe[1], 'nbPersonnes' : groupe[2], 'createur' : groupe[3] + " " + groupe[4]})
+
+    conn.close()
+
+    return jsonify(groupes), 200

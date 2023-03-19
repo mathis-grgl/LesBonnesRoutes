@@ -612,6 +612,10 @@ def modifTrajet(token, idTrajet):
                         c.execute(query, values)
                         conn.commit()
                         conn.close()
+
+                        #On envoie une notif à tous les passagers
+                        sendNotifTrajetPassagers(idConducteur, idTrajet, "Le trajet a été modifié")
+
                         return jsonify({'message': 'Le trajet a bien été modifié.'}), 200
                     else:
                         conn.close()
@@ -693,6 +697,9 @@ def terminerTrajet(token, idTrajet):
                 conn.close()
                 return jsonify({'message': 'Vous ne pouvez valider un trajet que si vous êtes conducteur'}), 403
             else:
+                #On envoie une notif aux passagers
+                sendNotifTrajetPassagers(idConducteur, idTrajet, "Le trajet a été marqué comme terminé")
+
                 c.execute("UPDATE TRAJET SET statusTrajet = 'termine' WHERE idTrajet = ?", (idTrajet,))
                 conn.commit()
                 conn.close()
@@ -776,6 +783,9 @@ def deletePassager(token, idComptePassager, idTrajet):
                     conn.close()
                     return jsonify({'message': 'Cet utilisateur ne participe pas au trajet'}), 404
                 else:
+                    #On envoie une notif au passager
+                    sendNotifTrajet(idConducteur, idCompte, idTrajet, "Vous avez été supprimé du trajet")
+
                     #On peut supprimer la participation
                     c.execute("DELETE FROM TRAJET_EN_COURS_PASSAGER WHERE idCompte = ?", (idComptePassager,))
                     conn.commit()
