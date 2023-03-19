@@ -5,7 +5,7 @@ const profil = document.querySelector("li[name='profil']");
 const rechercherTrajet = document.querySelector("li[name='mes_offres']");
 const groupes = document.querySelector("li[name='groupes']");
 const notifCount = document.querySelector("div[name='notif-content']");
-let dropdown = document.querySelector(".icon-wrapper");
+let dropdown = document.querySelector(".content");
 const tokenH = getCookieToken();
 
 if (tokenH === null){
@@ -17,6 +17,11 @@ if (tokenH === null){
 } else {
   connection.style = "display: none";
 }
+
+const iconWrapper = document.querySelector('.icon-wrapper');
+iconWrapper.addEventListener('click', function() {
+  iconWrapper.classList.toggle('active');
+});
 
 
 //Récuperation des notifs et affichage
@@ -38,6 +43,7 @@ fetch('compte/getNotifs/' + tokenH)
     notificationDiv.classList.add('notify_item', 'dropdown');
 
     notificationDiv.innerHTML = `<img id='${res.idNotif}' class='imgCroix' src='/static/images/croix.png'></img>`;
+    notificationDiv.innerHTML += "<a href='#' class='btnAfficher btn-success'>Afficher</a>";
     notificationDiv.querySelector('img').onclick = () => {
       deleteNotif(res.idNotification);
     }
@@ -72,10 +78,15 @@ fetch('compte/getNotifs/' + tokenH)
     }
 
     infoDiv.innerHTML = type + `<p>${res.messageNotification}</p>`;
-    notificationDiv.innerHTML += "<a href='#' class='btnAfficher btn-success'>Afficher</a>";
     dropdown.appendChild(notificationDiv);
 });
-  dropdown.innerHTML += "<a href='#' class='btnSupprAll notify_item'>Tout supprimer</a>";
+  dropdown.innerHTML +=
+  "<div classe='notify_item dropdown'" +
+    `<a href='#' class='btn-danger btnSupprAll notify_item'>Tout supprimer</a>` +
+  "</div>"
+  dropdown.querySelector('.btnSupprAll').onclick = () => {
+    deleteAllNotif();
+  }
   // mettre à jour le compteur de notifications
   notifCount.setAttribute('data-number', data.length);
 })
@@ -87,7 +98,7 @@ fetch('compte/getNotifs/' + tokenH)
 function displayNotif(event){
   event.preventDefault();
   const notifs = document.querySelectorAll(".notify_item");
-  const content = document.querySelector("div[name='notif-content']");
+  const wrapper = document.querySelector(".icon-wrapper");
 
   notifs.forEach(notif => {
     if (notif.style.display === "flex"){
@@ -97,8 +108,9 @@ function displayNotif(event){
     }
   });
 
-  dropdown.classList.toggle("active"); // Also move this line here
+  dropdown.classList.toggle("active");
 }
+
 
 function getName(){
   fetch('compte/getNotifs/')
@@ -169,6 +181,24 @@ async function getPhoto(){
 
 function deleteNotif(id){
   fetch(`compte/suppNotif/${tokenH}/${id}`, {
+    method: 'POST',
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Erreur lors de la suppression');
+    }
+    return response.json();
+  })
+  .then(data => {
+    console.log("Data : " + data);
+  })
+  .catch(error => {
+    console.error('Erreur : ', error);
+  });
+}
+
+function deleteAllNotif(){
+  fetch(`compte/suppAllNotif/${tokenH}`, {
     method: 'POST',
   })
   .then(response => {
