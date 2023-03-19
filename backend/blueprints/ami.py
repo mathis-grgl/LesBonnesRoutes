@@ -170,8 +170,8 @@ def supprimerGroupe(token, idGroupe):
     return jsonify({'message': 'Le groupe a bien été supprimé.'}), 200
 
 
-@ami_bp.route('/modifNom/<string:token>/<int:idGroupe>/<string:nouveauNom>', methods=['GET'])
-def modifNom(token, idGroupe, nouveauNom):
+@ami_bp.route('/modifNom/<string:token>/<int:idGroupe>', methods=['POST'])
+def modifNom(token, idGroupe):
     #On verifie le token
     conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
@@ -183,6 +183,8 @@ def modifNom(token, idGroupe, nouveauNom):
         return jsonify({'message': 'Token invalide ou expiré.'}), 401
     
     idCompte = compte[0]
+    data = request.get_json()
+    nouveauNom = data.get('nomGroupe')
 
     #On vérifie que le compte est bien le créateur du groupe
     c.execute("SELECT * FROM GROUPE WHERE idCreateur = ? AND idGroupe = ?", (idCompte, idGroupe))
@@ -197,6 +199,9 @@ def modifNom(token, idGroupe, nouveauNom):
     if res:
         conn.close()
         return jsonify({'message': 'Nom de groupe déjà pris.'}), 400
+    
+    
+
 
     #On peut modifier le nom du groupe
     c.execute("UPDATE GROUPE SET nomGroupe = ? WHERE idGroupe = ?", (nouveauNom, idGroupe))

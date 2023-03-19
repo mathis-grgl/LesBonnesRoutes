@@ -28,3 +28,38 @@ function charger_groupe() {
             console.error(error);
         });
 }
+
+
+$('#modifier_groupe').submit(function (event) {
+    event.preventDefault(); // pour empêcher la soumission normale du formulaire
+
+    let nomGroupe = $('#group-name').val();
+    console.log(nomGroupe);
+
+    // Récupérer toutes les valeurs sélectionnées dans le select
+    const urlmodif = '/ami/modifNom/' + token + '/' + lastChar;
+    console.log(urlmodif);
+    console.log(urlmodif);
+    fetch(urlmodif, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            'nomGroupe': nomGroupe
+
+        })
+    })
+        .then(reponse => {
+            if (reponse.ok){
+
+                window.location.href = '/ami/groupes';
+            } else {
+                alert("pb");
+
+            }
+        })
+        .catch(error => {
+            console.error(error);
+        });
+});
