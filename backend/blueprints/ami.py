@@ -10,6 +10,10 @@ ami_bp = Blueprint('ami', __name__)
 def groupes():
     return render_template("mes_groupes/mes-groupes.html")
 
+@ami_bp.route('/creer_groupe_damis')
+def creer_trajet():
+    return render_template('mes_groupes/creer_groupes_damis.html')
+
 
 #Créer un groupe d'ami
 @ami_bp.route('/createGroupe/<string:token>/<string:nomGoupe>', methods=['POST'])
