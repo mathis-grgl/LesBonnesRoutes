@@ -7,22 +7,22 @@ const infoCompte = '/compte/getInfoCompte/' + token;
 function charger_trajets() {
 
     fetch(infoCompte)
-    .then(reponse => {
-        if(!reponse.ok){
-            throw new Error(reponse);
-        }
-        return reponse.json();
-    })
-    .then(data=>{
-        console.log(data);
-        let voiture = data.voiture;
-        if(voiture == "false"){
-            $('#creer').remove();
-        }
-    })
-    .catch(error=>{
-        console.error(error);
-    })
+        .then(reponse => {
+            if (!reponse.ok) {
+                throw new Error(reponse);
+            }
+            return reponse.json();
+        })
+        .then(data => {
+            console.log(data);
+            let voiture = data.voiture;
+            if (voiture == 0) {
+                $('#creer').remove();
+            }
+        })
+        .catch(error => {
+            console.error(error);
+        })
     fetch(url)
         .then(reponse => {
             if (!reponse.ok) {
@@ -43,6 +43,28 @@ function charger_trajets() {
 
                 //Affectation des données de chaque trajet
                 let trajet = data[i];
+                let date = data[i].dateDepart;
+                let heure = data[i].heureDepart.replace('h', ':');
+                console.log(date);
+                let dateObject = moment(date, 'D MMMM, YYYY');
+                // let dateObject = moment(date, 'YYYY/MM/DD');
+
+                let dateFormatted = dateObject.format('YYYY-MM-DD');
+                console.log(dateFormatted);
+                let today = new Date();
+                let todayms = today.getTime();
+                let dateString = dateFormatted + "T" + heure + ":00Z";
+                console.log(dateString);
+
+                let autreDate = new Date(dateString);
+                console.log(autreDate);
+                let autreDateMS = autreDate.getTime();
+
+
+                let differenceMS = autreDateMS - todayms;
+
+
+
 
                 //console.log(trajet.idCompte);
                 //console.log(trajet.idConducteur);
@@ -80,6 +102,15 @@ function charger_trajets() {
                                     )
                             )
                     );
+                    if (differenceMS > (24 * 60 * 60 * 1000)) {
+                        // Il y a plus de 24 heures d'écart entre les deux dates
+                        console.log("Il y a plus de 24 heures d'écart entre la date d'aujourd'hui et l'autre date.");
+
+
+                    } else {
+                        // Il n'y a pas plus de 24 heures d'écart entre les deux dates
+                        $('.delete-btn#' + trajet.idTrajet).hide();
+                    }
 
                     tbody.append(ligne);
 
