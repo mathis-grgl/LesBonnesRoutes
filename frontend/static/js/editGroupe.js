@@ -55,7 +55,7 @@ $('#modifier_groupe').submit(function (event) {
 
                 window.location.href = '/ami/groupes';
             } else {
-                alert("pb");
+                alert("network issue");
 
             }
         })

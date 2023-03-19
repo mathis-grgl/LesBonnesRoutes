@@ -159,9 +159,6 @@ $('#editTrajet').submit(function (event) {
         $('#1').append($('<b>').text("La date doit être dans plus de 24h."));
     }
 
-
-    // let dateObject = moment(date, 'YYYY/MM/DD');
-
     let nbPlaces = $('#nb-places').val();
     let prix = $('#prix-place').val();
     let commentaires = $('#commentaires').val();
@@ -222,12 +219,6 @@ $('#editTrajet').submit(function (event) {
     }else{
         alert("Il y a un problème avec le formulaire.")
     }
-
-    // /modifTrajet/<string:token>/<int:idTrajet>'
-
-
-
-    // window.location.href = '/trajet/mes_trajets';
 
 
 
