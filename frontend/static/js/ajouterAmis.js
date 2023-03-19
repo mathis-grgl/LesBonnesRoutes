@@ -92,7 +92,8 @@ $('#ajouter_amis').submit(function (event) {
     // Faire quelque chose avec les valeurs sélectionnées
     console.log('Les valeurs sélectionnées sont : ', selectedValues);
     console.log(selectedValues.length);
-    let idAmi = parseInt(selectedValues);
+    
+    let idAmi = parseInt(selectedValues[0]);
     let url = '/ami/addMember/' + token + '/' + idGroupe + '/' + idAmi;
 
     // for(let i = 0; i < selectedValues.length; i++){
@@ -100,10 +101,12 @@ $('#ajouter_amis').submit(function (event) {
     //     let url = '/ami/addMember/' + token + '/' + idGroupe ;
 
     console.log(url);
-    fetch(url, {method: 'POST'})
+    fetch(url, {method: 'GET'})
         .then(reponse => {
             if (!reponse.ok) {
                 throw new Error("network not ok");
+            }else{
+                window.location.href = '/ami/groupes';
             }
             return reponse.json();
         })
@@ -113,7 +116,7 @@ $('#ajouter_amis').submit(function (event) {
     console.log(idAmi);
     // }
 
-    window.location.href = '/ami/groupes';
+    
 
 
 });

@@ -56,7 +56,7 @@ def createGroupe(token):
 
 
 #Ajouter un membre au groupe d'amis
-@ami_bp.route('/addMember/<string:token>/<int:idGroupe>/<int:idAmi>', methods=['POST'])
+@ami_bp.route('/addMember/<string:token>/<int:idGroupe>/<int:idAmi>', methods=['GET'])
 def addMember(token, idGroupe, idAmi):
     #On verifie le token
     conn = sqlite3.connect(URI_DATABASE)
