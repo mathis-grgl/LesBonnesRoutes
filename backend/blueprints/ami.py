@@ -11,8 +11,12 @@ def groupes():
     return render_template("mes_groupes/mes-groupes.html")
 
 @ami_bp.route('/creer_groupe_damis')
-def creer_trajet():
+def creer_groupe():
     return render_template('mes_groupes/creer_groupes_damis.html')
+
+@ami_bp.route('/modifier_groupe', methods=['POST', 'GET'])
+def modifier_groupe():
+    return render_template('editGroupe/editGroupe.html')
 
 
 #Créer un groupe d'ami
