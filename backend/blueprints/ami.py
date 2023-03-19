@@ -6,6 +6,10 @@ import sqlite3
 ami_bp = Blueprint('ami', __name__)
 
 
+@ami_bp.route("/groupes")
+def groupes():
+    return render_template("mes_groupes/mes-groupes.html")
+
 
 #Créer un groupe d'ami
 @ami_bp.route('/createGroupe/<string:token>/<string:nomGoupe>', methods=['POST'])

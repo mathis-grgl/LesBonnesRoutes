@@ -142,7 +142,7 @@ $('#forminput').submit(function (event) {
             .then(reponse => {
                 if (reponse.ok) {
 
-                    window.location.href = '/mes_trajets';
+                    window.location.href = '/trajet/mes_trajets';
                 } else {
                     alert("Probleme dans le fetch");
 

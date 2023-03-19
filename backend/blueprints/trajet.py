@@ -1,6 +1,6 @@
 URI_DATABASE = '../database.db'
 
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, render_template
 from datetime import datetime, timedelta
 import sqlite3
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -8,6 +8,36 @@ import atexit
 from backend.notifManager import *
 
 trajet_bp = Blueprint('trajet', __name__)
+
+
+@trajet_bp.route('/modifier_trajet', methods=['POST', 'GET'])
+def modifier_trajet():
+    return render_template('editTrajet/editTrajet.html')
+
+
+@trajet_bp.route('/participants',methods=['POST', 'GET'])
+def participants():
+    return render_template('participants/participants.html')
+
+
+@trajet_bp.route('/mes_trajets')
+def mes_trajets():
+    return render_template('mes_trajets/mes_trajets.html')
+
+
+@trajet_bp.route('/mes_trajets_crees')
+def mes_trajets_crees():
+    return render_template('mes_trajets/mes_trajets_crees.html')
+
+
+@trajet_bp.route('/creer_trajet')
+def creer_trajet():
+    return render_template('mes_trajets/creer_trajet.html')
+
+
+@trajet_bp.route('/')
+def trajet():
+    return render_template('trajet/trajet.html')
 
 
 #Voir un trajet

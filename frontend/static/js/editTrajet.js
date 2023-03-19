@@ -209,7 +209,7 @@ $('#editTrajet').submit(function (event) {
             .then(reponse => {
                 if (reponse.ok) {
 
-                    window.location.href = '/mes_trajets';
+                    window.location.href = '/trajet/mes_trajets';
                 } else {
                     throw new Error('Network response was not ok');
 
@@ -227,7 +227,7 @@ $('#editTrajet').submit(function (event) {
 
 
 
-    // window.location.href = '/mes_trajets';
+    // window.location.href = '/trajet/mes_trajets';
 
 
 

@@ -55,31 +55,6 @@ def account():
 def about():
     return render_template('about/about.html')
 
-@app.route('/modifier_trajet', methods=['POST', 'GET'])
-def modifier_trajet():
-    return render_template('editTrajet/editTrajet.html')
-
-@app.route('/participants',methods=['POST', 'GET'])
-def participants():
-    return render_template('participants/participants.html')
-
-@app.route('/mes_trajets')
-def mes_trajets():
-    return render_template('mes_trajets/mes_trajets.html')
-
-@app.route('/mes_trajets_crees')
-def mes_trajets_crees():
-    return render_template('mes_trajets/mes_trajets_crees.html')
-
-@app.route('/creer_trajet')
-def creer_trajet():
-    return render_template('mes_trajets/creer_trajet.html')
-
-
-@app.route('/trajet')
-def trajet():
-    return render_template('trajet/trajet.html')
-
 
 # Requetes
 from backend.blueprints.compte import compte_bp

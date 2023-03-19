@@ -20,7 +20,7 @@ $(document).on('click', '.edit-btn', function () {
 
     console.log(url);
 
-    url.pathname = '/modifier_trajet';
+    url.pathname = '/trajet/modifier_trajet';
     // Ajouter un paramètre "id" à l'URL
     url.searchParams.set("id", id);
     
@@ -34,7 +34,7 @@ $(document).on('click', '.edit-btn', function () {
     // Rediriger vers la nouvelle URL avec le paramètre "id"
     window.location.href = url.href;
 
-    // window.location.href = '/modifier_trajet' + '/' + id;
+    // window.location.href = '/trajet/modifier_trajet' + '/' + id;
 
 });
 
@@ -61,7 +61,7 @@ $(document).on('click', '.delete-btn', function () {
             })
             .then(data => {
                 console.log("On retire le trajet " + id);
-                window.location.href = '/mes_trajets';
+                window.location.href = '/trajet/mes_trajets';
 
             })
             .catch(error => {
@@ -83,7 +83,7 @@ $(document).on('click', '.details-btn', function () {
 
     console.log(url);
 
-    url.pathname = '/participants';
+    url.pathname = '/trajet/participants';
     // Ajouter un paramètre "id" à l'URL
     url.searchParams.set("id", id);
     
@@ -124,7 +124,7 @@ $(document).on('click', '.cancel-btn', function () {
             })
             .then(data => {
                 console.log("On se retire du trajet " + id);
-                window.location.href = '/mes_trajets';
+                window.location.href = '/trajet/mes_trajets';
 
             })
             .catch(error => {
@@ -179,7 +179,7 @@ $(document).on('click', '.confirm-btn', function () {
                     })
                     .then(data => {
                         alert("Le trajet a été terminé");
-                        window.location.href = '/mes_trajets';
+                        window.location.href = '/trajet/mes_trajets';
                     })
             } else {
                 alert("Le trajet doit être à plus de 3 heures pour pouvoir être terminé");
