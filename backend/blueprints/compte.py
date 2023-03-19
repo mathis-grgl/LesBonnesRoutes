@@ -18,10 +18,23 @@ app = Flask(__name__, template_folder=".")
 UPLOAD_FOLDER = 'static/images/profils'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+@compte_bp.route('/checkToken/<string:token>', methods=['GET'])
+def getCompte(token):
+    conn = sqlite3.connect(URI_DATABASE)
+    c = conn.cursor()
+    c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
+    compte = c.fetchone()
+    conn.close()
+
+    if compte is None:
+        # Le token n'existe pas
+        return jsonify({'message': 'Le token n\'existe pas'}), 404
+
+    return jsonify({'message': 'Le token est valide'}), 200
+
 #Créer un compte
 @compte_bp.route('/createCompte', methods=['POST'])
 def create_compte():
-    print("Othelo")
     nom = request.form.get('name-sign')
     prenom = request.form.get('last-name-sign')
     email = request.form.get('email-sign')
@@ -540,7 +553,7 @@ def modifMdp(token, mdp):
 
     #On vérifie que le mdp est valide
     # Expression régulière
-    regex = "^(?=.[a-z])(?=.[A-Z])(?=.\d)(?=.[@$!%?&])[A-Za-z\d@$!%?&]{8,}$"
+    regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
 
     # Vérifier si le mot de passe respecte l'expression régulière
     if not re.match(regex, mdp):
