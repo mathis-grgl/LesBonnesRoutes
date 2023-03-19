@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 import sqlite3
 from apscheduler.schedulers.background import BackgroundScheduler
 import atexit
+from backend.notifManager import *
 
 trajet_bp = Blueprint('trajet', __name__)
 
@@ -323,6 +324,10 @@ def deleteTrajet(token, idTrajet):
                 c.execute("DELETE FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
                 conn.commit()
                 conn.close()
+
+                #On envoie une notification aux passagers
+                sendNotifTrajetPassagers(idCompte, idTrajet, "Le trajet a été annulé")
+
                 return jsonify({'message': 'Le trajet a bien été supprimé.'}), 200
 
 
@@ -363,8 +368,16 @@ def demandeTrajet(token, idTrajet, nbPlaces):
                 else:
                     c.execute("INSERT INTO DEMANDE_TRAJET_EN_COURS VALUES (?, ?, ?, ?, ?)", (idCompte, idTrajet, nbPlaces, 'en cours', commentaire))
 
+                #On recupere l'id du conducteur pour la suite
+                c.execute("SELECT idConducteur FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
+                idConducteur = c.fetchone()[0]
+
                 conn.commit()
                 conn.close()
+
+                #On envoie une notif au conducteur
+                sendNotifTrajet(idCompte, idConducteur, idTrajet, "Cet utilisateur souhaite participer à l'un de vos trajet")
+
                 return jsonify({'message': 'La demande a bien été prise en compte.'}), 200
 
 

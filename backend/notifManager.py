@@ -82,5 +82,5 @@ def sendNotifGroupe(idCompteEnv, idGroupe, message):
 
 
 #sendNotifTrajet(1, 2, 1, "message pour le trajet ...")
-sendNotifGroupe(1, 1, "message pour le groupe !")
+#sendNotifGroupe(1, 1, "message pour le groupe !")
 #sendNotifTrajetPassagers(1, 2, "le trajet a été modifié")
