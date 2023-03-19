@@ -10,10 +10,10 @@ const params = new URLSearchParams(window.location.search);
 let id = parseInt(params.get('id'));
 console.log(typeof id + ' : ' + id);
 
-let urlDemande = 'trajet/getDemandesTrajet/' + token + '/' + id;
+let urlDemande = '/trajet/getDemandesTrajet/' + token + '/' + id;
 
 // /getPassagers/<string:token>/<int:idTrajet>'
-let urlParticpants = 'trajet/getPassagers/' + token + '/' + id;
+let urlParticpants = '/trajet/getPassagers/' + token + '/' + id;
 
 console.log(urlParticpants);
 $(document).ready(function () {
@@ -119,7 +119,7 @@ $(document).ready(function () {
         console.log('Le nombre de places : ' + nbPlaces);
 
 
-        let url = 'trajet/acceptInTrajet/' + token + '/' + participant.idCompte + '/' + id + '/' + participant.nbPlaces + '/oui';
+        let url = '/trajet/acceptInTrajet/' + token + '/' + participant.idCompte + '/' + id + '/' + participant.nbPlaces + '/oui';
 
         console.log(url);
 
@@ -160,7 +160,7 @@ $(document).ready(function () {
         console.log('Le nombre de places : ' + nbPlaces);
 
 
-        let url = 'trajet/acceptInTrajet/' + token + '/' + participant.idCompte + '/' + id + '/' + participant.nbPlaces + '/non';
+        let url = '/trajet/acceptInTrajet/' + token + '/' + participant.idCompte + '/' + id + '/' + participant.nbPlaces + '/non';
 
         console.log(url);
 
@@ -201,7 +201,7 @@ $(document).ready(function () {
 
         // /deletePassager/<string:token>/<int:idComptePassager>, <int:idTrajet>'
 
-        let url = 'trajet/deletePassager/' + token + '/' + participant.idCompte + '/' + id;
+        let url = '/trajet/deletePassager/' + token + '/' + participant.idCompte + '/' + id;
         console.log(url);
         fetch(url)
             .then(reponse => {
