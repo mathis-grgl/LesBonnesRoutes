@@ -33,10 +33,14 @@ fetch('compte/getNotifs/' + tokenH)
 
   // créer et ajouter chaque élément notify_item
   data.forEach(async res => {
+
     let notificationDiv = document.createElement('div');
     notificationDiv.classList.add('notify_item', 'dropdown');
 
-    notificationDiv.innerHTML = `<img id='${res.idNotif}' class='imgCroix' onclick='${deleteNotif(res.idNotif)}' src='/static/images/croix.png'></img>`;
+    notificationDiv.innerHTML = `<img id='${res.idNotif}' class='imgCroix' src='/static/images/croix.png'></img>`;
+    notificationDiv.querySelector('img').onclick = () => {
+      deleteNotif(res.idNotification);
+    }
 
     let imgDiv = document.createElement('div');
     imgDiv.classList.add('notify_img');
@@ -68,9 +72,10 @@ fetch('compte/getNotifs/' + tokenH)
     }
 
     infoDiv.innerHTML = type + `<p>${res.messageNotification}</p>`;
-
+    notificationDiv.innerHTML += "<a href='#' class='btnAfficher btn-success'>Afficher</a>";
     dropdown.appendChild(notificationDiv);
 });
+  dropdown.innerHTML += "<a href='#' class='btnSupprAll notify_item'>Tout supprimer</a>";
   // mettre à jour le compteur de notifications
   notifCount.setAttribute('data-number', data.length);
 })
@@ -163,7 +168,9 @@ async function getPhoto(){
 }
 
 function deleteNotif(id){
-  fetch(`compte/suppNotif/${tokenH}/${id}`)
+  fetch(`compte/suppNotif/${tokenH}/${id}`, {
+    method: 'POST',
+  })
   .then(response => {
     if (!response.ok) {
       throw new Error('Erreur lors de la suppression');
@@ -171,7 +178,7 @@ function deleteNotif(id){
     return response.json();
   })
   .then(data => {
-    
+    console.log("Data : " + data);
   })
   .catch(error => {
     console.error('Erreur : ', error);

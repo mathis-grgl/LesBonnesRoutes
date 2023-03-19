@@ -59,3 +59,19 @@
     left: 375px;
     top: 5px;
 }
+
+.imgCroix:hover {
+    transform: scale(1.1); /* zoom de 10% */
+    transition: transform 0.2s ease-in-out;
+}  
+
+.btnAfficher{
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.btnSupprAll{
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #ed6868 !important;
+}
