@@ -1,8 +1,8 @@
 const token = getCookieToken();
-const url = 'trajet/trajetsCompte/' + token;
-const createTrajetURL = 'trajet/createTrajet/' + token;
-const getCompteURL = 'compte/getNomCompte/';
-const infoCompte = 'compte/getInfoCompte/' + token;
+const url = '/trajet/trajetsCompte/' + token;
+const createTrajetURL = '/trajet/createTrajet/' + token;
+const getCompteURL = '/compte/getNomCompte/';
+const infoCompte = '/compte/getInfoCompte/' + token;
 
 function charger_trajets() {
 
