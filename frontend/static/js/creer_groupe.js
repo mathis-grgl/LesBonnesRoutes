@@ -66,7 +66,7 @@ $('#creer_groupe').submit(function (event) {
         })
     })
         .then(reponse => {
-            if (reponse.ok) {
+            if (reponse.ok){
 
                 window.location.href = '/ami/groupes';
             } else {
@@ -77,9 +77,4 @@ $('#creer_groupe').submit(function (event) {
         .catch(error => {
             console.error(error);
         });
-
-
-    // Faire quelque chose avec les valeurs sélectionnées
-
-    // Envoyer les données au serveur, etc.
 });

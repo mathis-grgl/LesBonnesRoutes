@@ -41,15 +41,15 @@ function displayGroupes(data, container) {
 
     let cardDiv = $("<div>").addClass("group-actions");
     let acceptBtn = $("<button>")
-        .addClass("add-members")
+        .addClass("add-members").attr('id', data.idGroupe)
         .html('<i class="fas fa-user-plus"></i>');
 
     let rejectBtn = $("<button>")
-        .addClass("edit-group")
+        .addClass("edit-group").attr('id', data.idGroupe)
         .html('<i class="fas fa-edit"></i>');
 
     let removeBtn = $("<button>")
-        .addClass("delete-group")
+        .addClass("delete-group").attr('id', data.idGroupe)
         .html('<i class="fas fa-trash"></i>');
 
     cardDiv.append(acceptBtn, rejectBtn, removeBtn);
