@@ -16,13 +16,16 @@ def creer_trajet():
 
 
 #Créer un groupe d'ami
-@ami_bp.route('/createGroupe/<string:token>/<string:nomGoupe>', methods=['POST'])
-def createGroupe(token, nomGroupe):
+@ami_bp.route('/createGroupe/<string:token>', methods=['POST'])
+def createGroupe(token):
     #On verifie le token
     conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
     c.execute("SELECT COMPTE.idCompte FROM COMPTE inner join TOKEN on COMPTE.idCompte = TOKEN.idCompte WHERE auth_token = ?", (token,))
     compte = c.fetchone()
+    data = request.get_json()
+    nomGroupe = data.get('nomGroupe')
+    print(nomGroupe)
 
     if not compte:
         conn.close()
