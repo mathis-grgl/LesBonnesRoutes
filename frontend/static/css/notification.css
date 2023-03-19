@@ -51,3 +51,11 @@
     transform: translateX(360px);
     border-color: transparent transparent #fff transparent;
 }*/
+
+.imgCroix{
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    left: 375px;
+    top: 5px;
+}

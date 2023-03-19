@@ -1,10 +1,10 @@
 
-token = getCookieToken();
-const url = 'compte/getInfoCompte/' + token;
-const urlDelete = 'compte/deleteCompte/' + token;
+tokenH = getCookieToken();
+const url = 'compte/getInfoCompte/' + tokenH;
+const urlDelete = 'compte/deleteCompte/' + tokenH;
 
 function applyData() {
-    if(token == null) {
+    if(tokenH == null) {
         location.href = "login_signup";
     } else {
 

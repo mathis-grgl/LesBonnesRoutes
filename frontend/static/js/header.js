@@ -6,9 +6,9 @@ const rechercherTrajet = document.querySelector("li[name='mes_offres']");
 const groupes = document.querySelector("li[name='groupes']");
 const notifCount = document.querySelector("div[name='notif-content']");
 let dropdown = document.querySelector(".icon-wrapper");
-const token = getCookieToken();
+const tokenH = getCookieToken();
 
-if (token === null){
+if (tokenH === null){
   connection.style = "display: block;";
   deconnection.style = "display: none;";
   profil.style = "display: none";
@@ -20,7 +20,7 @@ if (token === null){
 
 
 //Récuperation des notifs et affichage
-fetch('compte/getNotifs/' + token)
+fetch('compte/getNotifs/' + tokenH)
 .then(response => {
   if (!response.ok) {
     throw new Error('Network response was not ok');
@@ -35,6 +35,8 @@ fetch('compte/getNotifs/' + token)
   data.forEach(async res => {
     let notificationDiv = document.createElement('div');
     notificationDiv.classList.add('notify_item', 'dropdown');
+
+    notificationDiv.innerHTML = `<img id='${res.idNotif}' class='imgCroix' onclick='${deleteNotif(res.idNotif)}' src='/static/images/croix.png'></img>`;
 
     let imgDiv = document.createElement('div');
     imgDiv.classList.add('notify_img');
@@ -129,7 +131,7 @@ async function getTrajet(id){
 async function getGroupe(){
   // Récuperer infos trajet
   try {
-    const response = await fetch(`/ami/getGroupes/${token}`);
+    const response = await fetch(`/ami/getGroupes/${tokenH}`);
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
@@ -144,7 +146,7 @@ async function getGroupe(){
 
 async function getPhoto(){
   try {
-    const response = await fetch(`/compte/getInfoCompte/${token}`);
+    const response = await fetch(`/compte/getInfoCompte/${tokenH}`);
     if (!response.ok) {
       throw new Error("Erreur lors de l'appel à la fonction get_users: " + response.statusText);
     }
@@ -158,4 +160,20 @@ async function getPhoto(){
     console.error('Erreur : ', error);
     throw error;
   }
+}
+
+function deleteNotif(id){
+  fetch(`compte/suppNotif/${tokenH}/${id}`)
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Erreur lors de la suppression');
+    }
+    return response.json();
+  })
+  .then(data => {
+    
+  })
+  .catch(error => {
+    console.error('Erreur : ', error);
+  });
 }
