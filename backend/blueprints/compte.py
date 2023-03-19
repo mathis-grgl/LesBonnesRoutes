@@ -6,6 +6,7 @@ from io import BytesIO
 import sqlite3
 import secrets
 import os
+import re
 from werkzeug.utils import secure_filename
 from hashlib import sha512
 
@@ -523,3 +524,44 @@ def suppAllNotif(token):
     return jsonify({'message': 'Les notifications ont bien été supprimées.'}), 200
 
 
+compte_bp.route('/modifMdp/<string:token>/<string:mdp>', methods=['GET'])
+def modifMdp(token, mdp):
+    #On verifie le token
+    conn = sqlite3.connect(URI_DATABASE)
+    c = conn.cursor()
+    c.execute("SELECT COMPTE.idCompte FROM COMPTE inner join TOKEN_RECUP_MDP on COMPTE.idCompte = TOKEN_RECUP_MDP.idCompte WHERE mdp_token = ?", (token,))
+    compte = c.fetchone()
+
+    if not compte:
+        conn.close()
+        return jsonify({'message': 'Token invalide ou expiré.'}), 401
+   
+    idCompte = compte[0]
+
+    #On vérifie que le mdp est valide
+    # Expression régulière
+    regex = "^(?=.[a-z])(?=.[A-Z])(?=.\d)(?=.[@$!%?&])[A-Za-z\d@$!%?&]{8,}$"
+
+    # Vérifier si le mot de passe respecte l'expression régulière
+    if not re.match(regex, mdp):
+        conn.close()
+        return jsonify({'message': 'Le mdp ne respecte pas le format demandé.'}), 403
+
+
+    #Le mdp et le token sont corrects
+
+    #On supprime le token
+    c.execute("DELETE FROM TOKEN_RECUP_MDP WHERE idCompte = ?", (idCompte,))
+
+    #On modifie le mdp du compte
+    # Encodage du mot de passe
+    mdp = mdp.encode()
+
+    # Hashage du mot de passe
+    mdp = sha512(mdp).hexdigest()
+
+    c.execute("UPDATE COMPTE SET mdp = ? WHERE idCompte = ?", (mdp, idCompte))
+    
+    conn.commit()
+    conn.close()
+    return jsonify('message : Le mdp a bien été modifié'), 200
