@@ -351,12 +351,12 @@ def deleteTrajet(token, idTrajet):
                 conn.close()
                 return jsonify({'message': 'Suppression non autorisée : vous n\'êtes pas conducteur de ce trajet'}), 403
             else:
+                #On envoie une notification aux passagers
+                sendNotifTrajetPassagers(idCompte, idTrajet, "Le trajet a été annulé")
+
                 c.execute("DELETE FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
                 conn.commit()
                 conn.close()
-
-                #On envoie une notification aux passagers
-                sendNotifTrajetPassagers(idCompte, idTrajet, "Le trajet a été annulé")
 
                 return jsonify({'message': 'Le trajet a bien été supprimé.'}), 200
 
@@ -431,7 +431,8 @@ def quitterTrajet(token, idTrajet):
             conn.close()
             return jsonify({'message': 'Ce trajet n\'existe pas'}), 404
         else:
-            if idCompte == trajet[0]:
+            idConducteur = trajet[0]
+            if idCompte == idConducteur:
                 conn.close()
                 return jsonify({'message': 'Requête refusée : vous ne pouvez pas quitter un trajet si vous êtes le conducteur'}), 403
             else:
@@ -445,6 +446,10 @@ def quitterTrajet(token, idTrajet):
                     c.execute("DELETE FROM TRAJET_EN_COURS_PASSAGER WHERE idTrajet = ? AND idCompte = ?", (idTrajet, idCompte))
                     conn.commit()
                     conn.close()
+
+                    #On envoie une notif au conducteur
+                    sendNotifTrajet(idCompte, idConducteur, idTrajet, "Cet utilisateur vient de quitter le trajet")
+                    
                     return jsonify({'message': 'La demande d\'annulation de participation a bien été prise en compte.'}), 200
 
 
@@ -476,36 +481,6 @@ def getConducteur(idTrajet):
             return jsonify(compte), 200
 
 
-@trajet_bp.route('/annuleTrajet/<string:token>/<int:idTrajet>', methods=['POST'])
-def annuleTrajet(token, idTrajet):
-    conn = sqlite3.connect(URI_DATABASE)
-    c = conn.cursor()
-    #On recupere l'id du conducteur
-    c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
-    compte = c.fetchone()
-    if not compte:
-        conn.close()
-        return jsonify({'message': 'Token invalide ou expiré'}), 401
-    else:
-        idCompte = compte[0]
-        #On vérifie que l'utilisateur est le conducteur du trajet
-        c.execute("SELECT idConducteur FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
-        trajet = c.fetchone()
-        if not trajet:
-            conn.close()
-            return jsonify({'message': 'Ce trajet n\'existe pas'}), 404
-        else:
-            if idCompte != trajet[0]:
-                conn.close()
-                return jsonify({'message': 'Requête refusée : vous devez être le conducteur pour annuler un trajet'}), 403
-            else:
-                #On peut annuler le trajet
-                c.execute("DELETE FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
-                conn.commit()
-                conn.close()
-                return jsonify({'message': 'Le trajet a bien été annulé.'}), 200
-
-
 
 @trajet_bp.route('/acceptInTrajet/<string:token>/<int:idCompte>/<int:idTrajet>/<int:nbPlaces>/<string:accept>', methods=['GET'])
 def acceptInTrajet(token, idCompte, idTrajet, nbPlaces, accept):
@@ -518,6 +493,7 @@ def acceptInTrajet(token, idCompte, idTrajet, nbPlaces, accept):
         conn.close()
         return jsonify({'message': 'Token invalide ou expiré'}), 401
     else:
+        idConducteur = compte[0]
         #On vérifie que le compte et le trajet existent bien
         c.execute("SELECT * FROM COMPTE WHERE idCompte = ?", (idCompte,))
         if not c.fetchone():
@@ -535,12 +511,19 @@ def acceptInTrajet(token, idCompte, idTrajet, nbPlaces, accept):
             c.execute("DELETE FROM DEMANDE_TRAJET_EN_COURS WHERE idCompte = ? AND idTrajet = ?", (idCompte, idTrajet))
             conn.commit()
             conn.close()
+
+            #On envoie une notif au participant
+            sendNotifTrajet(idConducteur, idCompte, idTrajet, "Le conducteur vous a accepté dans son trajet !")
+
             return jsonify({'message': 'La demande a bien été acceptée.'}), 200
         elif accept == 'non':
             #On n'accepte pas : on supprime la demande
             c.execute("DELETE FROM DEMANDE_TRAJET_EN_COURS WHERE idCompte = ? AND idTrajet = ?", (idCompte, idTrajet))
             conn.commit()
             conn.close()
+
+            #On envoie une notif au participant
+            sendNotifTrajet(idConducteur, idCompte, idTrajet, "Le conducteur n'a pas accepté votre demande de participation")
             return jsonify({'message': 'La demande a bien été refusée.'}), 200
         else:
             conn.close()
