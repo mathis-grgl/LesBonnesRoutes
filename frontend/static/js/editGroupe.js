@@ -1,6 +1,8 @@
 let token = getCookieToken();
-const test = window.location.href;
-const lastChar = parseInt(test.charAt(test.length - 1));
+const urlParams = new URLSearchParams(window.location.search);
+const lastChar = parseInt(urlParams.get('id'));
+// const test = window.location.href;
+// const lastChar = parseInt(test.charAt(test.length - 1));
 console.log(lastChar);
 
 const url = '/ami/getGroupes/' + token;

@@ -1,8 +1,10 @@
 let token = getCookieToken();
 
 // '/modifTrajet/<string:token>/<int:idTrajet>'
-const test = window.location.href;
-const lastChar = parseInt(test.charAt(test.length - 1));
+// const test = window.location.href;
+// const lastChar = parseInt(test.charAt(test.length - 1));
+const urlParams = new URLSearchParams(window.location.search);
+const lastChar = parseInt(urlParams.get('id'));
 console.log(lastChar);
 
 
