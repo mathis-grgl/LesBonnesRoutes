@@ -228,8 +228,6 @@ $(document).ready(function () {
             // Sinon on envoie les données au serveur.
             let modif = '../../modifCompte/' + token + '/' + id;
 
-            let formData = new FormData($('form')[0]);
-
             fetch(modif, {
                 method: 'POST',
                 headers: {
