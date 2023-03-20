@@ -478,7 +478,7 @@ def getNotifs(token):
             notif['idTrajet'] = [groupe[0] for groupe in c.execute("SELECT idTrajet FROM NOTIFICATION NATURAL JOIN NOTIF_TRAJET WHERE idNotification=?", (row[0],))][0]
         elif row[0] in [id[0] for id in c.execute("SELECT idNotification FROM NOTIF_GROUPE")]:
             notif['typeNotif'] = 'Groupe'
-            notif['nomGroupe'] = [groupe[0] for groupe in c.execute("SELECT nomGroupe FROM NOTIFICATION NATURAL JOIN NOTIF_GROUPE INNER JOIN GROUPE ON NOTIF_GROUPE.idGroupe = GROUPE.idGroupe WHERE idNotification=?", (row[0],))][0]
+            #notif['nomGroupe'] = [groupe[0] for groupe in c.execute("SELECT nomGroupe FROM NOTIFICATION NATURAL JOIN NOTIF_GROUPE INNER JOIN GROUPE ON NOTIF_GROUPE.idGroupe = GROUPE.idGroupe WHERE idNotification=?", (row[0],))][0]
         else:
             notif['typeNotif'] = None
 

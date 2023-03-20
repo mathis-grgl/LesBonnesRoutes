@@ -3,6 +3,7 @@ import datetime
 import json
 from flask import Blueprint, jsonify, render_template, request
 import sqlite3
+from backend.notifManager import *
 
 ami_bp = Blueprint('ami', __name__)
 
@@ -101,6 +102,10 @@ def addMember(token, idGroupe, idAmi):
     c.execute("INSERT INTO AMI_GROUPE VALUES (?, ?)", (idAmi, idGroupe))
     conn.commit()
     conn.close()
+
+    #On envoie une notif à l'ami en question
+    sendNotifAmi(idCompte, idAmi, idGroupe, "Vous avez été ajouté au groupe !")
+
     return jsonify({'message': 'L\'ami a bien été ajouté au groupe.'}), 200
 
 
@@ -149,6 +154,10 @@ def removeMember(token, idGroupe, idAmi):
     c.execute("DELETE FROM AMI_GROUPE WHERE idGroupe = ? AND idCompte = ?", (idGroupe, idAmi))
     conn.commit()
     conn.close()
+
+    #On envoie une notif à l'utilisateur
+    sendNotifAmi(idCompte, idAmi, idGroupe, "Vous avez été supprimé du groupe")
+
     return jsonify({'message': 'L\'ami a bien été supprimé du groupe.'}), 200
 
 
@@ -177,6 +186,10 @@ def supprimerGroupe(token, idGroupe):
     c.execute("DELETE FROM GROUPE WHERE idGroupe = ?", (idGroupe,))
     conn.commit()
     conn.close()
+
+    #On envoie une notif aux membres
+    sendNotifGroupe(idCompte, idGroupe, "Le groupe a été supprimé")
+
     return jsonify({'message': 'Le groupe a bien été supprimé.'}), 200
 
 
@@ -209,14 +222,14 @@ def modifNom(token, idGroupe):
     if res:
         conn.close()
         return jsonify({'message': 'Nom de groupe déjà pris.'}), 400
-    
-    
-
 
     #On peut modifier le nom du groupe
     c.execute("UPDATE GROUPE SET nomGroupe = ? WHERE idGroupe = ?", (nouveauNom, idGroupe))
     conn.commit()
     conn.close()
+
+    #On envoie une notif aux membres
+    sendNotifGroupe(idCompte, idGroupe, "Le nom du groupe a été modifié !")
     return jsonify({'message': 'Le nom du groupe a bien été modifié.'}), 200
 
 
@@ -245,7 +258,8 @@ def getMembers(idGroupe):
             'idCompte': row[0],
             'nomCompte': row[1],
             'prenomCompte': row[2],
-            'email': row[3]
+            'email': row[3],
+            'photo': row[15]
         }
         results.append(row_dict)
 
