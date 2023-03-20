@@ -13,6 +13,7 @@ body {
   font-family: "Poppins", sans-serif;
   overflow: hidden;
   min-height: 100vh;
+  overflow-y: auto;
 }
 
 /* Bouton afficher/cache mdp */

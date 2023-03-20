@@ -6,7 +6,6 @@ window.addEventListener('DOMContentLoaded', function() {
     displayNotifs();
 });
 
-const iconWrapper = document.querySelector('.icon-wrapper');
 iconWrapper.addEventListener('click', function() {
   iconWrapper.classList.toggle('active');
 });
@@ -22,6 +21,7 @@ function displayNotifs(){
     })
     .then(async data => {
     dropdown.innerHTML = "";
+    let childCount = 0;
 
     // créer et ajouter chaque élément notify_item
     data.forEach(async res => {
@@ -70,13 +70,16 @@ function displayNotifs(){
         infoDiv.innerHTML = type + `<p class="notify_message">${res.messageNotification}</p>`;
         dropdown.appendChild(notificationDiv);
     });
+
     dropdown.innerHTML +=
-    "<div classe='notify_item dropdown'" +
-        `<a href='#' class='btn-danger btnSupprAll notify_item'>Tout supprimer</a>` +
-    "</div>"
+        "<div classe='notify_item dropdown'" +
+            `<a href='#' class='btn-danger btnSupprAll notify_item'>Tout supprimer</a>` +
+        "</div>"
+    
     dropdown.querySelector('.btnSupprAll').onclick = () => {
         deleteAllNotif();
     }
+
     // mettre à jour le compteur de notifications
     notifCount.setAttribute('data-number', data.length);
     })
@@ -182,7 +185,15 @@ function deleteNotif(id){
   })
   .then(data => {
     console.log("Data : " + data);
+    closePopupNotif();
     displayNotifs();
+
+    /*if (dropdown.childElementCount === 0){
+        dropdown.innerHTML =
+        "<div classe='notify_item dropdown'" +
+            `<p class='notify_item' style='background-color: white; padding: 10px;'>Aucune notification</p>` +
+        "</div>"
+    }*/
   })
   .catch(error => {
     console.error('Erreur : ', error);
@@ -202,6 +213,11 @@ function deleteAllNotif(){
   .then(data => {
     console.log("Data : " + data);
     displayNotifs();
+
+    /*dropdown.innerHTML =
+    "<div classe='notify_item dropdown'" +
+        `<p class='notify_item' style='background-color: white; padding: 10px;'>Aucune notification</p>` +
+    "</div>"*/
   })
   .catch(error => {
     console.error('Erreur : ', error);
@@ -245,9 +261,6 @@ function openPopupNotif(id) {
         </div>`;
     }  
 
-    dropdown.querySelector('.btnSupprAll').onclick = () => {
-        deleteAllNotif();
-    }
     // mettre à jour le compteur de notifications
     notifCount.setAttribute('data-number', data.length);
     })
@@ -259,5 +272,4 @@ function openPopupNotif(id) {
 
 function closePopupNotif() {
   document.getElementById("popup-container-notif").style.display = "none";
-  //document.body.classList.remove("flou");
 }

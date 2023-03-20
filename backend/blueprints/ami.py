@@ -110,7 +110,7 @@ def addMember(token, idGroupe, idAmi):
 
 
 #Supprimer un membre du groupe d'amis
-@ami_bp.route('/removeMember/<string:token>/<int:idGroupe>/<int:idAmi>', methods=['POST'])
+@ami_bp.route('/removeMember/<string:token>/<int:idGroupe>/<int:idAmi>', methods=['GET'])
 def removeMember(token, idGroupe, idAmi):
     #On verifie le token
     conn = sqlite3.connect(URI_DATABASE)
@@ -246,7 +246,7 @@ def getMembers(idGroupe):
         return jsonify({'message': 'Groupe inexistant'}), 404
 
     #On peut récupérer les membres
-    c.execute("""SELECT DISTINCT COMPTE.* FROM COMPTE 
+    c.execute("""SELECT DISTINCT COMPTE.idCompte,COMPTE.nomCompte, COMPTE.prenomCompte, COMPTE.email, COMPTE.photo, GROUPE.idCreateur FROM COMPTE 
                 INNER JOIN AMI_GROUPE ON COMPTE.idCompte = AMI_GROUPE.idCompte 
                 INNER JOIN GROUPE ON AMI_GROUPE.idGroupe = GROUPE.idGroupe
                 WHERE GROUPE.idGroupe = ? """, (idGroupe,))
@@ -259,7 +259,8 @@ def getMembers(idGroupe):
             'nomCompte': row[1],
             'prenomCompte': row[2],
             'email': row[3],
-            'photo': row[15]
+            'photo': row[4],
+            'idCreateur' : row[5]
         }
         results.append(row_dict)
 
