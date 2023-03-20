@@ -1,6 +1,8 @@
 const token = getCookieToken();
-const test = window.location.href;
-const idGroupe = parseInt(test.charAt(test.length - 1));
+const urlParams = new URLSearchParams(window.location.search);
+const idGroupe = parseInt(urlParams.get('id'));
+// const test = window.location.href;
+// const idGroupe = parseInt(test.charAt(test.length - 1));
 console.log(idGroupe);
 
 const infoCompteCo = '/compte/getInfoCompte/' + token;

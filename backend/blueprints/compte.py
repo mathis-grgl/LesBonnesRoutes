@@ -478,7 +478,7 @@ def getNotifs(token):
             notif['idTrajet'] = [groupe[0] for groupe in c.execute("SELECT idTrajet FROM NOTIFICATION NATURAL JOIN NOTIF_TRAJET WHERE idNotification=?", (row[0],))][0]
         elif row[0] in [id[0] for id in c.execute("SELECT idNotification FROM NOTIF_GROUPE")]:
             notif['typeNotif'] = 'Groupe'
-            notif['nomGroupe'] = [groupe[0] for groupe in c.execute("SELECT nomGroupe FROM NOTIFICATION NATURAL JOIN NOTIF_GROUPE INNER JOIN GROUPE ON NOTIF_GROUPE.idGroupe = GROUPE.idGroupe WHERE idNotification=?", (row[0],))][0]
+            #notif['nomGroupe'] = [groupe[0] for groupe in c.execute("SELECT nomGroupe FROM NOTIFICATION NATURAL JOIN NOTIF_GROUPE INNER JOIN GROUPE ON NOTIF_GROUPE.idGroupe = GROUPE.idGroupe WHERE idNotification=?", (row[0],))][0]
         else:
             notif['typeNotif'] = None
 
@@ -488,7 +488,7 @@ def getNotifs(token):
     return jsonify(notifs)
 
 
-compte_bp.route('/suppNotif/<string:token>/<int:idNotif>', methods=['POST'])
+@compte_bp.route('/suppNotif/<string:token>/<int:idNotif>', methods=['DELETE'])
 def suppNotif(token, idNotif):
     #On verifie le token
     conn = sqlite3.connect(URI_DATABASE)
@@ -516,7 +516,7 @@ def suppNotif(token, idNotif):
     return jsonify({'message': 'La notification a bien été supprimé.'}), 200
 
 
-compte_bp.route('/suppAllNotif/<string:token>', methods=['POST'])
+@compte_bp.route('/suppAllNotif/<string:token>', methods=['DELETE'])
 def suppAllNotif(token):
     #On verifie le token
     conn = sqlite3.connect(URI_DATABASE)
@@ -537,7 +537,7 @@ def suppAllNotif(token):
     return jsonify({'message': 'Les notifications ont bien été supprimées.'}), 200
 
 
-compte_bp.route('/modifMdp/<string:token>/<string:mdp>', methods=['GET'])
+@compte_bp.route('/modifMdp/<string:token>/<string:mdp>', methods=['GET'])
 def modifMdp(token, mdp):
     #On verifie le token
     conn = sqlite3.connect(URI_DATABASE)
