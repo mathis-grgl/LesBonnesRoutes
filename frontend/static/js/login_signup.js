@@ -1,3 +1,10 @@
+function onLoad(){
+    if(getCookieToken() != null){
+        location.href = "/account";
+    }
+    console.log("onLoad");
+}
+
 // Variables
 const registerButton = document.getElementById("register");
 const loginButton = document.getElementById("login");

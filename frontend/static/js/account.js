@@ -1,12 +1,11 @@
-
-tokenH = getCookieToken();
-const url = 'compte/getInfoCompte/' + tokenH;
-const urlDelete = 'compte/deleteCompte/' + tokenH;
+let token = getCookieToken();
+const url = 'compte/getInfoCompte/' + token;
+const urlDelete = 'compte/deleteCompte/' + token;
 
 function applyData() {
-    if(tokenH == null) {
+    if(token == null) {
         location.href = "login_signup";
-    } else {
+    } else {   
 
         // Image de profil par défaut
         var image = document.getElementById("image");

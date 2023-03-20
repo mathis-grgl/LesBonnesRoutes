@@ -1,0 +1,23 @@
+/* Pour l'affichage de la table */
+#routeTable {
+    /* width: 80%; */
+    text-align: center !important;
+    vertical-align: middle !important;
+}
+
+#routeTable p {
+    margin: auto !important;
+}
+
+#routeTable>tr,th,td {
+    text-align: center !important;
+    vertical-align: middle !important;
+}
+
+th.sorting {
+    text-align: center !important;
+}
+
+.white_button {
+    color: white;
+}
