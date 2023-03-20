@@ -1,47 +1,68 @@
 .group-actions {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .group-actions button {
-    border: none;
-    background: none;
-    font-size: 1.5rem;
-    color: #333;
-    cursor: pointer;
-  }
-  
-  .group-actions button i {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 10px;
-    height: 10px;
-  }
-  
-  .group-actions button.delete-group i {
-    color: #ff0000; /* couleur rouge pour l'icône de suppression */
-  }
-  
-  .group-actions button.edit-group i {
-    color: #00bfff; /* couleur bleue pour l'icône de modification */
-  }
-  
-  .group-actions button.add-members i {
-    color: #008000; /* couleur verte pour l'icône d'ajout de membres */
-  }
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  align-items: center;
+}
 
-  .card {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
-    margin: 10px;
-    padding: 10px;
-  }
-  
-  .card:hover {
-    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
-  }
-  
+.group-actions button {
+  border: none;
+  background: none;
+  font-size: 1.5rem;
+  color: #333;
+  cursor: pointer;
+}
+
+.group-actions button i {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 10px;
+  height: 10px;
+}
+
+.group-actions button.delete-group i {
+  color: #ff0000;
+  /* couleur rouge pour l'icône de suppression */
+}
+
+.group-actions button.edit-group i {
+  color: #00bfff;
+  /* couleur bleue pour l'icône de modification */
+}
+
+.group-actions button.add-members i {
+  color: #008000;
+  /* couleur verte pour l'icône d'ajout de membres */
+}
+
+/* .card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+  margin: 10px;
+  padding: 10px;
+} */
+
+.card:hover {
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card-container {
+  width: 25%;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+  margin: 10px;
+  padding: 10px;
+}
+
+#groupes-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+
+}

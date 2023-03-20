@@ -51,7 +51,7 @@ function charger_groupes() {
 
 
 function displayGroupes(data, container) {
-    let card = $("<div>").addClass("card").data("groupe", data);
+    let card = $("<div>").addClass("card-container").data("groupe", data);
 
     let cardBody = $("<div>").addClass("card-body");
 

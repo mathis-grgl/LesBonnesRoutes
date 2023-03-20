@@ -105,7 +105,7 @@ $('#ajouter_amis').submit(function (event) {
     fetch(url, {method: 'GET'})
         .then(reponse => {
             if (!reponse.ok) {
-                throw new Error("network not ok");
+                throw new Error(reponse.statusText);
             }else{
                 window.location.href = '/ami/groupes';
             }
