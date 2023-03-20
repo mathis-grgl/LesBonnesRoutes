@@ -19,6 +19,7 @@ fetch(getMembres)
         return reponse.json();
     })
     .then(data => {
+        console.log(data);
         membres = data;
         for (let i = 0; i < membres.length; i++) {
             membersNames.push(membres[i].nomCompte);

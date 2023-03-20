@@ -2,6 +2,26 @@ const token = getCookieToken();
 const url = '/ami/getGroupes/' + token;
 console.log(url);
 
+const infoCompte = '/compte/getInfoCompte/' + token;
+let id;
+
+fetch(infoCompte)
+    .then(reponse => {
+        if (!reponse.ok) {
+            throw new Error("network pas ok");
+        }
+        return reponse.json();
+    })
+    .then(data => {
+        console.log(data);
+        id = data.idCompte;
+        console.log(id);
+
+    })
+    .catch(error => {
+        console.error(error);
+    });
+
 function charger_groupes() {
     console.log("test");
     fetch(url)
@@ -41,22 +61,42 @@ function displayGroupes(data, container) {
 
 
     let cardDiv = $("<div>").addClass("group-actions");
-    let acceptBtn = $("<button>")
-        .addClass("add-members").attr('id', data.idGroupe)
-        .html('<i class="fas fa-user-plus"></i>');
-
-    let rejectBtn = $("<button>")
-        .addClass("edit-group").attr('id', data.idGroupe)
-        .html('<i class="fas fa-edit"></i>');
-
-    let removeBtn = $("<button>")
-        .addClass("delete-group").attr('id', data.idGroupe)
-        .html('<i class="fas fa-trash"></i>');
 
 
-    cardDiv.append(acceptBtn, rejectBtn, removeBtn);
+    if (data.idCreateur == id) {
+        console.log("iciciicdghejfhd");
+        // ajouter un autre bouton pour afficher les membres du groupe pour ensuite pouvoir les supprimer ou non
+        let acceptBtn = $("<button>")
+            .addClass("add-members").attr('id', data.idGroupe)
+            .html('<i class="fas fa-user-plus"></i>');
 
-    cardBody.append(cardTitle, cardText, cardDiv);
+        let rejectBtn = $("<button>")
+            .addClass("edit-group").attr('id', data.idGroupe)
+            .html('<i class="fas fa-edit"></i>');
+
+        let removeBtn = $("<button>")
+            .addClass("delete-group").attr('id', data.idGroupe)
+            .html('<i class="fas fa-trash"></i>');
+            
+
+
+        cardDiv.append(acceptBtn, rejectBtn, removeBtn);
+
+        cardBody.append(cardTitle, cardText, cardDiv);
+    } else {
+        console.log("On est pas propriétaire du groupe d'amis.");
+        // ajouter un autre bouton pour afficher les membres du groupe 
+        let acceptBtn = $("<button>")
+            .addClass("add-members").attr('id', data.idGroupe)
+            .html('<i class="fas fa-user-plus"></i>');
+
+
+
+        cardDiv.append(acceptBtn);
+
+        cardBody.append(cardTitle, cardText, cardDiv);
+    }
+
     card.append(cardBody);
 
     container.append(card);
