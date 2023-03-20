@@ -22,6 +22,10 @@ def modifier_groupe():
 def ajouter_ami():
     return render_template('ajouterAmis/ajouterAmis.html')
 
+@ami_bp.route('/voir_membres', methods=['POST', 'GET'])
+def voir_membres():
+    return render_template('groupMembers/groupMembers.html')
+
 
 #Créer un groupe d'ami
 @ami_bp.route('/createGroupe/<string:token>', methods=['POST'])
