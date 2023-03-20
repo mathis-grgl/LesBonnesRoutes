@@ -102,3 +102,13 @@ fromSlider.oninput = () => controlFromSlider(fromSlider, toSlider, fromInput);
 toSlider.oninput = () => controlToSlider(fromSlider, toSlider, toInput);
 fromInput.oninput = () => controlFromInput(fromSlider, fromInput, toInput, toSlider);
 toInput.oninput = () => controlToInput(toSlider, fromInput, toInput, toSlider);
+
+function openPopupNotif() {
+  document.getElementById("popup-container-notif").style.display = "block";
+  //document.body.classList.add("flou");
+}
+
+function closePopupNotif() {
+  document.getElementById("popup-container-notif").style.display = "none";
+  //document.body.classList.remove("flou");
+}

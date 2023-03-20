@@ -43,9 +43,12 @@ fetch('compte/getNotifs/' + tokenH)
     notificationDiv.classList.add('notify_item', 'dropdown');
 
     notificationDiv.innerHTML = `<img id='${res.idNotif}' class='imgCroix' src='/static/images/croix.png'></img>`;
-    notificationDiv.innerHTML += "<a href='#' class='btnAfficher btn-success'>Afficher</a>";
+    notificationDiv.innerHTML += `<a href='#' class='btnAfficher btn-success'>Afficher</a>`;
     notificationDiv.querySelector('img').onclick = () => {
       deleteNotif(res.idNotification);
+    }
+    notificationDiv.querySelector('.btnAfficher').onclick = () => {
+      openPopupNotif();
     }
 
     let imgDiv = document.createElement('div');
