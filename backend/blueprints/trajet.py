@@ -315,8 +315,15 @@ def createTrajet(token):
                 if typeTrajet == 'Prive':
                     idGroupe = data.get('idGroupe')
                     c.execute("INSERT INTO TRAJET_PRIVE VALUES (?, ?)", (idTrajet, idGroupe))
+
+                    #On envoie une notif au groupe
+                    sendNotifGroupe(idCompte, idGroupe, "un nouveau trajet est disponible pour le groupe !")
+
                 else:
                     c.execute("INSERT INTO TRAJET_PUBLIC VALUES (?)", (idTrajet,))
+
+                    #On envoie une notif si on trouve une recherche en attente correspondant au critères
+                    #....................
 
             conn.commit()
             conn.close()
@@ -523,7 +530,7 @@ def acceptInTrajet(token, idCompte, idTrajet, nbPlaces, accept):
             conn.close()
 
             #On envoie une notif au participant
-            sendNotifTrajet(idConducteur, idCompte, idTrajet, "Le conducteur n'a pas accepté votre demande de participation")
+            sendNotifTrajet(idConducteur, idCompte, idTrajet, "Le conducteur n'a pas accepté votre demande de participation.")
             return jsonify({'message': 'La demande a bien été refusée.'}), 200
         else:
             conn.close()
