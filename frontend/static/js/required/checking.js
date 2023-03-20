@@ -1,5 +1,5 @@
 window.onload = function() {
-    const auth_token = getCookieToken()
+    /*const auth_token = getCookieToken()
     if(auth_token) {
       fetch('/compte/checkToken/' + auth_token)
         .then(reponse => {
@@ -12,5 +12,5 @@ window.onload = function() {
         .catch(error => {
             console.log(error);
         });
-    }
+    }*/
 };

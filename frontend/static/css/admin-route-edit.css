@@ -1,0 +1,64 @@
+form {
+    width: 500px;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+}
+
+h2 {
+    text-align: center;
+}
+
+div {
+    margin: 10px 0;
+}
+
+label {
+    display: inline-block;
+    width: 150px;
+    font-weight: bold;
+}
+
+select {
+    display: inline-block;
+    width: 150px;
+    font-weight: bold;
+
+}
+
+input[type="date"],
+input[type="text"],
+input[type="time"],
+input[type="number"],
+textarea {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    width: 70%;
+}
+
+input[type="date"]:focus,
+input[type="text"]:focus,
+input[type="time"]:focus,
+input[type="number"]:focus,
+textarea:focus {
+    outline: none;
+    border-color: #5bc0de;
+}
+
+button[type="submit"] {
+    background-color: #5bc0de;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.button-container {
+    text-align: center;
+}
+
+.section {
+    padding :0%;
+}

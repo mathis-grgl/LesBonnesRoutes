@@ -1,217 +1,70 @@
-<div class="centerBloc">
-    <div class="col-xl-8">
-        <div class="card bg-secondary shadow">
-            <!-- Card header -->
-            <div class="card-header bg-white border-0">
-                <h3 class="mb-0">Modifier mes informations personnelles</h3>
-            </div>
+<section class="section privacy-section" id="next">
+    <div id="layoutSidenav_content">
+        <main>
 
-            <!-- Card body -->
-            <div class="card-body">
 
-                <!-- Form -->
-                <form id="update-form">
+                <div class="card mb-4">
+                    <form id="editTrajet" method="POST">
+                        <!-- <h2>Créer un nouveau trajet</h2> -->
 
-                    <!-- Titre de la partie information de l'utilisateur -->
-                    <h6 class="heading-small text-muted mb-4">Information de l'utilisateur</h6>
-
-                    <!-- Première ligne -->
-                    <div class="row">
-
-                        <!-- Numéro de téléphone -->
-                        <div class="col-lg-6">
-                            <div class="form-group focused">
-                                <label class="form-control-label" for="input-telephone">Numéro de téléphone</label>
-                                <input type="text" id="input-phone" name="telephone"
-                                    class="form-control form-control-alternative" placeholder="Numéro de téléphone"
-                                    value="">
-                            </div>
+                        <div>
+                            <label for="date-depart">Date de départ :</label>
+                            <input type="date" id="date-depart" name="dateDepart" required>
+                            </br>
+                            <small id="1"></small>
                         </div>
 
-                        <!-- Adresse courriel -->
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                <label class="form-control-label" for="input-email">Email address</label>
-                                <input type="email" id="input-email" name="email"
-                                    class="form-control form-control-alternative" placeholder="lbr@example.com">
-                            </div>
-                        </div>
-
-                    </div>
-                    <!-- Fin de la première ligne -->
-
-                    <!-- Deuxième ligne -->
-                    <div class="row">
-
-                        <!-- Prénom -->
-                        <div class="col-lg-6">
-                            <div class="form-group focused">
-                                <label class="form-control-label" for="input-first-name">Prénom</label>
-                                <input type="text" id="input-first-name" name="prenom"
-                                    class="form-control form-control-alternative" placeholder="Prénom" value="">
-                            </div>
-                        </div>
-
-                        <!-- Nom de famille -->
-                        <div class="col-lg-6">
-                            <div class="form-group focused">
-                                <label class="form-control-label" for="input-last-name">Nom de famille</label>
-                                <input type="text" id="input-last-name" name="nom"
-                                    class="form-control form-control-alternative" placeholder="Nom de famille" value="">
-                            </div>
-                        </div>
-
-                    </div>
-                    <!-- Fin de la deuxième ligne -->
-
-                    <!-- Troisième ligne -->
-                    <div class="row">
-
-                        <!-- Mot de passe -->
-                        <div class="col-lg-6">
-                            <div class="form-group focused">
-                                <label class="form-control-label" for="input-last-name">Nouveau mot de passe</label>
-                                <input type="password" name="logpass" class="form-control form-control-alternative"
-                                    placeholder="********" id="logpass" autocomplete="off">
-                                <small id="small">Le mot de passe doit contenir au moins 8 caractères, dont une
-                                    majuscule, une minuscule, un chiffre et un caractère spécial (@$!%*?&).</small>
-                            </div>
-                        </div>
-
-                        <!-- Confirmer mot de passe -->
-                        <div class="col-lg-6">
-                            <div class="form-group focused">
-                                <label class="form-control-label" for="input-last-name">Confirmer nouveau mot de
-                                    passe</label>
-                                <input type="password" name="logpassconfirm"
-                                    class="form-control form-control-alternative" placeholder="********"
-                                    autocomplete="off">
-                            </div>
-                        </div>
-
-                    </div>
-                    <!-- Fin de la troisième ligne -->
-
-                    <!-- Quatrième ligne -->
-                    <div class="row">
-
-                        <!-- Adresse -->
-                        <div class="col-lg-6">
-                            <div class="form-group focused">
-                                <label class="form-control-label" for="input-address">Adresse</label>
-                                <input id="input-address" name="adresse" class="form-control form-control-alternative"
-                                    placeholder="Votre adresse" value="" type="text">
-                            </div>
-                        </div>
-
-                        <!-- Ville -->
-                        <div class="col-lg-6">
-                            <div class="form-group focused">
-                                <label class="form-control-label" for="input-city">Ville</label>
-                                <input type="text" id="input-city" name="ville"
-                                    class="form-control form-control-alternative" placeholder="Ville" value="">
-                            </div>
-                        </div>
-
-                    </div>
-                    <!-- Fin de la quatrième ligne -->
-
-                    <!-- Cinquième ligne -->
-                    <div class="row">
-
-                        <!-- Pays -->
-                        <div class="col-lg-6">
-                            <div class="form-group focused">
-                                <label class="form-control-label" for="input-country">Pays</label>
-                                <input type="text" id="input-country" name="pays"
-                                    class="form-control form-control-alternative" placeholder="Pays" value="">
-                            </div>
-                        </div>
-
-                        <!-- Code postal -->
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                <label class="form-control-label" for="input-country">Code Postal</label>
-                                <input type="text" id="input-postal-code" name="codepostal"
-                                    class="form-control form-control-alternative" placeholder="Code postal">
-                            </div>
-                        </div>
-
-                    </div>
-                    <!-- Fin de la cinquième ligne -->
-
-                    <!-- Délimiteur -->
-                    <hr class="my-4">
-
-                    <!-- Titre de la partie Autres informations -->
-                    <h6 class="heading-small text-muted mb-4">Autres informations</h6>
-
-                    <!-- Sixième ligne -->
-                    <div class="row">
-                        <div class="form-group focused">
-                            <label class="form-control-label" for="input-genre">Votre genre</label>
-                            <select name="genre" id="genre" onchange="" style="width: auto;" required="required">
-                                <option value="0"></option>
-                                <option value="1">Homme</option>
-                                <option value="2">Femme</option>
-                                <option value="3">Autre</option>
+                        <div>
+                            <label for="ville-depart">Ville de départ :</label>
+                            <!-- <input type="text" id="ville-depart" name="ville-depart" required> -->
+                            <select id="city_start" name="villeDepart" class="form-control">
+                                <option value=""></option>
+                                <!-- Ajoute d'autres options ici donc ne pas retirer le select-->
                             </select>
                         </div>
-                    </div>
-                    <!-- Fin de la sixième ligne -->
 
-                    <!-- Septième ligne -->
-                    <div class="row">
-
-                        <!-- Voiture -->
-                        <div class="col-lg-4">
-                            <div class="form-group focused">
-                                <label class="form-control-label" for="input-voiture" id="labelvoiture">Possédez-vous une voiture ? </label>
-                                <input type="radio" id="Choice1" name="voiture" value="oui">
-                                <label for="contactChoice1">Oui</label>
-
-                                <input type="radio" id="Choice2" name="voiture" value="non">
-                                <label for="contactChoice2">Non</label>
-                            </div>
+                        <div>
+                            <label for="ville-arrivee">Ville d'arrivée :</label>
+                            <!-- <input type="text" id="ville-arrivee" name="ville-arrivee" required> -->
+                            <select id="city_end" name="villeArrivee" class="form-control">
+                                <option value=""></option>
+                                <!-- Ajoute d'autres options ici donc ne pas retirer le select-->
+                            </select>
                         </div>
 
-                        <!-- Notifications -->
-                        <div class="col-lg-4">
-                            <div class="form-group focused">
-                                <label class="form-control-label" for="input-notif" id="labelnotif">Recevoir les notifications par mail ? </label>
-                                <input type="radio" id="Choice3" name="notif" value="oui">
-                                <label for="contactChoice1">Oui</label>
-
-                                <input type="radio" id="Choice4" name="notif" value="non">
-                                <label for="contactChoice2">Non</label>
-                            </div>
+                        <div>
+                            <label for="heure-depart">Heure de départ :</label>
+                            <input type="time" id="heure-depart" name="heureDepart" required>
                         </div>
 
-                        <!-- Photo -->
-                        <div class="col-lg-4">
-                            <div class="form-group">
-                                <label class="form-control-label" for="input-photo">Photo (Optionnel)</label>
-                                <input type="file" name="poster" accept="image/png, image/jpeg">
-                            </div>
+                        <div>
+                            <label for="nb-places">Nombre de places disponibles :</label>
+                            <input type="number" id="nb-places" name="nbPlaces" required>
+                            </br>
+                            <small id="2"></small>
                         </div>
 
-                    </div>
-                    <!-- Fin de la partie Autres informations -->
+                        <div>
+                            <label for="prix-place">Prix par place :</label>
+                            <input type="number" id="prix-place" name="prix" required>
+                            </br>
+                            <small id="3"></small>
+                        </div>
+                        <div>
+                            <label for="commentaires">Commentaires :</label>
+                            <textarea id="commentaires" name="commentaires" rows="5" cols="30"></textarea>
+                        </div>
 
-                    <!-- Délimiteur -->
-                    <hr class="my-4">
+                        <div>
+                            <label for="precision">Précisions :</label>
+                            <textarea id="precision" name="precisionRdv" rows="5" cols="30"></textarea>
+                        </div>
 
-                    <!-- Bouton de validation -->
-                    <input type="submit" value="Modifier mes informations" class="btn btn-info">
-
-                </form>
-                <!-- Fin du formulaire -->
-
+                        <div class="button-container">
+                            <button type="submit">Modifier le trajet</button>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <!-- Fin du card body -->
-
-        </div>
-        <!-- Fin du card -->
-
-    </div>
-</div>
+        </main>
+</section>

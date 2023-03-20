@@ -434,7 +434,7 @@ textarea.form-control {
 }
 
 .section {
-  padding: 7em 0;
+  /* padding: 7em 0; */
 }
 
 @media (max-width: 991.98px) {

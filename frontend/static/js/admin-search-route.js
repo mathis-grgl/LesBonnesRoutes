@@ -88,7 +88,7 @@ $(document).ready(function () {
         btnEdit.setAttribute("data-target", "#edit");
 
         let spanEdit = document.createElement("span");
-        spanEdit.classList.add("fa", "fa-pencil");
+        spanEdit.classList.add("fa", "fa-pencil", "white_button");
         btnEdit.appendChild(spanEdit);
         pEdit.appendChild(btnEdit);
         tdEdit.appendChild(pEdit);
@@ -112,7 +112,7 @@ $(document).ready(function () {
         btnDelete.setAttribute("data-target", "#delete");
 
         let spanDelete = document.createElement("span");
-        spanDelete.classList.add("fa", "fa-trash");
+        spanDelete.classList.add("fa", "fa-trash", "white_button");
         btnDelete.appendChild(spanDelete);
         pDelete.appendChild(btnDelete);
         tdDelete.appendChild(pDelete);

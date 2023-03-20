@@ -1,25 +1,25 @@
 <!DOCTYPE HTML>
 <html>
     <head>
-        {% set title='Admin - Modifier Compte' %}
+        {% set title='Admin - Modifier trajet' %}
         {% include 'head.html' %}
-        <link rel="stylesheet" href="/static/css/admin-account-edit.css">
-        <link rel="stylesheet" href="/static/css/modifprofil.css">
+        <link rel="stylesheet" href="/static/css/admin-route-edit.css">
     </head>
     <body>
         {% include 'header.html' %}
 
-        {% set section_name='Admin - Modifier compte' %}
+        {% set section_name='Admin - Modifier trajet' %}
         {% include 'inner-page.html' %}
 
-        {% include 'admin/account/edit/admin-account-edit-section.html' %}
+        {% include 'admin/route/edit/admin-route-edit-section.html' %}
 
         {% include 'footer.html' %}
 
         {% include 'scripts-required.html' %}
-        <script src="/static/js/admin-account-edit.js"></script>
+        <script src="/static/js/admin-route-edit.js"></script>
         <script src="/static/js/required/cookies.js"></script>
         <script src="/static/js/required/jquery-3.3.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
         <script src="/static/js/required/aos.js"></script>
     </body>
 </html>

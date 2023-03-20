@@ -145,6 +145,52 @@ def get_trajets(typeTrajet):
     return jsonify(trajets)
 
 
+#Recuperer un trajet avec son id
+@admin_bp.route('/trajets/<string:token>/<int:idTrajet>')
+def get_trajet(token, idTrajet):
+    conn = sqlite3.connect(URI_DATABASE)
+    c = conn.cursor()
+
+    #On verifie que le token est admin 
+    c.execute("SELECT isAdmin FROM TOKEN NATURAL JOIN COMPTE WHERE auth_token = ?", (token,))
+    admin = c.fetchone()
+    if not admin:
+        #Le token n'existe pas ou n'est pas admin
+        conn.close()
+        return jsonify({'message': 'Le token est invalide ou expiré'}), 401
+
+    c.execute("SELECT * FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
+    row = c.fetchone()
+
+    # Récupération des noms de colonnes
+    col_names = [desc[0] for desc in c.description]
+
+    # Création d'une liste de dictionnaires contenant les données
+    trajet = {col_names[i]: row[i] for i in range(len(col_names))}
+
+    #On reformate la date
+    trajet['dateDepart'] = datetime.strptime(trajet['dateDepart'], '%Y%m%d').strftime('%d %B, %Y')
+
+    # Remplacement des ID des villes par leurs noms
+    c.execute("SELECT nomVille FROM VILLE WHERE idVille = ?", (row[10],))
+    trajet['villeDepart'] = c.fetchone()[0]
+    c.execute("SELECT nomVille FROM VILLE WHERE idVille = ?", (row[11],))
+    trajet['villeArrivee'] = c.fetchone()[0]
+
+    # Ajouter le type de trajet en fonction de la table dans laquelle se trouve l'idTrajet
+    if row[0] in [id[0] for id in c.execute("SELECT idTrajet FROM TRAJET_PRIVE")]:
+        trajet['typeTrajet'] = 'prive'
+        #On recupere le nom du groupe
+        trajet['nomGroupe'] = [groupe[0] for groupe in c.execute("SELECT nomGroupe FROM TRAJET_PRIVE NATURAL JOIN GROUPE WHERE idTrajet=?", (row[0],))][0]
+    elif row[0] in [id[0] for id in c.execute("SELECT idTrajet FROM TRAJET_PUBLIC")]:
+        trajet['typeTrajet'] = 'public'
+    else:
+        trajet['typeTrajet'] = None
+
+    conn.close()
+    return jsonify(trajet)
+
+
 #Supprimer un compte
 @admin_bp.route('/deleteCompte/<string:token>/<int:idCompte>', methods=['DELETE'])
 def deleteCompte(token, idCompte):
@@ -213,7 +259,6 @@ def getRoutes():
     c.execute("SELECT nomVille FROM VILLE")
     rows = c.fetchall()
     return jsonify(rows), 200
-
 
 
 
