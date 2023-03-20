@@ -25,30 +25,26 @@ $(document).ready(function () {
     let user = [];
     for (let i = 0; i < nbTrajet; i++) {
         let route = data[i];
+        console.log(route);
         
         // Création d'une nouvelle ligne
         let tr = document.createElement("tr");
 
+        // Ajout du type de trajet
+        let tdTypeTrajet = document.createElement("td");
+        tdTypeTrajet.textContent = route.typeTrajet;
+        tr.appendChild(tdTypeTrajet);
+
         // Ajout de la ville de départ
         let tdVilleDepart = document.createElement("td");
-        tdVilleDepart.textContent = route.villeDepart;
+        tdVilleDepart.textContent = route.villeDepart + " - " + route.villeArrivee;
         tr.appendChild(tdVilleDepart);
-
-        // Ajout de la ville d'arrivée
-        let tdVilleArrivee = document.createElement("td");
-        tdVilleArrivee.textContent = route.villeArrivee;
-        tr.appendChild(tdVilleArrivee);
 
         // Ajout de la date de départ
         let tdDateDepart = document.createElement("td");
         tdDateDepart.textContent = "Le " + route.dateDepart + " à " + route.heureDepart;
         // tdDateDepart.textContent = route.dateDepart;
         tr.appendChild(tdDateDepart);
-
-        // // Ajout de l'heure' de départ
-        // let tdHeureDepart = document.createElement("td");
-        // tdHeureDepart.textContent = route.heureDepart;
-        // tr.appendChild(tdHeureDepart);
 
         // Ajout du prix
         let tdPrix = document.createElement("td");
@@ -67,7 +63,10 @@ $(document).ready(function () {
 
 
         //todo: ajouter conducteur
-
+        // Ajout du conducteur
+        /*let tdConducteur = document.createElement("td");
+        tdConducteur.textContent = route.nomConducteur + " " + route.prenomConducteur;
+        tr.appendChild(tdConducteur);*/
 
 
         // Ajout du bouton modifier
