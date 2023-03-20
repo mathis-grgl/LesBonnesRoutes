@@ -488,7 +488,7 @@ def getNotifs(token):
     return jsonify(notifs)
 
 
-compte_bp.route('/suppNotif/<string:token>/<int:idNotif>', methods=['POST'])
+@compte_bp.route('/suppNotif/<string:token>/<int:idNotif>', methods=['DELETE'])
 def suppNotif(token, idNotif):
     #On verifie le token
     conn = sqlite3.connect(URI_DATABASE)
@@ -516,7 +516,7 @@ def suppNotif(token, idNotif):
     return jsonify({'message': 'La notification a bien été supprimé.'}), 200
 
 
-compte_bp.route('/suppAllNotif/<string:token>', methods=['POST'])
+@compte_bp.route('/suppAllNotif/<string:token>', methods=['DELETE'])
 def suppAllNotif(token):
     #On verifie le token
     conn = sqlite3.connect(URI_DATABASE)
@@ -537,7 +537,7 @@ def suppAllNotif(token):
     return jsonify({'message': 'Les notifications ont bien été supprimées.'}), 200
 
 
-compte_bp.route('/modifMdp/<string:token>/<string:mdp>', methods=['GET'])
+@compte_bp.route('/modifMdp/<string:token>/<string:mdp>', methods=['GET'])
 def modifMdp(token, mdp):
     #On verifie le token
     conn = sqlite3.connect(URI_DATABASE)

@@ -21,7 +21,7 @@ function displayNotifs(){
     return response.json();
     })
     .then(async data => {
-    data.forEach(obj => console.log(obj));
+    dropdown.innerHTML = "";
 
     // créer et ajouter chaque élément notify_item
     data.forEach(async res => {
@@ -172,7 +172,7 @@ async function getPhoto(){
 
 function deleteNotif(id){
   fetch(`compte/suppNotif/${tokenH}/${id}`, {
-    method: 'POST',
+    method: 'DELETE',
   })
   .then(response => {
     if (!response.ok) {
@@ -182,17 +182,16 @@ function deleteNotif(id){
   })
   .then(data => {
     console.log("Data : " + data);
+    displayNotifs();
   })
   .catch(error => {
     console.error('Erreur : ', error);
   });
-
-  displayNotifs();
 }
 
 function deleteAllNotif(){
   fetch(`compte/suppAllNotif/${tokenH}`, {
-    method: 'POST',
+    method: 'DELETE',
   })
   .then(response => {
     if (!response.ok) {
@@ -202,12 +201,11 @@ function deleteAllNotif(){
   })
   .then(data => {
     console.log("Data : " + data);
+    displayNotifs();
   })
   .catch(error => {
     console.error('Erreur : ', error);
   });
-
-  displayNotifs();
 }
 
 function openPopupNotif(id) {
