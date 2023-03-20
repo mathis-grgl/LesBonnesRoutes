@@ -1,4 +1,4 @@
-<header class="site-header js-site-header">
+<header class="site-header js-site-header" onload="displayNotifs()">
   <div class="container-fluid">
     <div class="row align-items-center">
       <div class="col-6 col-lg-4 site-logo" data-aos="fade">
@@ -105,5 +105,12 @@
   </div>
 </header>
 
+<div id="popup-container-notif">
+  <div id="popup-notif">
+      <!-- Remplis par notification.js -->
+  </div>
+</div>
+
 <script src="/static/js/required/cookies.js"></script> <!--Obliger de l'ajouter avant les autres scripts  -->
 <script src="/static/js/header.js"></script> <!--Obliger de l'ajouter avant les autres scripts  -->
+<script src="/static/js/notification.js"></script>

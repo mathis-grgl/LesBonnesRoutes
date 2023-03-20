@@ -54,7 +54,7 @@ INSERT INTO TRAJET_PRIVE VALUES (3, 1);
 
 INSERT INTO NOTIFICATION(idCompteEnvoyeur, messageNotification) VALUES (1, "demande de trajet");
 INSERT INTO NOTIFICATION(idCompteEnvoyeur, messageNotification) VALUES (2, "... t'as accepté");
-INSERT INTO NOTIFICATION(idCompteEnvoyeur, messageNotification) VALUES (3, "demande de trajet");
+INSERT INTO NOTIFICATION(idCompteEnvoyeur, messageNotification) VALUES (3, "demande de trajet avec des gens qui vous connaissent");
 INSERT INTO NOTIFICATION(idCompteEnvoyeur, messageNotification) VALUES (4, "bonjour");
 INSERT INTO NOTIFICATION(idCompteEnvoyeur, messageNotification) VALUES (5, "tyvbjnkl");
 INSERT INTO NOTIFICATION(idCompteEnvoyeur, messageNotification) VALUES (1, "ajout de ...");
