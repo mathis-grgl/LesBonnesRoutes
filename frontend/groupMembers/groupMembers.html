@@ -11,6 +11,8 @@
     <!-- <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" /> -->
     <link href="/static/css/required/dashboard.css" rel="stylesheet"/>
     <link href = "/static/css/mes_groupes.css" rel="stylesheet"/>
+    <link href = "/static/css/groupMembers.css" rel="stylesheet"/>
+
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
 
     <!-- Custom styles for this template-->
@@ -18,7 +20,7 @@
 
 </head>
 
-<body id="page-top" onload="charger_groupes()">
+<body id="page-top" onload="charger_membres()">
     {% include 'header.html' %}
 
     {% set section_name='Membres du groupe d\'amis' %}
@@ -35,7 +37,7 @@
 
     {% include 'scripts-required.html' %}
     
-    <script src = "/static/js/mes_groupes.js"></script>
+    <script src = "/static/js/groupMembers.js"></script>
     <!-- <script src = "/static/js/groupes_boutons.js"></script> -->
 </body>
 </html>
