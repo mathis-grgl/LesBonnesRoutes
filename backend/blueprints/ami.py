@@ -262,12 +262,12 @@ def getGroupes(token):
     idCompte = compte[0]
 
     #On eput récupérer les groupes
-    c.execute("SELECT GROUPE.idGroupe, GROUPE.nomGroupe, GROUPE.nbPersonnes, COMPTE.nomCompte, COMPTE.prenomCompte FROM AMI_GROUPE JOIN GROUPE ON AMI_GROUPE.idGroupe = GROUPE.idGroupe JOIN COMPTE ON GROUPE.idCreateur = COMPTE.idCompte WHERE AMI_GROUPE.idCompte = ?", (idCompte,))
+    c.execute("SELECT GROUPE.idGroupe, GROUPE.nomGroupe, GROUPE.nbPersonnes, COMPTE.nomCompte, COMPTE.prenomCompte, COMPTE.idCompte FROM AMI_GROUPE JOIN GROUPE ON AMI_GROUPE.idGroupe = GROUPE.idGroupe JOIN COMPTE ON GROUPE.idCreateur = COMPTE.idCompte WHERE AMI_GROUPE.idCompte = ?", (idCompte,))
     res = c.fetchall()
     groupes = []
     
     for groupe in res:
-        groupes.append({'idGroupe' : groupe[0], 'nomGroupe' : groupe[1], 'nbPersonnes' : groupe[2], 'createur' : groupe[3] + " " + groupe[4]})
+        groupes.append({'idGroupe' : groupe[0], 'nomGroupe' : groupe[1], 'nbPersonnes' : groupe[2], 'createur' : groupe[3] + " " + groupe[4], 'idCreateur' : groupe[5]})
 
     conn.close()
 
