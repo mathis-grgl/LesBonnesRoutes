@@ -1,4 +1,5 @@
 URI_DATABASE = '../database.db'
+import datetime
 import json
 from flask import Blueprint, jsonify, render_template, request
 import sqlite3
@@ -21,6 +22,7 @@ def modifier_groupe():
 @ami_bp.route('/ajouter_amis', methods=['POST', 'GET'])
 def ajouter_ami():
     return render_template('ajouterAmis/ajouterAmis.html')
+
 
 @ami_bp.route('/voir_membres', methods=['POST', 'GET'])
 def voir_membres():
@@ -265,7 +267,7 @@ def getGroupes(token):
     
     idCompte = compte[0]
 
-    #On eput récupérer les groupes
+    #On peut récupérer les groupes
     c.execute("SELECT GROUPE.idGroupe, GROUPE.nomGroupe, GROUPE.nbPersonnes, COMPTE.nomCompte, COMPTE.prenomCompte, COMPTE.idCompte FROM AMI_GROUPE JOIN GROUPE ON AMI_GROUPE.idGroupe = GROUPE.idGroupe JOIN COMPTE ON GROUPE.idCreateur = COMPTE.idCompte WHERE AMI_GROUPE.idCompte = ?", (idCompte,))
     res = c.fetchall()
     groupes = []
@@ -276,3 +278,64 @@ def getGroupes(token):
     conn.close()
 
     return jsonify(groupes), 200
+
+
+@ami_bp.route('/getTrajetsGroupe/<string:token>/<int:idGroupe>', methods=['GET'])
+def getTrajetsGroupe(token, idGroupe):
+    #On verifie le token
+    conn = sqlite3.connect(URI_DATABASE)
+    c = conn.cursor()
+    c.execute("SELECT COMPTE.idCompte FROM COMPTE inner join TOKEN on COMPTE.idCompte = TOKEN.idCompte WHERE auth_token = ?", (token,))
+    compte = c.fetchone()
+
+    if not compte:
+        conn.close()
+        return jsonify({'message': 'Token invalide ou expiré.'}), 401
+    
+    idCompte = compte[0]
+
+    #On vérifie que l'utilisateur fait parti du groupe et que le groupe existe donc
+    c.execute("SELECT nomCompte FROM COMPTE INNER JOIN AMI_GROUPE ON COMPTE.idCompte = AMI_GROUPE.idCompte WHERE AMI_GROUPE.idGroupe = ? AND COMPTE.idCompte = ?", (idGroupe, idCompte))
+    participe = c.fetchone()
+    c.execute("SELECT * FROM GROUPE WHERE idCreateur = ? AND idGroupe = ?", (idCompte, idGroupe))
+    createur = c.fetchone()
+    if not participe and not createur:
+        conn.close()
+        return jsonify({'message': 'L\'utilisateur ne fait pas parti de ce groupe'}), 403
+        
+    
+    #On peut récup les trajets du groupe
+    query = """
+            SELECT DISTINCT TRAJET.*
+            FROM TRAJET_PRIVE INNER JOIN TRAJET ON TRAJET_PRIVE.idTrajet = TRAJET.idTrajet
+            WHERE (TRAJET_PRIVE.idGroupe = ?) AND TRAJET.statusTrajet!='termine'
+        """
+
+    c.execute(query, (idGroupe,))
+    rows = c.fetchall()
+
+    # Récupération des noms de colonnes
+    col_names = [desc[0] for desc in c.description]
+
+    # Conversion de la date dans chaque ligne de résultat
+    trajets = []
+    for row in rows:
+        trajet = {col_names[i]: row[i] for i in range(len(col_names))}
+        
+        # Conversion de la date de la colonne 'dateTrajet'
+        dateTrajet = datetime.strptime(trajet['dateDepart'], '%Y%m%d').strftime('%d %B, %Y')
+        trajet['dateDepart'] = dateTrajet
+
+        # Conversion de l'idVille en nomVille
+        c.execute("SELECT nomVille FROM VILLE WHERE idVille = ?", (trajet['villeDepart'],))
+        trajet['villeDepart'] = c.fetchone()[0]
+        c.execute("SELECT nomVille FROM VILLE WHERE idVille = ?", (trajet['villeArrivee'],))
+        trajet['villeArrivee'] = c.fetchone()[0]
+        trajet['idCompte'] = idCompte
+
+        trajets.append(trajet)
+
+    conn.close()
+
+    # Retour de la réponse avec code 200
+    return jsonify(trajets), 200

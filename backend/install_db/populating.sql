@@ -23,6 +23,10 @@ INSERT INTO TRAJET(idConducteur, heureDepart, dateDepart, nbPlaces, prix, nbPlac
    VALUES (4, '12h00', '20230401', 5, 10, 3, 'a pourvoir', 'non fumeur', 'Devant le Leclerc', 30, 27);
 INSERT INTO TRAJET(idConducteur, heureDepart, dateDepart, nbPlaces, prix, nbPlacesRestantes, statusTrajet, commentaires, precisionRdv, villeDepart, villeArrivee)
    VALUES (4, '14h00', '20230402', 5, 10, 3, 'a pourvoir', 'non fumeur', 'A cote de l’Eglise', 27, 30);
+INSERT INTO TRAJET(idConducteur, heureDepart, dateDepart, nbPlaces, prix, nbPlacesRestantes, statusTrajet, commentaires, precisionRdv, villeDepart, villeArrivee)
+   VALUES (1, '10h00', '20230403', 5, 10, 3, 'a pourvoir', 'non fumeur', 'Devant le Leclerc', 30, 27);
+INSERT INTO TRAJET(idConducteur, heureDepart, dateDepart, nbPlaces, prix, nbPlacesRestantes, statusTrajet, commentaires, precisionRdv, villeDepart, villeArrivee)
+   VALUES (1, '8h00', '20230402', 5, 10, 3, 'a pourvoir', 'non fumeur', 'A cote de l’Eglise', 27, 30);
 
 UPDATE TRAJET SET nbPlacesRestantes = 0 WHERE idTrajet = 1; /* Test trajet complet */
 
@@ -45,12 +49,18 @@ INSERT INTO DEMANDE_TRAJET_EN_COURS VALUES (1, 5, 3, 'en cours', NULL);
 
 
 INSERT INTO GROUPE(nomGroupe, idCreateur, nbPersonnes) VALUES ('Les Vosgiens', 1, 3);
+INSERT INTO GROUPE(nomGroupe, idCreateur, nbPersonnes) VALUES ('LBR', 2, 3);
 
 INSERT INTO AMI_GROUPE VALUES(2, 1);
 INSERT INTO AMI_GROUPE VALUES(4, 1);
 INSERT INTO AMI_GROUPE VALUES(5, 1);
+INSERT INTO AMI_GROUPE VALUES(1, 2);
+INSERT INTO AMI_GROUPE VALUES(3, 2);
+INSERT INTO AMI_GROUPE VALUES(5, 2);
 
 INSERT INTO TRAJET_PRIVE VALUES (3, 1);
+INSERT INTO TRAJET_PRIVE VALUES (6, 2);
+INSERT INTO TRAJET_PRIVE VALUES (7, 2);
 
 INSERT INTO NOTIFICATION(idCompteEnvoyeur, messageNotification) VALUES (1, "demande de trajet");
 INSERT INTO NOTIFICATION(idCompteEnvoyeur, messageNotification) VALUES (2, "... t'as accepté");
