@@ -77,22 +77,25 @@ function displayGroupes(data, container) {
         let removeBtn = $("<button>")
             .addClass("delete-group").attr('id', data.idGroupe)
             .html('<i class="fas fa-trash"></i>');
-            
+
+        let users = $('<button>')
+            .addClass('users').attr('id', data.idGroupe)
+            .html("<i class='fas fa-users'></i>");
 
 
-        cardDiv.append(acceptBtn, rejectBtn, removeBtn);
+            cardDiv.append(users, acceptBtn, rejectBtn, removeBtn);
 
         cardBody.append(cardTitle, cardText, cardDiv);
     } else {
         console.log("On est pas propriétaire du groupe d'amis.");
         // ajouter un autre bouton pour afficher les membres du groupe 
-        let acceptBtn = $("<button>")
-            .addClass("add-members").attr('id', data.idGroupe)
-            .html('<i class="fas fa-user-plus"></i>');
+        let users = $('<button>')
+            .addClass('users').attr('id', data.idGroupe)
+            .html("<i class='fas fa-users'></i>");
 
 
 
-        cardDiv.append(acceptBtn);
+        cardDiv.append(users);
 
         cardBody.append(cardTitle, cardText, cardDiv);
     }

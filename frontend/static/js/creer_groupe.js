@@ -1,51 +1,5 @@
 const token = getCookieToken();
 
-// const infoCompteCo = '/compte/getInfoCompte/'+token;
-
-// let userco = [];
-
-// fetch(infoCompteCo)
-// .then(reponse => {
-//     if(!reponse.ok){
-//         throw new Error("network wasnt ok");
-//     }
-//     return reponse.json();
-// })
-// .then(data =>{
-//     userco = data;
-//     console.log(userco);
-// })
-// .catch(error =>{
-//     console.error(error);
-// })
-
-// const url = '/admin/users';
-
-// function charger_users() {
-
-//     fetch(url)
-//         .then(reponse => {
-//             if (!reponse.ok) {
-//                 throw new Error("network wasnt ok");
-
-//             }
-//             return reponse.json();
-//         })
-//         .then(data => {
-//             console.log(data);
-//             const $select = $('#select-users');
-//             $.each(data, function (index, user) {
-//                 if (user.nomCompte !== "ADMIN" && userco.nomCompte !== user.nomCompte) {
-//                     $select.append('<option value="' + user.nomCompte + " " + user.prenomCompte + '">' + user.nomCompte + " " + user.prenomCompte + '</option>');
-//                 }
-//             });
-//         })
-//         .catch(error => {
-//             console.error(error);
-//         })
-
-// }
-
 $('#creer_groupe').submit(function (event) {
     event.preventDefault(); // pour empêcher la soumission normale du formulaire
 

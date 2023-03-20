@@ -58,3 +58,12 @@ $(document).on('click', '.add-members', function () {
 });
 
 
+$(document).on('click', '.users', function () {
+    let id = $(this).attr('id');
+    console.log("on a clique sur voir tous les users avec l'id " + id);
+    
+
+
+});
+
+
