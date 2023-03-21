@@ -17,29 +17,22 @@ $('#formcontact').submit(function (event) {
     console.log(message);*/
     let subject = "Contacter LBR";
     if (mail.match(regexMail) && name.match(regexName) && tel.match(regexTel) && message.match(regexMessageNotEmpty)) {
-        Email.send({
-            Host: "smtp.elasticemail.com",
-            Port: 2525,
-            Username: "sandygehin2@gmail.com",
-            Password: "820DA5C445081CE2534D0AF842122D336A11",
-            To: mail,
-            From: "noreply@lesbonnesrout.es",
-            Subject: subject,
-            Body: message
-        }).then(
-            function () {
+        $.ajax({
+            type: "POST",
+            url: "/mail/contact",
+            data: JSON.stringify({ name: name, email: mail, phone: tel, message: message }),
+            contentType: "application/json",
+            success: function (response) {
                 displayMessage(true);
-            }
-        ).catch(
-            function () {
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
                 displayMessage(false);
             }
-        );
+        });
     } else {
         displayMessage(false);
     }
-
-
 });
 
 function displayMessage(res) {
@@ -47,9 +40,5 @@ function displayMessage(res) {
         $('#okok').text("L'email a été envoyé.").css('color', 'red');
     } else {
         $('#okok').text("L'email n'a pas été envoyé.").css('color', 'red');
-        //   console.log("L'email n'a pas été envoyé.");
-        //   emailSending.innerHTML = "Le mail de récupération n'a pas été envoyé, vérifiez bien votre email et réessayez."
-        //   emailSending.style.display = "flex";
-        //   emailSending.style.backgroundColor = "#ff5140";
     }
 }
