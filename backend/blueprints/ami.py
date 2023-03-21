@@ -1,9 +1,10 @@
 URI_DATABASE = '../database.db'
-import datetime
+from datetime import datetime, timedelta
 import json
 from flask import Blueprint, jsonify, render_template, request
 import sqlite3
 from backend.notifManager import *
+
 
 ami_bp = Blueprint('ami', __name__)
 
@@ -28,6 +29,10 @@ def ajouter_ami():
 @ami_bp.route('/voir_membres', methods=['POST', 'GET'])
 def voir_membres():
     return render_template('groupMembers/groupMembers.html')
+
+@ami_bp.route('/trajets_prives', methods=['POST', 'GET'])
+def voir_trajets_prives():
+    return render_template('trajetPrives/trajetPrives.html')
 
 
 #Créer un groupe d'ami
@@ -182,13 +187,15 @@ def supprimerGroupe(token, idGroupe):
         conn.close()
         return jsonify({'message': 'Seul le createur du groupe peut modifier le groupe'}), 403
 
+
     #On peut supprimer le groupe
+    sendNotifDeleteGroupe(idCompte, idGroupe)
     c.execute("DELETE FROM GROUPE WHERE idGroupe = ?", (idGroupe,))
     conn.commit()
     conn.close()
 
     #On envoie une notif aux membres
-    sendNotifGroupe(idCompte, idGroupe, "Le groupe a été supprimé")
+    #sendNotifGroupe(idCompte, idGroupe, "Le groupe a été supprimé")
 
     return jsonify({'message': 'Le groupe a bien été supprimé.'}), 200
 

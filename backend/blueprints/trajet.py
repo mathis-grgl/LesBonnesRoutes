@@ -70,6 +70,16 @@ def getTrajet(idTrajet):
         c.execute("SELECT nomVille FROM VILLE WHERE idVille = ?", (trajet['villeArrivee'],))
         trajet['villeArrivee'] = c.fetchone()[0]
 
+        # Ajouter le type de trajet en fonction de la table dans laquelle se trouve l'idTrajet
+        if idTrajet in [id[0] for id in c.execute("SELECT idTrajet FROM TRAJET_PRIVE")]:
+            trajet['typeTrajet'] = 'prive'
+            #On recupere le nom du groupe
+            trajet['nomGroupe'] = [groupe[0] for groupe in c.execute("SELECT nomGroupe FROM TRAJET_PRIVE NATURAL JOIN GROUPE WHERE idTrajet=?", (row[0],))][0]
+        elif idTrajet in [id[0] for id in c.execute("SELECT idTrajet FROM TRAJET_PUBLIC")]:
+            trajet['typeTrajet'] = 'public'
+        else:
+            trajet['typeTrajet'] = None
+
         conn.close()
 
         return jsonify(trajet)
@@ -225,6 +235,16 @@ def trajetsCompte(token):
             trajet['villeArrivee'] = c.fetchone()[0]
             trajet['idCompte'] = idCompte
 
+            # Ajouter le type de trajet en fonction de la table dans laquelle se trouve l'idTrajet
+            if row[0] in [id[0] for id in c.execute("SELECT idTrajet FROM TRAJET_PRIVE")]:
+                trajet['typeTrajet'] = 'prive'
+                #On recupere le nom du groupe
+                trajet['nomGroupe'] = [groupe[0] for groupe in c.execute("SELECT nomGroupe FROM TRAJET_PRIVE NATURAL JOIN GROUPE WHERE idTrajet=?", (row[0],))][0]
+            elif row[0] in [id[0] for id in c.execute("SELECT idTrajet FROM TRAJET_PUBLIC")]:
+                trajet['typeTrajet'] = 'public'
+            else:
+                trajet['typeTrajet'] = None
+
             trajets.append(trajet)
 
         conn.commit()
@@ -359,6 +379,7 @@ def deleteTrajet(token, idTrajet):
                 return jsonify({'message': 'Suppression non autorisée : vous n\'êtes pas conducteur de ce trajet'}), 403
             else:
                 #On envoie une notification aux passagers
+                sendNotifDeleteTrajet(idCompte, idTrajet)
                 #sendNotifTrajetPassagers(idCompte, idTrajet, "Le trajet a été annulé")
 
                 c.execute("DELETE FROM TRAJET WHERE idTrajet = ?", (idTrajet,))

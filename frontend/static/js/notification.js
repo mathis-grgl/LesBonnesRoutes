@@ -1,9 +1,18 @@
 const notifCount = document.querySelector("div[name='notif-content']");
 let dropdown = document.querySelector(".content");
+const bellIcon = document.querySelector('.bell-icon');
+
+//Activier le bouton cloche quand la page est chargée
+window.addEventListener('load', function() {
+  bellIcon.setAttribute('onclick', 'displayNotif(event)');
+});
+
 
 //Afficher les notifs
 window.addEventListener('DOMContentLoaded', function() {
+  if (tokenH != null){
     displayNotifs();
+  }
 });
 
 iconWrapper.addEventListener('click', function() {
@@ -11,8 +20,14 @@ iconWrapper.addEventListener('click', function() {
 });
 
 function displayNotifs(){
+    //On adapte l'url selon la page actuelle
+    let url = "compte/getNotifs/";
+    if(!window.location.pathname.endsWith("index.html")){
+      url = "../compte/getNotifs/";
+    }
+
     //Récuperation des notifs et affichage
-    fetch('compte/getNotifs/' + tokenH)
+    fetch(url + tokenH)
     .then(response => {
     if (!response.ok) {
         throw new Error('Network response was not ok');
@@ -22,6 +37,9 @@ function displayNotifs(){
     .then(async data => {
     dropdown.innerHTML = "";
     let childCount = 0;
+
+    // Retirer l'attribut 'onclick' de la cloche pour eviter bug
+    bellIcon.removeAttribute('onclick');
 
     // créer et ajouter chaque élément notify_item
     data.forEach(async res => {
@@ -71,14 +89,24 @@ function displayNotifs(){
         dropdown.appendChild(notificationDiv);
     });
 
-    dropdown.innerHTML +=
+    if (data.length === 0){
+      dropdown.innerHTML =
+        "<div classe='notify_item dropdown'" +
+            `<p class='notify_item' style='background-color: white; padding: 10px;'>Aucune notification</p>` +
+        "</div>"
+    } else {
+      dropdown.innerHTML +=
         "<div classe='notify_item dropdown'" +
             `<a href='#' class='btn-danger btnSupprAll notify_item'>Tout supprimer</a>` +
         "</div>"
-    
-    dropdown.querySelector('.btnSupprAll').onclick = () => {
+
+      dropdown.querySelector('.btnSupprAll').onclick = () => {
         deleteAllNotif();
+      }
     }
+
+    //On remet 'onclick' de la cloche pour eviter bug
+    bellIcon.setAttribute('onclick', 'displayNotif(event)');
 
     // mettre à jour le compteur de notifications
     notifCount.setAttribute('data-number', data.length);
