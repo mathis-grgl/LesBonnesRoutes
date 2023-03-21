@@ -73,4 +73,19 @@ $(document).on('click', '.users', function () {
 
 });
 
+$(document).on('click', '.cars', function () {
+    let id = $(this).attr('id');
+    console.log("on a clique sur voir tous les users avec l'id " + id);
+    let u = new URL(window.location.href);
+    u.searchParams.delete("id");
+    let url = new URL(window.location.href);
+    console.log(url);
+    url.pathname = '/ami/trajets_prives';
+    url.searchParams.set("id", id);
+    window.location.href = url.href;
+    
+
+
+});
+
 

@@ -1,5 +1,5 @@
 URI_DATABASE = '../database.db'
-import datetime
+from datetime import datetime, timedelta
 import json
 from flask import Blueprint, jsonify, render_template, request
 import sqlite3
@@ -28,6 +28,10 @@ def ajouter_ami():
 @ami_bp.route('/voir_membres', methods=['POST', 'GET'])
 def voir_membres():
     return render_template('groupMembers/groupMembers.html')
+
+@ami_bp.route('/trajets_prives', methods=['POST', 'GET'])
+def voir_trajets_prives():
+    return render_template('trajetPrives/trajetPrives.html')
 
 
 #Créer un groupe d'ami

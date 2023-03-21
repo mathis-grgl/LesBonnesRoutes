@@ -81,9 +81,13 @@ function displayGroupes(data, container) {
         let users = $('<button>')
             .addClass('users').attr('id', data.idGroupe)
             .html("<i class='fas fa-users'></i>");
+        
+        let car = $("<button>")
+        .addClass('cars').attr('id', data.idGroupe)
+        .html("<i class='fas fa-car'></i>");
 
 
-            cardDiv.append(users, acceptBtn, rejectBtn, removeBtn);
+            cardDiv.append(car, users, acceptBtn, rejectBtn, removeBtn);
 
         cardBody.append(cardTitle, cardText, cardDiv);
     } else {
@@ -92,10 +96,14 @@ function displayGroupes(data, container) {
         let users = $('<button>')
             .addClass('users').attr('id', data.idGroupe)
             .html("<i class='fas fa-users'></i>");
+            
+        let car = $("<button>")
+        .addClass('cars').attr('id', data.idGroupe)
+        .html("<i class='fas fa-car'></i>");
 
 
 
-        cardDiv.append(users);
+        cardDiv.append(car, users);
 
         cardBody.append(cardTitle, cardText, cardDiv);
     }
