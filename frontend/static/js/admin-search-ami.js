@@ -1,18 +1,14 @@
-tokenAdmin = getCookieToken();
+$(document).ready(function () {
+    tokenAdmin = getCookieToken();
 
-function onLoad(){
     if(getCookieToken() == null){
         location.href = "../../login_signup";
     }
-}
-
-
-$(document).ready(function () {
-    var table = getRouteTable();
+    var table = getAmiTable();
     $("[data-toggle=tooltip]").tooltip();
 
     // Ajout des trajets depuis la BDD
-    fetch('/admin/trajets/all')
+    fetch('/admin/getGroupes/' + tokenAdmin)
     .then(reponse => {
     if (!reponse.ok) {
         throw new Error('Network response was not ok');
@@ -20,53 +16,30 @@ $(document).ready(function () {
     return reponse.json();
     })
     .then(data => {
-    // console.log(data);
-    let nbTrajet = data.length;
-    let user = [];
-    for (let i = 0; i < nbTrajet; i++) {
-        let route = data[i];
-        console.log(route);
+    console.log(data);
+    let nbGroupes = data.length;
+    for (let i = 0; i < nbGroupes; i++) {
+        let groupe = data[i];
+        let idGroupe = i+1;
+        console.log(groupe);
         
         // Création d'une nouvelle ligne
         let tr = document.createElement("tr");
 
-        // Ajout du type de trajet
-        let tdTypeTrajet = document.createElement("td");
-        tdTypeTrajet.textContent = route.typeTrajet;
-        tr.appendChild(tdTypeTrajet);
+        // Ajout du créateur
+        let tdCreateur = document.createElement("td");
+        tdCreateur.innerHTML = groupe.nomCreateur;
+        tr.appendChild(tdCreateur);
 
-        // Ajout de la ville de départ
-        let tdVilleDepart = document.createElement("td");
-        tdVilleDepart.textContent = route.villeDepart + " - " + route.villeArrivee;
-        tr.appendChild(tdVilleDepart);
+        // Ajout du nom du groupe
+        let tdNom = document.createElement("td");
+        tdNom.innerHTML = groupe.nomGroupe;
+        tr.appendChild(tdNom);
 
-        // Ajout de la date de départ
-        let tdDateDepart = document.createElement("td");
-        tdDateDepart.textContent = "Le " + route.dateDepart + " à " + route.heureDepart;
-        // tdDateDepart.textContent = route.dateDepart;
-        tr.appendChild(tdDateDepart);
-
-        // Ajout du prix
-        let tdPrix = document.createElement("td");
-        tdPrix.textContent = route.prix + " €";
-        tr.appendChild(tdPrix);
-        
-        // Ajout du nombre de places restantes
-        let tdNbPlacesRestantes = document.createElement("td");
-        tdNbPlacesRestantes.textContent = route.nbPlacesRestantes;
-        tr.appendChild(tdNbPlacesRestantes);
-
-        // Ajout du statut
-        let tdStatut = document.createElement("td");
-        tdStatut.textContent = route.statusTrajet;
-        tr.appendChild(tdStatut);
-
-
-        //todo: ajouter conducteur
-        // Ajout du conducteur
-        /*let tdConducteur = document.createElement("td");
-        tdConducteur.textContent = route.nomConducteur + " " + route.prenomConducteur;
-        tr.appendChild(tdConducteur);*/
+        // Ajout du nombre de membres
+        let tdNbMembres = document.createElement("td");
+        tdNbMembres.innerHTML = groupe.nbPersonnes;
+        tr.appendChild(tdNbMembres);
 
 
         // Ajout du bouton modifier
@@ -81,7 +54,7 @@ $(document).ready(function () {
         // btnEdit.onclick = () => {
         //   location.href = "/admin/route/" + route.idTrajet + "/edit/";
         // }
-        btnEdit.setAttribute("onclick", "onModifyRoute(" + route.idTrajet + ")");
+        btnEdit.setAttribute("onclick", "onModifyGroupe(" + i+1 + ")");
         btnEdit.setAttribute("data-title", "Edit");
         btnEdit.setAttribute("data-toggle", "modal");
         btnEdit.setAttribute("data-target", "#edit");
@@ -105,7 +78,7 @@ $(document).ready(function () {
         // btnDelete.onclick = () => {
         //   location.href = "/admin/route/delete/" + route.idTrajet;
         // }
-        btnDelete.setAttribute("onclick", "onDeleteRoute(" + route.idTrajet + ")");
+        btnDelete.setAttribute("onclick", "onDeleteGroupe(" + idGroupe + ")");
         btnDelete.setAttribute("data-title", "Delete");
         btnDelete.setAttribute("data-toggle", "modal");
         btnDelete.setAttribute("data-target", "#delete");
@@ -127,9 +100,9 @@ $(document).ready(function () {
 
 
 
-function onDeleteRoute(id) {
+function onDeleteGroupe(id) {
     if (confirm("Voulez-vous vraiment supprimer ce trajet ?")) {
-    fetch('/admin/deleteTrajet/'+ tokenAdmin + '/' + id, {
+    fetch('/admin/supprimerGroupe/'+ tokenAdmin + '/' + id, {
         method: 'DELETE'
     }).then(response => {
         if (response.ok) {
@@ -142,6 +115,6 @@ function onDeleteRoute(id) {
     }
 }
 
-function onModifyRoute(id) {
-    location.href = "/admin/route/edit/" + id;
+function onModifyGroupe(id) {
+    location.href = "/admin/ami/edit/" + id;
 }

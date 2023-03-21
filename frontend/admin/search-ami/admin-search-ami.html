@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="fr-FR">
+<head>
+  {% set title="Administrateur - Recherche d'un groupe d'amis" %}
+  {% include 'head.html' %}
+
+
+  <link rel="stylesheet" href="/static/css/admin-search-ami.css">
+</head>
+<body>
+  {% include 'scripts-required.html' %}
+
+  {% include 'header.html' %}
+
+  {% set section_name="Administrateur - Recherche d'un groupe d'amis" %}
+  {% include 'inner-page.html' %}
+
+  {% include 'admin/search-ami/admin-search-ami-section.html' %}
+
+  {% include 'footer.html' %}
+
+  <script src="/static/js/admin-search-ami.js"></script>
+  <script src="https://cdn.datatables.net/1.13.3/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.3/js/dataTables.bootstrap5.min.js"></script>
+  
+  <script src="/static/js/amiTable.js"></script>
+</body>
+</html>

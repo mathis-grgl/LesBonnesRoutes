@@ -1,0 +1,23 @@
+/* Pour l'affichage de la table */
+#amiTable {
+    /* width: 80%; */
+    text-align: center !important;
+    vertical-align: middle !important;
+}
+
+#amiTable p {
+    margin: auto !important;
+}
+
+#amiTable>tr,th,td {
+    text-align: center !important;
+    vertical-align: middle !important;
+}
+
+th.sorting {
+    text-align: center !important;
+}
+
+.white_button {
+    color: white;
+}

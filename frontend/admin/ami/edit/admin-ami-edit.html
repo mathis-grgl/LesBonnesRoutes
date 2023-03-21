@@ -1,0 +1,24 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        {% set title='Admin - Modifier groupe' %}
+        {% include 'head.html' %}
+        <link rel="stylesheet" href="/static/css/admin-ami-edit.css">
+    </head>
+    <body>
+        {% include 'header.html' %}
+
+        {% set section_name='Admin - Modifier groupe' %}
+        {% include 'inner-page.html' %}
+
+        {% include 'admin/ami/edit/admin-ami-edit-section.html' %}
+
+        {% include 'footer.html' %}
+
+        {% include 'scripts-required.html' %}
+        <script src="/static/js/admin-ami-edit.js"></script>
+        <script src="/static/js/required/cookies.js"></script>
+        <script src="/static/js/required/jquery-3.3.1.min.js"></script>
+        <script src="/static/js/required/aos.js"></script>
+    </body>
+</html>

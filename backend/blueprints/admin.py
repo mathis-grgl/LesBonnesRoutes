@@ -26,6 +26,9 @@ def admin_search_account():
 def admin_search_route():
     return render_template('admin/search-route/admin-search-route.html')
 
+@admin_bp.route('/search-ami')
+def admin_search_ami():
+    return render_template('admin/search-ami/admin-search-ami.html')
 
 @admin_bp.route('/deconnexion')
 def admin_deconnexion():
@@ -38,6 +41,11 @@ def admin_account_edit(idCompte):
 @admin_bp.route('/route/edit/<idTrajet>')
 def admin_route_edit(idTrajet):
     return render_template('admin/route/edit/admin-route-edit.html')
+
+@admin_bp.route('/ami/edit/<idAmi>')
+def admin_ami_edit(idAmi):
+    return render_template('admin/ami/edit/admin-ami-edit.html')
+
 
 #Recuperer tous les comptes
 @admin_bp.route('/users')
@@ -459,16 +467,21 @@ def getGroupes(token):
         conn.close()
         return jsonify({'message': 'Le token n\'est pas admin'}), 401
 
-    c.execute("SELECT idGroupe, nomGroupe FROM GROUPE")
+    c.execute("SELECT idCreateur, nomGroupe, nbPersonnes FROM GROUPE")
 
     rows = c.fetchall()
 
     # Création d'une liste de dictionnaires contenant les résultats
     result = []
     for row in rows:
+        c.execute("SELECT nomCompte, prenomCompte FROM COMPTE WHERE idCompte = ?", (row[0],))
+        nomPrenom = c.fetchone()
+        nom = nomPrenom[1] + " " + nomPrenom[0]
         result.append({
-            "idGroupe": row[0],
-            "nomGroupe": row[1]
+            "idCreateur": row[0],
+            "nomGroupe": row[1],
+            "nbPersonnes": row[2],
+            "nomCreateur": nom
         })
 
     conn.close()
@@ -583,7 +596,7 @@ def removeMember(token, idGroupe, idAmi):
     return jsonify({'message': 'L\'ami a bien été supprimé du groupe.'}), 200
 
 
-@admin_bp.route('/supprimerGroupe/<string:token>/<int:idGroupe>', methods=['GET'])
+@admin_bp.route('/supprimerGroupe/<string:token>/<int:idGroupe>', methods=['DELETE'])
 def supprimerGroupe(token, idGroupe):
     #On verifie que le token existe et est admin
     conn = sqlite3.connect(URI_DATABASE)
@@ -601,6 +614,7 @@ def supprimerGroupe(token, idGroupe):
 
     #On peut supprimer le groupe
     c.execute("DELETE FROM GROUPE WHERE idGroupe = ?", (idGroupe,))
+    # On supprime les trajet liés au groupe (TODO)
     conn.commit()
     conn.close()
     return jsonify({'message': 'Le groupe a bien été supprimé.'}), 200
