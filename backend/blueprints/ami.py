@@ -5,6 +5,7 @@ from flask import Blueprint, jsonify, render_template, request
 import sqlite3
 from backend.notifManager import *
 
+
 ami_bp = Blueprint('ami', __name__)
 
 

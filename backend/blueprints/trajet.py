@@ -359,6 +359,7 @@ def deleteTrajet(token, idTrajet):
                 return jsonify({'message': 'Suppression non autorisée : vous n\'êtes pas conducteur de ce trajet'}), 403
             else:
                 #On envoie une notification aux passagers
+                sendNotifDeleteTrajet(idCompte, idTrajet)
                 #sendNotifTrajetPassagers(idCompte, idTrajet, "Le trajet a été annulé")
 
                 c.execute("DELETE FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
