@@ -100,37 +100,44 @@ def sendNotifAmi(idCompteEnv, idCompteAmi, idGroupe, message):
     conn.close()
 
 
-def sendNotifDeleteGroupe(idGroupe):
+def sendNotifDeleteGroupe(idCompte, idGroupe):
     conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
 
     #On recupere les membres concernés
     c.execute("SELECT idCompte FROM AMI_GROUPE WHERE idGroupe = ?", (idGroupe,))
     members = c.fetchall()
-    print(members)
 
     #On recupere le nom du groupe et le nom du createur
     c.execute("SELECT GROUPE.nomGroupe, COMPTE.nomCompte, COMPTE.prenomCompte FROM GROUPE INNER JOIN COMPTE ON GROUPE.idCreateur = COMPTE.idCompte")
     res = c.fetchone()
     nomGroupe = res[0]
     createur = res[1] + " " + res[2]
-    print(nomGroupe)
-    print(createur)
-    message = "Le groupe " + nomGroupe + " a été supprimé par " + createur
+    message = "Le groupe " + nomGroupe + " a été supprimé "
 
     #On supprime toutes les notifs en rapport avec ce groupe
     c.execute("SELECT idNotification FROM NOTIF_GROUPE WHERE idGroupe = ?", (idGroupe,))
     notifs = c.fetchall()
+    print(notifs)
 
     for notif in notifs:
+        n = notif[0]
         #Pour chaque notif on supprime de chaque table
-        c.execute("DELETE FROM NOTIF_RECUE WHERE idNotification = ?", (notif,))
-        c.execute("DELETE FROM NOTIF_GROUPE WHERE idNotification = ?", (notif,))
-        c.execute("DELETE FROM NOTIFICATION WHERE idNotification = ?", (notif,))
+        c.execute("DELETE FROM NOTIF_RECUE WHERE idNotification = ?", (n,))
+        c.execute("DELETE FROM NOTIF_GROUPE WHERE idNotification = ?", (n,))
+        c.execute("DELETE FROM NOTIFICATION WHERE idNotification = ?", (n,))
 
     #On envoie une notif à chaque membres pour les informer de la suppression du groupe
     for member in members:
-        c.execute("INSERT INTO NOTIFICATION(idCompteEnvoyeur, messageNotification) VALUES (?, ?)")
+        m = member[0]
+        c.execute("INSERT INTO NOTIFICATION(idCompteEnvoyeur, messageNotification) VALUES (?, ?)", (idCompte, message))
+        #On recupere l'id de cette notification
+        c.execute("SELECT last_insert_rowid() FROM NOTIFICATION")
+        idNotif = c.fetchone()[0]
+        c.execute("INSERT INTO NOTIF_RECUE VALUES (?, ?)", (m, idNotif))
+
+    conn.commit()
+    conn.close()
 
 
 
