@@ -4,6 +4,7 @@ from werkzeug.routing import Rule
 from flask import Blueprint, jsonify, render_template, request
 from datetime import datetime
 import sqlite3
+from backend.notifManager import *
 
 admin_bp = Blueprint('admin', __name__)
 
@@ -223,7 +224,7 @@ def deleteTrajet(token, idTrajet):
     #On verifie que le token est admin
     conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
-    c.execute("SELECT isAdmin FROM TOKEN NATURAL JOIN COMPTE WHERE auth_token = ?", (token,))
+    c.execute("SELECT isAdmin, idCompte FROM TOKEN NATURAL JOIN COMPTE WHERE auth_token = ?", (token,))
     admin = c.fetchone()
     if not admin:
         #Le token n'existe pas
@@ -231,6 +232,7 @@ def deleteTrajet(token, idTrajet):
         return jsonify({'message': 'Le token est invalide ou expiré'}), 401
     else:
         isAdmin = admin[0]
+        idCompte = admin[0]
         if not isAdmin:
             #Le token n'est pas admin
             conn.close()
@@ -243,6 +245,8 @@ def deleteTrajet(token, idTrajet):
                 conn.close()
                 return jsonify({'message': 'Ce trajet n\'existe pas'}), 404
             else:
+                #Envoie de notif aux passagers
+                sendNotifDeleteTrajet(idCompte, idTrajet)
                 c.execute("DELETE FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
                 conn.commit()
                 conn.close()
@@ -333,6 +337,7 @@ def modifCompte(token, idCompte):
         poster = data.get('photo')
         print(poster)
         print("6")
+
         if poster :
             #Il y a une photo : on inserer le nom dans la db
             nomPhoto = poster.filename
@@ -436,6 +441,10 @@ def modifTrajet(token, idTrajet):
                         c.execute(query, values)
                         conn.commit()
                         conn.close()
+
+                        #On envoie une notif aux passagers
+                        sendNotifTrajetPassagers(id, idTrajet, "Le trajet a été modifié par un administrateur")
+
                         return jsonify({'message': 'Le trajet a bien été modifié.'}), 200
                     else:
                         conn.close()
@@ -481,13 +490,14 @@ def modifNom(token, idGroupe, nouveauNom):
     #On verifie que le token existe et est admin
     conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
-    c.execute("SELECT isAdmin FROM TOKEN NATURAL JOIN COMPTE WHERE auth_token = ?", (token,))
+    c.execute("SELECT isAdmin, idCompte FROM TOKEN NATURAL JOIN COMPTE WHERE auth_token = ?", (token,))
     admin = c.fetchone()
     if not admin:
         conn.close()
         return jsonify({'message': 'Le token est invalide ou expiré'}), 401
     
     isAdmin = admin[0]
+    idCompte = admin[1]
     if not isAdmin:
         conn.close()
         return jsonify({'message': 'Le token n\'est pas admin'}), 401
@@ -504,6 +514,10 @@ def modifNom(token, idGroupe, nouveauNom):
     c.execute("UPDATE GROUPE SET nomGroupe = ? WHERE idGroupe = ?", (nouveauNom, idGroupe))
     conn.commit()
     conn.close()
+
+    #On envoie une notif aux membres
+    sendNotifGroupe(idCompte, idGroupe, "Le nom du groupe a été modifié par un administrateur")
+
     return jsonify({'message': 'Le nom du groupe a bien été modifié.'}), 200
 
 
@@ -513,13 +527,14 @@ def addMember(token, idGroupe, idAmi):
     #On verifie que le token existe et est admin
     conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
-    c.execute("SELECT isAdmin FROM TOKEN NATURAL JOIN COMPTE WHERE auth_token = ?", (token,))
+    c.execute("SELECT isAdmin, idCompte FROM TOKEN NATURAL JOIN COMPTE WHERE auth_token = ?", (token,))
     admin = c.fetchone()
     if not admin:
         conn.close()
         return jsonify({'message': 'Le token est invalide ou expiré'}), 401
     
     isAdmin = admin[0]
+    idCompte = admin[1]
     if not isAdmin:
         conn.close()
         return jsonify({'message': 'Le token n\'est pas admin'}), 401
@@ -542,6 +557,9 @@ def addMember(token, idGroupe, idAmi):
     c.execute("INSERT INTO AMI_GROUPE VALUES (?, ?)", (idAmi, idGroupe))
     conn.commit()
     conn.close()
+
+    sendNotifAmi(idCompte, idAmi, idGroupe, "Vous avez été ajouté au groupe par un administrateur")
+
     return jsonify({'message': 'L\'ami a bien été ajouté au groupe.'}), 200
 
 
@@ -551,13 +569,14 @@ def removeMember(token, idGroupe, idAmi):
     #On verifie que le token existe et est admin
     conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
-    c.execute("SELECT isAdmin FROM TOKEN NATURAL JOIN COMPTE WHERE auth_token = ?", (token,))
+    c.execute("SELECT isAdmin, idCompte FROM TOKEN NATURAL JOIN COMPTE WHERE auth_token = ?", (token,))
     admin = c.fetchone()
     if not admin:
         conn.close()
         return jsonify({'message': 'Le token est invalide ou expiré'}), 401
     
     isAdmin = admin[0]
+    idCompte = admin[1]
     if not isAdmin:
         conn.close()
         return jsonify({'message': 'Le token n\'est pas admin'}), 401
@@ -580,6 +599,10 @@ def removeMember(token, idGroupe, idAmi):
     c.execute("DELETE FROM AMI_GROUPE WHERE idGroupe = ? AND idCompte = ?", (idGroupe, idAmi))
     conn.commit()
     conn.close()
+
+    #On envoie une notif
+    sendNotifAmi(idCompte, idAmi, idGroupe, "Vous avez été supprimé du groupe par un administrateur")
+
     return jsonify({'message': 'L\'ami a bien été supprimé du groupe.'}), 200
 
 
@@ -588,13 +611,14 @@ def supprimerGroupe(token, idGroupe):
     #On verifie que le token existe et est admin
     conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
-    c.execute("SELECT isAdmin FROM TOKEN NATURAL JOIN COMPTE WHERE auth_token = ?", (token,))
+    c.execute("SELECT isAdmin, idCompte FROM TOKEN NATURAL JOIN COMPTE WHERE auth_token = ?", (token,))
     admin = c.fetchone()
     if not admin:
         conn.close()
         return jsonify({'message': 'Le token est invalide ou expiré'}), 401
     
     isAdmin = admin[0]
+    idCompte = admin[1]
     if not isAdmin:
         conn.close()
         return jsonify({'message': 'Le token n\'est pas admin'}), 401
@@ -603,4 +627,8 @@ def supprimerGroupe(token, idGroupe):
     c.execute("DELETE FROM GROUPE WHERE idGroupe = ?", (idGroupe,))
     conn.commit()
     conn.close()
+
+    #On envoie une notif
+    sendNotifDeleteGroupe(idCompte, idGroupe)
+
     return jsonify({'message': 'Le groupe a bien été supprimé.'}), 200
