@@ -463,6 +463,42 @@ def modifTrajet(token, idTrajet):
                         return jsonify({'message': 'Probleme au niveau de la requête'}), 401
 
 
+#Recuperer tous les passagers d'un trajet 
+@admin_bp.route('/getPassagers/<string:token>/<int:idTrajet>', methods = ['GET'])
+def getPassagers(token, idTrajet):
+    conn = sqlite3.connect(URI_DATABASE)
+    c = conn.cursor()
+    #On verifie que l'utilisateur est admin
+    c.execute("SELECT isAdmin FROM TOKEN NATURAL JOIN COMPTE WHERE auth_token = ?", (token,))
+    admin = c.fetchone()
+    if not admin:
+        #Le token n'existe pas
+        conn.close()
+        return jsonify({'message': 'Le token est invalide ou expiré'}), 401
+    else:
+        #On verifie que le token est admin
+        if not admin[0] == 1:
+            conn.close()
+            return jsonify({'message': 'Le token n\'est pas admin'}), 401
+
+        c.execute("SELECT idCompte, nbPlaces, nomCompte, prenomCompte, noteCompte FROM TRAJET_EN_COURS_PASSAGER NATURAL JOIN COMPTE WHERE idTrajet = ?", (idTrajet,))
+        rows = c.fetchall()
+        if not rows:
+            conn.close()
+            return jsonify({'message': 'Aucun passager pour le moment'}), 204
+        
+        conn.close()
+        # Récupération des noms de colonnes
+        col_names = [desc[0] for desc in c.description]
+
+        # Conversion de la date dans chaque ligne de résultat
+        participants = []
+        for row in rows:
+            participant = {col_names[i]: row[i] for i in range(len(col_names))}
+            participants.append(participant)
+        return jsonify(participants), 200
+
+
 
 @admin_bp.route('/getGroupes/<string:token>', methods=['GET'])
 def getGroupes(token):
