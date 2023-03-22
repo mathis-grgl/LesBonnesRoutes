@@ -51,11 +51,9 @@ def modifMail():
     json = request.get_json()
     mail = json.get('email')
     subject = "Changement de mot de passe"
-    message = "test : "
     if(re.match(regexMail, mail)):
         #Créer un token de chgt de mdp
         token = secrets.token_hex(16)  # generate a random token with 16 bytes
-        message += token
 
         #On recup l'id du compte avec le mail et on vérifie s'il existe
         conn = sqlite3.connect(URI_DATABASE)
@@ -71,9 +69,14 @@ def modifMail():
         c.execute("INSERT INTO TOKEN_RECUP_MDP VALUES (?, ?, ?)",
                   (idCompte, token, "exp"))
 
+        conn.commit()
+        conn.close()
+        
+        message = "<html><a href='" + URL_WEBSITE + "/changer-mdp?id=" + token + "'>Cliquez ici</a> pour changer votre mot de passe.</html>"
+
         m = Mail(current_app)
         msg = Message(subject=subject, sender='noreply@lesbonnesrout.es', recipients=[mail])
-        msg.body = message
+        msg.html = "<p>" + message + "</p>"
         m.send(msg)
         return "Email envoyé avec succès"
     else:
