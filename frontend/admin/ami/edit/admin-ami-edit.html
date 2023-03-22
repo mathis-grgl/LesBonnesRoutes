@@ -4,8 +4,9 @@
         {% set title='Admin - Modifier groupe' %}
         {% include 'head.html' %}
         <link rel="stylesheet" href="/static/css/admin-ami-edit.css">
+        <link rel="stylesheet" href="/static/css/groupMembers.css">
     </head>
-    <body>
+    <body onload="charger_groupe()">
         {% include 'header.html' %}
 
         {% set section_name='Admin - Modifier groupe' %}

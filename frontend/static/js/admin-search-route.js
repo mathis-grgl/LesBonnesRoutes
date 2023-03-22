@@ -32,7 +32,8 @@ $(document).ready(function () {
 
         // Ajout du type de trajet
         let tdTypeTrajet = document.createElement("td");
-        tdTypeTrajet.textContent = route.typeTrajet;
+        if(route.nomGroupe == null || route.nomGroupe == undefined) tdTypeTrajet.textContent = route.typeTrajet;
+        else tdTypeTrajet.textContent = route.typeTrajet + " - " + route.nomGroupe;
         tr.appendChild(tdTypeTrajet);
 
         // Ajout de la ville de départ

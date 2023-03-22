@@ -141,7 +141,11 @@ def get_trajets(typeTrajet):
         if row[0] in [id[0] for id in c.execute("SELECT idTrajet FROM TRAJET_PRIVE")]:
             trajet['typeTrajet'] = 'prive'
             #On recupere le nom du groupe
-            trajet['nomGroupe'] = [groupe[0] for groupe in c.execute("SELECT nomGroupe FROM TRAJET_PRIVE NATURAL JOIN GROUPE WHERE idTrajet=?", (row[0],))][0]
+            results = c.execute("SELECT nomGroupe FROM TRAJET_PRIVE NATURAL JOIN GROUPE WHERE idTrajet=?", (row[0],)).fetchall()
+            if results:
+                trajet['nomGroupe'] = results[0][0]
+            else:
+                trajet['nomGroupe'] = None
         elif row[0] in [id[0] for id in c.execute("SELECT idTrajet FROM TRAJET_PUBLIC")]:
             trajet['typeTrajet'] = 'public'
         else:
@@ -190,7 +194,11 @@ def get_trajet(token, idTrajet):
     if row[0] in [id[0] for id in c.execute("SELECT idTrajet FROM TRAJET_PRIVE")]:
         trajet['typeTrajet'] = 'prive'
         #On recupere le nom du groupe
-        trajet['nomGroupe'] = [groupe[0] for groupe in c.execute("SELECT nomGroupe FROM TRAJET_PRIVE NATURAL JOIN GROUPE WHERE idTrajet=?", (row[0],))][0]
+        results = c.execute("SELECT nomGroupe FROM TRAJET_PRIVE NATURAL JOIN GROUPE WHERE idTrajet=?", (row[0],)).fetchall()
+        if results:
+            trajet['nomGroupe'] = results[0][0]
+        else:
+            trajet['nomGroupe'] = None
     elif row[0] in [id[0] for id in c.execute("SELECT idTrajet FROM TRAJET_PUBLIC")]:
         trajet['typeTrajet'] = 'public'
     else:
@@ -498,7 +506,7 @@ def getGroupes(token):
     return jsonify(result), 200
 
 
-@admin_bp.route('/modifNom/<string:token>/<int:idGroupe>/<string:nouveauNom>', methods=['GET'])
+@admin_bp.route('/modifNom/<string:token>/<int:idGroupe>/<string:nouveauNom>', methods=['POST'])
 def modifNom(token, idGroupe, nouveauNom):
     #On verifie que le token existe et est admin
     conn = sqlite3.connect(URI_DATABASE)
