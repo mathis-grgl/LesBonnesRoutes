@@ -51,10 +51,11 @@ def modifMail():
     json = request.get_json()
     mail = json.get('email')
     subject = "Changement de mot de passe"
-    message = "test"
+    message = "test : "
     if(re.match(regexMail, mail)):
         #Créer un token de chgt de mdp
         token = secrets.token_hex(16)  # generate a random token with 16 bytes
+        message += token
 
         #On recup l'id du compte avec le mail et on vérifie s'il existe
         conn = sqlite3.connect(URI_DATABASE)
