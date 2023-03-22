@@ -78,7 +78,7 @@ function charger_trajets() {
                     ligne.append($('<td>').text( typeTrajet + " : " + trajet.nomGroupe));
                     ligne.append($('<td>').text(trajet.villeDepart));
                     ligne.append($('<td>').text(trajet.villeArrivee));
-                    ligne.append($('<td>').text(trajet.dateDepart));
+                    ligne.append($('<td>').text(dateObject.format('DD-MM-YYYY')));
                     ligne.append($('<td>').text(trajet.heureDepart));
                     ligne.append($('<td>').text(trajet.nbPlacesRestantes + '/' + trajet.nbPlaces));
                     ligne.append($('<td>').text(trajet.statusTrajet));
@@ -137,7 +137,7 @@ function charger_trajets() {
                             row.append($('<td>').text(trajet.typeTrajet.charAt(0).toUpperCase() + trajet.typeTrajet.slice(1)));
                             row.append($('<td>').text(trajet.villeDepart));
                             row.append($('<td>').text(trajet.villeArrivee));
-                            row.append($('<td>').text(trajet.dateDepart));
+                            row.append($('<td>').text(dateObject.format('DD-MM-YYYY')));
                             row.append($('<td>').text(trajet.heureDepart));
                             row.append($('<td>').text(trajet.nbPlacesRestantes + '/' + trajet.nbPlaces));
                             row.append($('<td>').text(trajet.statusTrajet));
