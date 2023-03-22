@@ -150,6 +150,8 @@ def get_trajets(typeTrajet):
 
         trajets.append(trajet)
 
+    print(trajets)
+
     conn.close()
     return jsonify(trajets)
 
@@ -195,6 +197,8 @@ def get_trajet(token, idTrajet):
         trajet['typeTrajet'] = 'public'
     else:
         trajet['typeTrajet'] = None
+
+    print(trajet)
 
     conn.close()
     return jsonify(trajet)
