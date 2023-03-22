@@ -74,8 +74,13 @@ function charger_trajets() {
                     console.log("Le trajet correspond à un trajet que l'utilisateur connecté a crée.")
                     let ligne = $("<tr>");
                     let typeTrajet = (trajet.typeTrajet.charAt(0).toUpperCase() + trajet.typeTrajet.slice(1)).replace('e', 'é');
-
-                    ligne.append($('<td>').text( typeTrajet + " : " + trajet.nomGroupe));
+                    console.log(typeTrajet);
+                    if(typeTrajet == 'Privé'){
+                        ligne.append($('<td>').text( typeTrajet + " : " + trajet.nomGroupe));
+                    }else if (typeTrajet == 'Public'){
+                        ligne.append($('<td>').text(typeTrajet));
+                    }
+                    
                     ligne.append($('<td>').text(trajet.villeDepart));
                     ligne.append($('<td>').text(trajet.villeArrivee));
                     ligne.append($('<td>').text(dateObject.format('DD-MM-YYYY')));
