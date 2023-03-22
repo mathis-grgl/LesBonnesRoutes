@@ -495,15 +495,15 @@ def getPassagers(token, idTrajet):
         return jsonify({'message': 'Le token est invalide ou expiré'}), 401
     else:
         #On verifie que le token est admin
-        if not admin[0] == 1:
-            conn.close()
-            return jsonify({'message': 'Le token n\'est pas admin'}), 401
+        # if not admin[0] == 1:
+        #     conn.close()
+        #     return jsonify({'message': 'Le token n\'est pas admin'}), 401
 
         c.execute("SELECT idCompte, nbPlaces, nomCompte, prenomCompte, noteCompte FROM TRAJET_EN_COURS_PASSAGER NATURAL JOIN COMPTE WHERE idTrajet = ?", (idTrajet,))
         rows = c.fetchall()
-        if not rows:
-            conn.close()
-            return jsonify({'message': 'Aucun passager pour le moment'}), 204
+        # if not rows:
+        #     conn.close()
+        #     return jsonify({'message': 'Aucun passager pour le moment'}), 204
         
         conn.close()
         # Récupération des noms de colonnes
