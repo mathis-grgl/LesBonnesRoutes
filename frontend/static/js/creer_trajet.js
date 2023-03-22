@@ -89,6 +89,7 @@ $(document).ready(function () {
             
             $('#select-amis').show();
         } else {
+            typeTrajet = "Public";
             $('#select-amis').hide();
         }
     });
@@ -115,7 +116,7 @@ $('#forminput').submit(function (event) {
     let commentaires = $('#commentaires').val();
     let precision = $('#precision').val();
 
-    if (nbPlaces < 0) {
+    if (nbPlaces < 1) {
         valide = false;
         $('#nb-places').css('border', '2px solid red');
         $('#2').empty();
@@ -123,7 +124,7 @@ $('#forminput').submit(function (event) {
 
     }
 
-    if (prix <= 0) {
+    if (prix < 0) {
         valide = false;
         $('#prix-place').css('border', '2px solid red');
         $('#3').empty();
