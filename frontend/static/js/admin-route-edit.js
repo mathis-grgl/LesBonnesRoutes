@@ -4,23 +4,17 @@ let id = null;
 $(document).ready(function () {
     // Récupération du token admin
     token = getCookieToken();
-
     // Si le token est null, on redirige vers la page de connexion
     if (token == null) {
-        window.location.href = "../../../login_signup";
+        window.location.href = "/login_signup";
     }
-
     else {
 
-        // get last character of url
-        let urlLink = window.location.href;
-        id = urlLink.charAt(urlLink.length - 1);
-
-
+        id = window.location.href.split("/").slice(-1)[0];
         // Si l'id de l'utilisateur est null, on affiche une alerte et on redirige vers la page de gestion des comptes
-        if (!id.match(/^[0-9]+$/)) {
+        if (id == null || !id.match(/^[0-9]+$/)) {
             alert("Veuillez sélectionner un trajet");
-            window.location.href = "../../search-route";
+            window.location.href = "/search-route";
         }
     }
 
@@ -91,7 +85,7 @@ $(document).ready(function () {
         .then(response => {
             if (!response.ok) {
                 alert('Le trajet n\'existe pas');
-                window.location.href = "../../search-route";
+                window.location.href = "/admin/search-route";
                 throw new Error('Erreur : ' + response.status);
             }
             return response.json();
@@ -174,8 +168,6 @@ $('#editTrajet').submit(function (event) {
         $('#nb-places').css('border', '2px solid red');
         $('#2').empty();
         $('#2').append($('<b>').text("Vous devez rentrer un nombre de places positif."));
-
-
     }
 
     if (prix < 0) {
@@ -184,7 +176,6 @@ $('#editTrajet').submit(function (event) {
         $('#3').empty();
         $('#3').append($('<b>').text("Vous devez rentrer un prix positif."));
     }
-
 
     if (valide) {
         fetch(url, {
