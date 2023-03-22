@@ -685,12 +685,10 @@ def supprimerGroupe(token, idGroupe):
         return jsonify({'message': 'Le token n\'est pas admin'}), 401
 
     #On peut supprimer le groupe
+
+    sendNotifDeleteGroupe(idCompte, idGroupe)  #On envoie une notif
     c.execute("DELETE FROM GROUPE WHERE idGroupe = ?", (idGroupe,))
-    # On supprime les trajet liés au groupe (TODO)
     conn.commit()
     conn.close()
-
-    #On envoie une notif
-    sendNotifDeleteGroupe(idCompte, idGroupe)
 
     return jsonify({'message': 'Le groupe a bien été supprimé.'}), 200
