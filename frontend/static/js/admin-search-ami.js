@@ -20,7 +20,8 @@ $(document).ready(function () {
     let nbGroupes = data.length;
     for (let i = 0; i < nbGroupes; i++) {
         let groupe = data[i];
-        let idGroupe = i+1;
+        let idGroupe = parseInt(i)+1;
+        console.log(idGroupe);
         console.log(groupe);
         
         // Création d'une nouvelle ligne

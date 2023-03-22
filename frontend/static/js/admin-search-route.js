@@ -51,6 +51,11 @@ $(document).ready(function () {
         let tdPrix = document.createElement("td");
         tdPrix.textContent = route.prix + " €";
         tr.appendChild(tdPrix);
+
+        // Ajout du nombre de places 
+        let tdNbPlaces = document.createElement("td");
+        tdNbPlaces.textContent = route.nbPlaces;
+        tr.appendChild(tdNbPlaces);
         
         // Ajout du nombre de places restantes
         let tdNbPlacesRestantes = document.createElement("td");

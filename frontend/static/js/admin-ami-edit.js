@@ -4,7 +4,6 @@ let token = null;
 
 // Récupération du token admin
 token = getCookieToken();
-url = '/admin/getGroupes/' + token;
 
 // Si le token est null, on redirige vers la page de connexion
 if (token == null) {
@@ -26,6 +25,8 @@ const infoCompteCo = '/compte/getInfoCompte/' + token;
 const getMembres = '/ami/getMembers/' + idGroupe;
 let idUserco;
 
+const membersNames = [];
+
 fetch(infoCompteCo)
     .then(reponse => {
         if (!reponse.ok) { throw new Error(reponse.statusText); }
@@ -35,7 +36,6 @@ fetch(infoCompteCo)
     .catch(error => { console.error(error); })
 
 function displayMembres(data, container) {
-
     let card = $("<div>").addClass("member-card").data("groupe", data);
 
     let photo = data.photo;
@@ -56,15 +56,19 @@ function displayMembres(data, container) {
     let email = $('<p>').text(data.email);
     card.append(email);
 
-    const deleteBtn = $('<button>')
-        .addClass('delete-btn').attr('id', data.idCompte)
-        .text('Supprimer');
-    card.append(deleteBtn);
+    //On vérifie que le créateur ne puisse pas se supprimer lui même
+    if (data.idCompte != data.idCreateur) {
+        const deleteBtn = $('<button>')
+            .addClass('delete-btn').attr('id', data.idCompte)
+            .text('Supprimer');
+        card.append(deleteBtn);
+    }
 
     container.append(card);
 }
 
 function charger_groupe() {
+    url = '/admin/getGroupes/' + token;
     fetch(url)
         .then(reponse => {
             if (!reponse.ok) {
@@ -74,7 +78,7 @@ function charger_groupe() {
         })
         .then(data => {
             for (let i = 0; i < data.length; i++) {
-                if (i + 1 == id) {
+                if (i+1 == id) {
                     $('#group-name').val(data[i].nomGroupe);
                 }
             }
@@ -86,7 +90,6 @@ function charger_groupe() {
 }
 
 function charger_membres() {
-    console.log("affichage des membres.")
     const membersContainer = $('#members-container');
     fetch(getMembres)
         .then(reponse => {
@@ -96,10 +99,36 @@ function charger_membres() {
             return reponse.json();
         })
         .then(data => {
-            console.log(data);
             for (let i = 0; i < data.length; i++) {
                 displayMembres(data[i], membersContainer);
+                membersNames.push(data[i].nomCompte);
             }
+        })
+        .catch(error => {
+            console.error(error);
+        })
+    charger_users();
+}
+
+function charger_users() {
+    
+    url = '/admin/users';
+    fetch(url)
+        .then(reponse => {
+            if (!reponse.ok) { throw new Error("network wasnt ok"); }
+            return reponse.json();
+        })
+        .then(data => {
+            const $select = $('#select-users');
+            const addedNames = []; // tableau pour stocker les noms des personnes déjà ajoutées
+            $.each(data, function (index, user) {
+                const prenomUser = user.nomCompte;
+                console.log(membersNames);
+                if (!addedNames.includes(prenomUser) && prenomUser !== "ADMIN" && idUserco !== user.idCompte && !membersNames.includes(prenomUser)) {
+                    $select.append('<option value="' + user.idCompte + '">' + user.nomCompte + " " + user.prenomCompte + '</option>');
+                    addedNames.push(prenomUser); // ajouter le nom à la liste des noms déjà ajoutés
+                }
+            });
         })
         .catch(error => {
             console.error(error);
@@ -130,9 +159,8 @@ $(document).on('click', '.delete-btn', function () {
 
     let id = $(this).attr('id');
     let del = '/admin/removeMember/' + token + '/' + idGroupe + '/' + id;
-    console.log(del);
     if (window.confirm("Etes-vous sûr de vouloir supprimer cet utilisateur du groupe d'amis ? ")) {
-        fetch(del , { method: 'DELETE' })
+        fetch(del, { method: 'DELETE' })
             .then(reponse => {
                 if (!reponse.ok) {
                     throw new Error('Network response was not ok');
@@ -147,4 +175,23 @@ $(document).on('click', '.delete-btn', function () {
                 console.error(error);
             })
     }
+});
+
+$('#ajouter_amis').submit(function (event) {
+    event.preventDefault(); // pour empêcher la soumission normale du formulaire
+
+    const selectedValues = $('#select-users').val();
+
+    let idAmi = parseInt(selectedValues[0]);
+    let url = '/admin/addMember/' + token + '/' + idGroupe + '/' + idAmi;
+
+    fetch(url, { method: 'POST' })
+        .then(reponse => {
+            if (!reponse.ok) { throw new Error(reponse.statusText); }
+            else { location.reload(); }
+            return reponse.json();
+        })
+        .catch(error => {
+            console.error(error);
+        });
 });

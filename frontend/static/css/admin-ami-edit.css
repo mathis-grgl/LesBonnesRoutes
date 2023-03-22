@@ -1,7 +1,7 @@
 .center{
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: top;
     text-align: center;
     margin-bottom: 10px;
 }

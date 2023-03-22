@@ -250,6 +250,7 @@ function getRouteTable () {
           { data: 'arrivee' }, /* index - 1 */
           { data: 'date_depart' }, /* index - 2 */
           { data: 'prix' }, /* index - 3 */
+          { data: 'nb_places' }, /* index - 3 */
           { data: 'nb_places_restantes' }, /* index - 4 */
           { data: 'statut' }, /* index - 5 */
           { data: 'modifier' }, /* index - 6 */
