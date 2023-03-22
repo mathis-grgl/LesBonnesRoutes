@@ -537,7 +537,7 @@ def suppAllNotif(token):
     return jsonify({'message': 'Les notifications ont bien été supprimées.'}), 200
 
 
-@compte_bp.route('/modifMdp/<string:token>/<string:mdp>', methods=['GET'])
+@compte_bp.route('/modifMdp/<string:token>/<string:mdp>', methods=['POST'])
 def modifMdp(token, mdp):
     #On verifie le token
     conn = sqlite3.connect(URI_DATABASE)

@@ -59,6 +59,10 @@ def about():
 def recuperation():
     return render_template('recuperation_mdp/recuperation-mdp.html')
 
+@app.route('/changer-mdp')
+def changer_mdp():
+    return render_template('changer_mdp/changer-mdp.html')
+
 # Requetes
 from backend.blueprints.compte import compte_bp
 from backend.blueprints.trajet import trajet_bp

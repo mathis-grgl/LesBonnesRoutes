@@ -30,10 +30,12 @@ function sendEmail(val) {
         })
         .then(response => {
             if (response.status === 200) {
-                console.log("Email envoyé");
+                alert("Email envoyé");
             } else {
-                console.log("Erreur lors de l'envoi de l'email");
+                alert("Erreur lors de l'envoi de l'email");
             }
+
+            window.close();
         }).catch(error => {
             console.log(error);
         });
