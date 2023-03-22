@@ -38,6 +38,10 @@ $('#formcontact').submit(function (event) {
 function displayMessage(res) {
     if (res) {
         $('#okok').text("L'email a été envoyé.").css('color', 'red');
+        $('#name').val('');
+        $('#email').val('');
+        $('#phone').val('');
+        $('#message').val('');
     } else {
         $('#okok').text("L'email n'a pas été envoyé.").css('color', 'red');
     }
