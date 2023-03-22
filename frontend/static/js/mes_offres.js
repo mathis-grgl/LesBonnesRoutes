@@ -75,12 +75,12 @@ function charger_trajets() {
                     let ligne = $("<tr>");
                     let typeTrajet = (trajet.typeTrajet.charAt(0).toUpperCase() + trajet.typeTrajet.slice(1)).replace('e', 'é');
                     console.log(typeTrajet);
-                    if(typeTrajet == 'Privé'){
-                        ligne.append($('<td>').text( typeTrajet + " : " + trajet.nomGroupe));
-                    }else if (typeTrajet == 'Public'){
+                    if (typeTrajet == 'Privé') {
+                        ligne.append($('<td>').text(typeTrajet + " : " + trajet.nomGroupe));
+                    } else if (typeTrajet == 'Public') {
                         ligne.append($('<td>').text(typeTrajet));
                     }
-                    
+
                     ligne.append($('<td>').text(trajet.villeDepart));
                     ligne.append($('<td>').text(trajet.villeArrivee));
                     ligne.append($('<td>').text(dateObject.format('DD-MM-YYYY')));
@@ -139,7 +139,13 @@ function charger_trajets() {
                             nomConducteur = data.nomCompte;
                             console.log(nomConducteur);
                             let row = $("<tr>");
-                            row.append($('<td>').text(trajet.typeTrajet.charAt(0).toUpperCase() + trajet.typeTrajet.slice(1)));
+                            let typeTrajet = (trajet.typeTrajet.charAt(0).toUpperCase() + trajet.typeTrajet.slice(1)).replace('e', 'é');
+                            console.log(typeTrajet);
+                            if (typeTrajet == 'Privé') {
+                                row.append($('<td>').text(typeTrajet + " : " + trajet.nomGroupe));
+                            } else if (typeTrajet == 'Public') {
+                                row.append($('<td>').text(typeTrajet));
+                            }
                             row.append($('<td>').text(trajet.villeDepart));
                             row.append($('<td>').text(trajet.villeArrivee));
                             row.append($('<td>').text(dateObject.format('DD-MM-YYYY')));
