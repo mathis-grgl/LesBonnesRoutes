@@ -333,8 +333,11 @@ def createTrajet(token):
                 idTrajet = c.execute(sql).fetchone()[0]
 
                 if typeTrajet == 'Prive':
+                    print("test")
                     idGroupe = data.get('idGroupe')
                     c.execute("INSERT INTO TRAJET_PRIVE VALUES (?, ?)", (idTrajet, idGroupe))
+                    conn.commit()
+                    
 
                     #On envoie une notif au groupe
                     sendNotifGroupe(idCompte, idGroupe, "un nouveau trajet est disponible pour le groupe !")

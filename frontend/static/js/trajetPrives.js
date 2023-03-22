@@ -18,7 +18,13 @@ function charger_trajetsPrives(){
         return reponse.json();
     })
     .then(data => {
-        console.log(data);
+        let table = $('#trajets');
+        let tbody = $("<tbody>");
+        for(let i = 0; i < data.length ; i++){
+            let trajet = data[i];
+            console.log(trajet);
+
+        }
     })
     .catch(error => {
         console.error(error);
