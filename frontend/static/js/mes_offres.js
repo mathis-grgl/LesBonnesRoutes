@@ -109,7 +109,7 @@ function charger_trajets() {
 
                     } else {
                         // Il n'y a pas plus de 24 heures d'écart entre les deux dates
-                        $('.delete-btn#' + trajet.idTrajet).hide();
+                        $('.delete-btn#' + trajet.idTrajet).remove();
                     }
 
                     tbody.append(ligne);

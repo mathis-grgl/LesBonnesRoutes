@@ -18,6 +18,7 @@ Branche principale du développement de Les Bonnes Routes. Un site web de covoit
 python3.10 -m pip install flask==2.1.2
 python3.10 -m pip install jinja2==3.1.2
 python3.10 -m pip install apscheduler==3.10.1
+python3.10 -m pip install flask-mail==0.9.1
 ```
 
 ## Installation

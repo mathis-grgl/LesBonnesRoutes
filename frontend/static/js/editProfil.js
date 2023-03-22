@@ -78,7 +78,7 @@ function onLoad() {
 
 const token = getCookieToken();
 let mdpDeBase = "";
-const url = 'compte/getInfoCompte/' + token;
+const url = '/compte/getInfoCompte/' + token;
 
 fetch(url)
   .then(response => {
