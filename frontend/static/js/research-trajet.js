@@ -32,7 +32,7 @@ function displayOffer(event){
     console.log("Prix < : " + prixInferieur.value);
     console.log("Prix > : " + prixSuperieur.value);*/
 
-    fetch('/trajet/recherche', {
+    fetch(`/trajet/recherche/${getCookieToken()}`, {
         method: 'POST',
         headers: {
         'Content-Type': 'application/json'
