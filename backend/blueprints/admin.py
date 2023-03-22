@@ -455,7 +455,7 @@ def modifTrajet(token, idTrajet):
                         conn.close()
 
                         #On envoie une notif aux passagers
-                        sendNotifTrajetPassagers(id, idTrajet, "Le trajet a été modifié par un administrateur")
+                        sendNotifTrajetPassagers(idCompte, idTrajet, "Le trajet a été modifié par un administrateur")
 
                         return jsonify({'message': 'Le trajet a bien été modifié.'}), 200
                     else:
