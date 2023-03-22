@@ -1,5 +1,5 @@
 const token = getCookieToken();
-const createTrajetURL = 'trajet/createTrajet/' + token;
+const createTrajetURL = '/trajet/createTrajet/' + token;
 
 // Menu deroulant ville de départ
 const select = document.querySelector("select[name='villeDepart']");
