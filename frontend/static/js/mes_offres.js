@@ -73,7 +73,7 @@ function charger_trajets() {
                 if (trajet.idCompte == trajet.idConducteur) {
                     console.log("Le trajet correspond à un trajet que l'utilisateur connecté a crée.")
                     let ligne = $("<tr>");
-                    let typeTrajet = trajet.typeTrajet.charAt(0).toUpperCase() + trajet.typeTrajet.slice(1);
+                    let typeTrajet = (trajet.typeTrajet.charAt(0).toUpperCase() + trajet.typeTrajet.slice(1)).replace('e', 'é');
 
                     ligne.append($('<td>').text( typeTrajet + " : " + trajet.nomGroupe));
                     ligne.append($('<td>').text(trajet.villeDepart));
