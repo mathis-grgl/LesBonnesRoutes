@@ -257,7 +257,7 @@ function openPopupNotif(id) {
   const content = document.querySelector("div[id='popup-notif']");
 
   //Récuperation des notifs et affichage
-  fetch('compte/getNotifs/' + tokenH)
+  fetch('/compte/getNotifs/' + tokenH)
   .then(response => {
   if (!response.ok) {
       throw new Error('Network response was not ok');
