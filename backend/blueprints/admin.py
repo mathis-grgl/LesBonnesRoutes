@@ -666,6 +666,18 @@ def removeMember(token, idGroupe, idAmi):
         conn.close()
         return jsonify({'message': 'Cet ami ne fait pas parti de ce groupe'}), 403
 
+    #On vérifie qu'on ne supprime pas le créateur du groupe
+    c.execute("SELECT idCreateur FROM GROUPE WHERE idGroupe = ?", (idGroupe,))
+    createur = c.fetchone()
+    if not createur:
+        conn.close()
+        return jsonify({'message': 'Ce groupe n\'existe pas'}), 404
+    
+    idCreateur = createur[0]
+    if idAmi == idCreateur:
+        conn.close()
+        return jsonify({'message': 'Vous ne pouvez pas supprimer le créateur du groupe'}), 403
+
     #On peut supprimer l'ami
     c.execute("DELETE FROM AMI_GROUPE WHERE idGroupe = ? AND idCompte = ?", (idGroupe, idAmi))
     conn.commit()
