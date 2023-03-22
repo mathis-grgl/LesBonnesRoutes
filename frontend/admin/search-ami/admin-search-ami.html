@@ -8,8 +8,6 @@
   <link rel="stylesheet" href="/static/css/admin-search-ami.css">
 </head>
 <body>
-  {% include 'scripts-required.html' %}
-
   {% include 'header.html' %}
 
   {% set section_name="Administrateur - Recherche d'un groupe d'amis" %}
@@ -18,6 +16,8 @@
   {% include 'admin/search-ami/admin-search-ami-section.html' %}
 
   {% include 'footer.html' %}
+
+  {% include 'scripts-required.html' %}
 
   <script src="/static/js/admin-search-ami.js"></script>
   <script src="https://cdn.datatables.net/1.13.3/js/jquery.dataTables.min.js"></script>

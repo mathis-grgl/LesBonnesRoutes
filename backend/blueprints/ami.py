@@ -147,7 +147,7 @@ def removeMember(token, idGroupe, idAmi):
     if not ami:
         conn.close()
         return jsonify({'message': 'L\'ami spécifié n\'existe pas'}), 404
-
+        
     #On vérifie que l'ami fait bien parti du groupe
     c.execute("SELECT nomCompte FROM COMPTE INNER JOIN AMI_GROUPE ON COMPTE.idCompte = AMI_GROUPE.idCompte WHERE AMI_GROUPE.idGroupe = ? AND COMPTE.idCompte = ?", (idGroupe, idAmi))
     participe = c.fetchone()

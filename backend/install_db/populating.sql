@@ -65,33 +65,61 @@ INSERT INTO TRAJET_PRIVE VALUES (3, 1);
 INSERT INTO TRAJET_PRIVE VALUES (6, 2);
 INSERT INTO TRAJET_PRIVE VALUES (7, 2);
 
-INSERT INTO NOTIFICATION(idCompteEnvoyeur, messageNotification) VALUES (1, "demande de trajet");
-INSERT INTO NOTIFICATION(idCompteEnvoyeur, messageNotification) VALUES (2, "... t'as accepté");
-INSERT INTO NOTIFICATION(idCompteEnvoyeur, messageNotification) VALUES (3, "demande de trajet avec des gens qui vous connaissent");
-INSERT INTO NOTIFICATION(idCompteEnvoyeur, messageNotification) VALUES (4, "bonjour");
-INSERT INTO NOTIFICATION(idCompteEnvoyeur, messageNotification) VALUES (5, "tyvbjnkl");
-INSERT INTO NOTIFICATION(idCompteEnvoyeur, messageNotification) VALUES (1, "ajout de ...");
-INSERT INTO NOTIFICATION(idCompteEnvoyeur, messageNotification) VALUES (2, "nouveau trajet !");
-INSERT INTO NOTIFICATION(idCompteEnvoyeur, messageNotification) VALUES (3, "membre ajouté");
+INSERT INTO NOTIFICATION(idCompteEnvoyeur, messageNotification) VALUES (1, "Cet utilisateur souhaite participer à l'un de vos trajet");
+INSERT INTO NOTIFICATION(idCompteEnvoyeur, messageNotification) VALUES (2, "Cet utilisateur souhaite participer à l'un de vos trajet");
+INSERT INTO NOTIFICATION(idCompteEnvoyeur, messageNotification) VALUES (1, "Cet utilisateur souhaite participer à l'un de vos trajet");
+INSERT INTO NOTIFICATION(idCompteEnvoyeur, messageNotification) VALUES (4, "Le conducteur vous a accepté dans son trajet !");
+INSERT INTO NOTIFICATION(idCompteEnvoyeur, messageNotification) VALUES (1, "Le conducteur vous a accepté dans son trajet !");
+INSERT INTO NOTIFICATION(idCompteEnvoyeur, messageNotification) VALUES (1, "Le conducteur vous a accepté dans son trajet !");
+INSERT INTO NOTIFICATION(idCompteEnvoyeur, messageNotification) VALUES (2, "Vous avez été ajouté au groupe !");
+INSERT INTO NOTIFICATION(idCompteEnvoyeur, messageNotification) VALUES (1, "Vous avez été ajouté au groupe !");
+INSERT INTO NOTIFICATION(idCompteEnvoyeur, messageNotification) VALUES (2, "Vous avez été ajouté au groupe !");
+INSERT INTO NOTIFICATION(idCompteEnvoyeur, messageNotification) VALUES (1, "Vous avez été ajouté au groupe !");
+INSERT INTO NOTIFICATION(idCompteEnvoyeur, messageNotification) VALUES (2, "Vous avez été ajouté au groupe !");
+INSERT INTO NOTIFICATION(idCompteEnvoyeur, messageNotification) VALUES (1, "Un nouveau trajet privé est disponible pour le groupe !");
+INSERT INTO NOTIFICATION(idCompteEnvoyeur, messageNotification) VALUES (1, "Un nouveau trajet privé est disponible pour le groupe !");
+INSERT INTO NOTIFICATION(idCompteEnvoyeur, messageNotification) VALUES (1, "Un nouveau trajet privé est disponible pour le groupe !");
+INSERT INTO NOTIFICATION(idCompteEnvoyeur, messageNotification) VALUES (1, "Un nouveau trajet privé est disponible pour le groupe !");
 
-INSERT INTO NOTIF_RECUE VALUES (2, 1);
-INSERT INTO NOTIF_RECUE VALUES (1, 2);
-INSERT INTO NOTIF_RECUE VALUES (1, 3);
-INSERT INTO NOTIF_RECUE VALUES (5, 4);
+/*
+Cet utilisateur souhaite participer à l'un de vos trajet
+Le conducteur vous a accepté dans son trajet !
+Vous avez été ajouté au groupe !
+Un nouveau trajet privé est disponible pour le groupe !
+*/
+
+INSERT INTO NOTIF_RECUE VALUES (4, 1);
+INSERT INTO NOTIF_RECUE VALUES (4, 2);
+INSERT INTO NOTIF_RECUE VALUES (4, 3);
+INSERT INTO NOTIF_RECUE VALUES (1, 4);
 INSERT INTO NOTIF_RECUE VALUES (2, 5);
 INSERT INTO NOTIF_RECUE VALUES (3, 6);
-INSERT INTO NOTIF_RECUE VALUES (3, 7);
-INSERT INTO NOTIF_RECUE VALUES (1, 8);
+INSERT INTO NOTIF_RECUE VALUES (1, 7);
+INSERT INTO NOTIF_RECUE VALUES (2, 8);
+INSERT INTO NOTIF_RECUE VALUES (3, 9);
+INSERT INTO NOTIF_RECUE VALUES (4, 10);
+INSERT INTO NOTIF_RECUE VALUES (5, 11);
+INSERT INTO NOTIF_RECUE VALUES (1, 12);
+INSERT INTO NOTIF_RECUE VALUES (2, 13);
+INSERT INTO NOTIF_RECUE VALUES (3, 14);
+INSERT INTO NOTIF_RECUE VALUES (5, 15);
 
-INSERT INTO NOTIF_TRAJET VALUES (1, 1);
-INSERT INTO NOTIF_TRAJET VALUES (2, 1);
-INSERT INTO NOTIF_TRAJET VALUES (3, 1);
+INSERT INTO NOTIF_TRAJET VALUES (1, 4);
+INSERT INTO NOTIF_TRAJET VALUES (2, 4);
+INSERT INTO NOTIF_TRAJET VALUES (3, 5);
 INSERT INTO NOTIF_TRAJET VALUES (4, 1);
+INSERT INTO NOTIF_TRAJET VALUES (5, 2);
+INSERT INTO NOTIF_TRAJET VALUES (6, 2);
 
-INSERT INTO NOTIF_GROUPE VALUES (5, 1);
-INSERT INTO NOTIF_GROUPE VALUES (6, 1);
-INSERT INTO NOTIF_GROUPE VALUES (7, 1);
+INSERT INTO NOTIF_GROUPE VALUES (7, 2);
 INSERT INTO NOTIF_GROUPE VALUES (8, 1);
+INSERT INTO NOTIF_GROUPE VALUES (9, 2);
+INSERT INTO NOTIF_GROUPE VALUES (10, 1);
+INSERT INTO NOTIF_GROUPE VALUES (11, 2);
+INSERT INTO NOTIF_GROUPE VALUES (12, 2);
+INSERT INTO NOTIF_GROUPE VALUES (13, 2);
+INSERT INTO NOTIF_GROUPE VALUES (14, 2);
+INSERT INTO NOTIF_GROUPE VALUES (15, 2);
 
 INSERT INTO HISTORIQUE_TRAJET VALUES(4, 4);
 INSERT INTO HISTORIQUE_TRAJET VALUES(1, 4);
