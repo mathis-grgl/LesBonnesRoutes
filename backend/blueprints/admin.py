@@ -635,7 +635,7 @@ def addMember(token, idGroupe, idAmi):
 
 
 #Supprimer un membre du groupe d'amis
-@admin_bp.route('/removeMember/<string:token>/<int:idGroupe>/<int:idAmi>', methods=['POST'])
+@admin_bp.route('/removeMember/<string:token>/<int:idGroupe>/<int:idAmi>', methods=['DELETE'])
 def removeMember(token, idGroupe, idAmi):
     #On verifie que le token existe et est admin
     conn = sqlite3.connect(URI_DATABASE)

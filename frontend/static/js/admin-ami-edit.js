@@ -28,20 +28,20 @@ let idUserco;
 
 fetch(infoCompteCo)
     .then(reponse => {
-        if (!reponse.ok) {throw new Error(reponse.statusText);}
+        if (!reponse.ok) { throw new Error(reponse.statusText); }
         return reponse.json();
     })
-    .then(data => {idUserco = data.idCompte;})
-    .catch(error => {console.error(error);})
+    .then(data => { idUserco = data.idCompte; })
+    .catch(error => { console.error(error); })
 
 function displayMembres(data, container) {
 
     let card = $("<div>").addClass("member-card").data("groupe", data);
 
     let photo = data.photo;
-    if(photo == null)
+    if (photo == null)
         photo = $('<img>').attr('src', 'https://via.placeholder.com/150');
-    else 
+    else
         photo = $('<img>').attr('src', data.photo || 'https://via.placeholder.com/150');
     card.append(photo);
 
@@ -56,19 +56,15 @@ function displayMembres(data, container) {
     let email = $('<p>').text(data.email);
     card.append(email);
 
-    if (data.idCreateur == idUserco) {
-        if (data.idCompte !== idUserco) {
-            const deleteBtn = $('<button>')
-                .addClass('delete-btn').attr('id', data.idCompte)
-                .text('Supprimer');
-            card.append(deleteBtn);
+    const deleteBtn = $('<button>')
+        .addClass('delete-btn').attr('id', data.idCompte)
+        .text('Supprimer');
+    card.append(deleteBtn);
 
-        }
-    }
     container.append(card);
 }
 
-function charger_groupe(){
+function charger_groupe() {
     fetch(url)
         .then(reponse => {
             if (!reponse.ok) {
@@ -78,7 +74,7 @@ function charger_groupe(){
         })
         .then(data => {
             for (let i = 0; i < data.length; i++) {
-                if (i+1 == id) {
+                if (i + 1 == id) {
                     $('#group-name').val(data[i].nomGroupe);
                 }
             }
@@ -119,23 +115,24 @@ $('#modifier_groupe').submit(function (event) {
 
     fetch(urlmodif, {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({'nomGroupe': nomGroupe})
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 'nomGroupe': nomGroupe })
     })
         .then(reponse => {
-            if (reponse.ok) {window.location.href = '/admin/search-ami';} 
-            else {alert("network issue");}
+            if (reponse.ok) { window.location.href = '/admin/search-ami'; }
+            else { alert("network issue"); }
         })
-        .catch(error => {console.error(error);});
+        .catch(error => { console.error(error); });
 });
 
 
 $(document).on('click', '.delete-btn', function () {
 
     let id = $(this).attr('id');
-    let del = '/ami/removeMember/' + token + '/' + idGroupe + '/' + id;
+    let del = '/admin/removeMember/' + token + '/' + idGroupe + '/' + id;
+    console.log(del);
     if (window.confirm("Etes-vous sûr de vouloir supprimer cet utilisateur du groupe d'amis ? ")) {
-        fetch(del)
+        fetch(del , { method: 'DELETE' })
             .then(reponse => {
                 if (!reponse.ok) {
                     throw new Error('Network response was not ok');
