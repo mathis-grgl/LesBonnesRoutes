@@ -8,6 +8,9 @@ fetch("/admin/trajets/Public")
     console.error('Une erreur est survenue :', error);
   });
 
+// Bouton rechercher
+const btnResearch = document.getElementById("btn-research");
+
 
 // Champs de recherche
 const villeDepart = document.querySelector("select[name=city-start]");
@@ -54,14 +57,20 @@ function displayOffer(event){
         throw new Error('Erreur : ' + response.status);
         }
     })
-    .then(data => {
+    .then(async data => {
         if (data.length === 0){
           titreOffre.innerHTML = "Aucun trajet correspondant";
         } else {
           titreOffre.innerHTML = "Trajets correspondants";
           descriptionOffres.innerHTML = "Retrouvez ici les offres de trajets correspondantes.";
         }
-        displayTrajet(data);
+        // Retirer l'attribut 'onclick' du bouton recherche pour eviter bug
+        btnResearch.removeAttribute('onclick');
+
+        await displayTrajet(data);
+
+        //On remet 'onclick' du bouton recherche pour eviter bug
+        btnResearch.setAttribute('onclick', 'displayOffer(event)');
     })
     .catch(error => {
         titreOffre.innerHTML = "Aucun trajet correspondant";
