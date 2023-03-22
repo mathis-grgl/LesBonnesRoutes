@@ -28,14 +28,16 @@ let idUserco;
 const membersNames = [];
 
 fetch(infoCompteCo)
-    .then(reponse => {
-        if (!reponse.ok) { throw new Error(reponse.statusText); }
-        return reponse.json();
-    })
-    .then(data => { idUserco = data.idCompte; })
-    .catch(error => { console.error(error); })
+.then(reponse => {
+    if (!reponse.ok) { throw new Error(reponse.statusText); }
+    return reponse.json();
+})
+.then(data => { idUserco = data.idCompte; })
+.catch(error => { console.error(error); })
+let urlG = '/admin/users';
 
 function displayMembres(data, container) {
+    charger_users();
     let card = $("<div>").addClass("member-card").data("groupe", data);
 
     let photo = data.photo;
@@ -44,7 +46,7 @@ function displayMembres(data, container) {
     else
         photo = $('<img>').attr('src', data.photo || 'https://via.placeholder.com/150');
     card.append(photo);
-
+    
     if (data.idCompte == data.idCreateur) {
         let name = $('<h2>').text(`${data.nomCompte} ${data.prenomCompte} 👑`);
         card.append(name);
@@ -52,7 +54,7 @@ function displayMembres(data, container) {
         let name = $('<h2>').text(`${data.nomCompte} ${data.prenomCompte}`);
         card.append(name);
     }
-
+    
     let email = $('<p>').text(data.email);
     card.append(email);
 
@@ -63,7 +65,7 @@ function displayMembres(data, container) {
             .text('Supprimer');
         card.append(deleteBtn);
     }
-
+    
     container.append(card);
 }
 
@@ -107,13 +109,11 @@ function charger_membres() {
         .catch(error => {
             console.error(error);
         })
-    charger_users();
 }
 
 function charger_users() {
     
-    url = '/admin/users';
-    fetch(url)
+    fetch(urlG)
         .then(reponse => {
             if (!reponse.ok) { throw new Error("network wasnt ok"); }
             return reponse.json();
@@ -121,14 +121,17 @@ function charger_users() {
         .then(data => {
             const $select = $('#select-users');
             const addedNames = []; // tableau pour stocker les noms des personnes déjà ajoutées
-            $.each(data, function (index, user) {
+            for(let i = 0; i < data.length; i++) {
+                const user = data[i];
                 const prenomUser = user.nomCompte;
-                console.log(membersNames);
-                if (!addedNames.includes(prenomUser) && prenomUser !== "ADMIN" && idUserco !== user.idCompte && !membersNames.includes(prenomUser)) {
+                //console.log(membersNames);
+                console.log(addedNames);
+                if (idUserco !== user.idCompte && !membersNames.includes(prenomUser) && user.isAdmin == 0) {
+                
                     $select.append('<option value="' + user.idCompte + '">' + user.nomCompte + " " + user.prenomCompte + '</option>');
-                    addedNames.push(prenomUser); // ajouter le nom à la liste des noms déjà ajoutés
+                    //addedNames.push(prenomUser); // ajouter le nom à la liste des noms déjà ajoutés
                 }
-            });
+            }
         })
         .catch(error => {
             console.error(error);
