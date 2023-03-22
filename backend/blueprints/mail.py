@@ -14,7 +14,6 @@ mail_bp = Blueprint('mail', __name__)
 regexMail = '^[^\s@]+@[^\s@]+\.[^\s@]+$'
 regexTel = '^0[1-9]([-. ]?[0-9]{2}){4}$'
 regexName = '^[a-zA-ZÀ-ÿ]+$'
-regexMessageNotEmpty = '^.{1,}$'
 
 def setConfig():
     current_app.config['MAIL_SERVER'] = 'smtp.elasticemail.com'
