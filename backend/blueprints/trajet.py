@@ -88,8 +88,20 @@ def getTrajet(idTrajet):
 
 
 #Rechercher un trajet
-@trajet_bp.route('/recherche', methods=['POST'])
-def rechercher():
+@trajet_bp.route('/recherche/<string:token>', methods=['POST'])
+def rechercher(token):
+    conn = sqlite3.connect(URI_DATABASE)
+    c = conn.cursor()
+
+    #On recupere l'id de l'utilisateur
+    c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
+    compte = c.fetchone()
+    if not compte:
+        conn.close()
+        return jsonify({'message': 'Token invalide ou expiré'}), 404
+
+    idCompte = compte[0]
+
     # Récupérer les données envoyées dans la requête
     data = request.get_json()
     villeDepart = data.get('city-start')
@@ -98,9 +110,6 @@ def rechercher():
     nbPlaces = data.get('places')
     prixMin = data.get('lower-prices')
     prixMax = data.get('higher-prices')
-
-    conn = sqlite3.connect(URI_DATABASE)
-    c = conn.cursor()
     
     query = "SELECT * FROM TRAJET WHERE 1=1"
 
@@ -183,10 +192,18 @@ def rechercher():
             trajet['typeTrajet'] = 'prive'
             #On recupere le nom du groupe
             trajet['nomGroupe'] = [groupe[0] for groupe in c.execute("SELECT nomGroupe FROM TRAJET_PRIVE NATURAL JOIN GROUPE WHERE idTrajet=?", (row[0],))][0]
+
+            #On vérifie que l'utilisateur fasse parti des membres
+            c.execute("SELECT * FROM GROUPE INNER JOIN AMI_GROUPE ON GROUPE.idGroupe = AMI_GROUPE.idGroupe WHERE (GROUPE.idCreateur = ? OR AMI_GROUPE.idCompte = ?) AND GROUPE.nomGroupe = ?", (idCompte, idCompte, trajet['nomGroupe']))
+            inGroupe = c.fetchone()
+            if not inGroupe:
+                trajets.pop() #On enleve le trajet de la liste
+
         elif row[0] in [id[0] for id in c.execute("SELECT idTrajet FROM TRAJET_PUBLIC")]:
             trajet['typeTrajet'] = 'public'
         else:
             trajet['typeTrajet'] = None
+
 
 
     conn.close()
@@ -262,6 +279,9 @@ def trajetsCompte(token):
 
 @trajet_bp.route('/createTrajet/<string:token>', methods=['POST', 'GET'])
 def createTrajet(token):
+    conn = sqlite3.connect(URI_DATABASE)
+    c = conn.cursor()
+
     data = request.get_json()
     heureDepart = data.get('heureDepart')
     dateDepart = data.get('dateDepart')
@@ -279,9 +299,6 @@ def createTrajet(token):
 
     #On reformate la date
     dateDepart = datetime.strptime(dateDepart, '%d %B, %Y').strftime('%Y%m%d')
-
-    conn = sqlite3.connect(URI_DATABASE)
-    c = conn.cursor()
 
     #On recupere l'id du conducteur
     c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))

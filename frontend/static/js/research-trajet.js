@@ -8,6 +8,9 @@ fetch("/admin/trajets/Public")
     console.error('Une erreur est survenue :', error);
   });
 
+// Bouton rechercher
+const btnResearch = document.getElementById("btn-research");
+
 
 // Champs de recherche
 const villeDepart = document.querySelector("select[name=city-start]");
@@ -32,7 +35,7 @@ function displayOffer(event){
     console.log("Prix < : " + prixInferieur.value);
     console.log("Prix > : " + prixSuperieur.value);*/
 
-    fetch('/trajet/recherche', {
+    fetch(`/trajet/recherche/${getCookieToken()}`, {
         method: 'POST',
         headers: {
         'Content-Type': 'application/json'
@@ -54,14 +57,20 @@ function displayOffer(event){
         throw new Error('Erreur : ' + response.status);
         }
     })
-    .then(data => {
+    .then(async data => {
         if (data.length === 0){
           titreOffre.innerHTML = "Aucun trajet correspondant";
         } else {
           titreOffre.innerHTML = "Trajets correspondants";
           descriptionOffres.innerHTML = "Retrouvez ici les offres de trajets correspondantes.";
         }
-        displayTrajet(data);
+        // Retirer l'attribut 'onclick' du bouton recherche pour eviter bug
+        btnResearch.removeAttribute('onclick');
+
+        await displayTrajet(data);
+
+        //On remet 'onclick' du bouton recherche pour eviter bug
+        btnResearch.setAttribute('onclick', 'displayOffer(event)');
     })
     .catch(error => {
         titreOffre.innerHTML = "Aucun trajet correspondant";
@@ -124,6 +133,10 @@ async function displayTrajet(trajets) {
   for (const trajet of tousLesTrajets) {
     const coordsDep = await getCoordinates(trajet.villeDepart);
     const coordsArr = await getCoordinates(trajet.villeArrivee);
+    const coords = await getMiddleCoordinates(trajet.villeDepart, trajet.villeArrivee);
+    const distance = getDistance(coordsDep.latitude, coordsDep.longitude, coordsArr.latitude, coordsArr.longitude);
+    const zoom = getZoomLevel(distance);
+    console.log(trajet.villeDepart + " -> " + trajet.villeArrivee + " = " + distance + " Zoom : " + zoom);
     const trajetElement = document.createElement('div');
     trajetElement.classList.add('col-md-6', 'col-lg-4');
     if (trajet.typeTrajet === "prive" && !trajetsPrivesAdded) { // Ajoute le titre "Trajets privés" avant la première section des trajets privés
@@ -138,7 +151,7 @@ async function displayTrajet(trajets) {
     trajetElement.innerHTML = `
       <a href="/trajet?id=${trajet.idTrajet}" class="room" style="position: relative;">
         <div class="img-wrap" style="position: relative;">
-          <img src="https://maps.geoapify.com/v1/staticmap?style=osm-carto&width=480&height=480&center=lonlat:${coordsDep.longitude},${coordsDep.latitude}&zoom=8.468&marker=lonlat:${coordsArr.longitude},${coordsArr.latitude};color:%23ff0000;size:medium&apiKey=28ed3d4ce3664398aa6e2f080d227bbc" alt="Free website template" class="img-fluid mb-3">
+          <img src="https://maps.geoapify.com/v1/staticmap?style=osm-carto&width=480&height=480&center=lonlat:${coords.longitude},${coords.latitude}&zoom=${zoom}&marker=lonlat:-${coords.longitude},${coords.latitude};color:%23ff0000;size:medium&apiKey=28ed3d4ce3664398aa6e2f080d227bbc" alt="Free website template" class="img-fluid mb-3">
           ${trajet.nbPlacesRestantes == 0 ? '<img src="static/images/sold_out.png" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain;">' : ''}
         </div>
         <div class="p-3 text-center room-info">
@@ -159,7 +172,41 @@ async function displayTrajet(trajets) {
   }
 }
 
+function getDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371; // rayon de la terre en km
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const distance = R * c;
+  return distance; // distance en km
+}
 
+
+function getZoomLevel(distance) {
+  if (distance <= 50) { // 50 km
+    return 8.6;
+  } else if (distance <= 100) { // 100 km
+    return 7.7;
+  } else if (distance <= 200) { // 200 km
+    return 7.2;
+  } else if (distance <= 300) { // 300 km
+    return 6.3;
+  } else if (distance <= 400) { // 400 km
+    return 6.1;
+  } else if (distance <= 500) { // 500 km
+    return 5.8;
+  } else if (distance <= 600) { // 600 km
+    return 5.4;
+  } else if (distance <= 700) {  // 700 km
+    return 5.1;
+  } else {
+    return 4.9; // 800 km
+  }
+}
 
 
 async function getCoordinates(city) {
@@ -179,6 +226,20 @@ async function getCoordinates(city) {
       console.error('Erreur : ' + error.message);
       return { latitude: null, longitude: null };
     }
+}
+
+
+async function getMiddleCoordinates(city1, city2) {
+  const { latitude: lat1, longitude: lon1 } = await getCoordinates(city1);
+  const { latitude: lat2, longitude: lon2 } = await getCoordinates(city2);
+
+  if (lat1 === null || lat2 === null || lon1 === null || lon2 === null) {
+    return null;
+  }
+
+  const latMiddle = (Number(lat1) + Number(lat2)) / 2;
+  const lonMiddle = (Number(lon1) + Number(lon2)) / 2;
+  return { latitude: latMiddle, longitude: lonMiddle };
 }
 
 

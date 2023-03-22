@@ -182,7 +182,7 @@ $(document).on('click', '.confirm-btn', function () {
                         window.location.href = '/trajet/mes_trajets';
                     })
             } else {
-                alert("Le trajet doit être à plus de 3 heures pour pouvoir être terminé");
+                alert("Un trajet ne peut pas être annulé moins de 24h avant son départ");
             }
 
         });

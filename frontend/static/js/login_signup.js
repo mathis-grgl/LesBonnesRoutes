@@ -16,7 +16,7 @@ const checkKeepLog = document.querySelector("input[name='checkbox-remember-log']
 // Bouton voir/cacher mot de passe
 // Recherchez tous les éléments d'icône d'œil
 const eyeIcons = document.querySelectorAll('.password-icon');
-//feather.replace();
+feather.replace();
 // Pour chaque icône d'œil, ajoutez un gestionnaire d'événement "click"
 /*eyeIcons.forEach(icon => {
   feather.replace(icon);
@@ -40,14 +40,14 @@ const eyeIcons = document.querySelectorAll('.password-icon');
 });*/
 
 
-/*
+
 feather.replace();
-const eyeLog = document.querySelector(".eye");
-const eyeoffLog = document.querySelector(".eye-off");
+const eyeLog = document.getElementById("eye-login");
+const eyeoffLog = document.getElementById("eye-off-login");
 const passwordFieldLog = document.querySelector("input[name=password-log]");
-/*
-const eyeSign = document.querySelector(".feather-eye-sign");
-const eyeoffSign = document.querySelector(".feather-eye-off-sign");
+
+const eyeSign = document.getElementById("eye-sign");
+const eyeoffSign = document.getElementById("eye-off-sign");
 const passwordFieldSign = document.querySelector("input[name=password-sign]");
 
 eyeLog.addEventListener("click", () => {
@@ -60,9 +60,9 @@ eyeoffLog.addEventListener("click", () => {
   eyeoffLog.style.display = "none";
   eyeLog.style.display = "block";
   passwordFieldLog.type = "password";
-});*/
+});
 
-/*eyeSign.addEventListener("click", () => {
+eyeSign.addEventListener("click", () => {
   eyeSign.style.display = "none";
   eyeoffSign.style.display = "block";
   passwordFieldSign.type = "text";
@@ -72,7 +72,7 @@ eyeoffSign.addEventListener("click", () => {
   eyeoffSign.style.display = "none";
   eyeSign.style.display = "block";
   passwordFieldSign.type = "password";
-});*/
+});
 
 
 // Boutons se connecter et s'inscrire
