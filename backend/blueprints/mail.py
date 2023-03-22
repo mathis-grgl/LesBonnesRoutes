@@ -23,13 +23,9 @@ def contact():
 
     json = request.get_json()
     name = json.get('name')
-    print(name)
     mail = json.get('email')
-    print(mail)
     tel = json.get('phone')
-    print(tel)
     message = json.get('message')
-    print(message)
     subject = "Contacter LBR"
     if (re.match(regexMail, mail) and re.match(regexName, name) and re.match(regexTel, tel) and re.match(regexMessageNotEmpty, message)):
         m = Mail(current_app)
@@ -39,3 +35,8 @@ def contact():
         return "Email envoyé avec succès"
     else:
         return "Les informations fournies ne sont pas valides"
+
+
+@mail_bp.route('/modifMdp', methods=['POST'])
+def modifMail():
+    return 200
