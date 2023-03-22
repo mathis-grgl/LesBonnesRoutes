@@ -7,14 +7,12 @@
     <link rel="stylesheet" href="/static/css/recuperation-mdp.css">
   </head>
   <body>
-    <div class="form-container">
-      <h1>Récupération de mot de passe</h1>
-      <div class="form-group">
-        <label for="email">Email:</label>
-        <input type="email" placeholder="Email" name="email" id="email" oninput="checkValue('email')" required>
-      </div>
-      <button onclick="sendEmail('email')">Submit</button>
+    <h1>Récupération de mot de passe</h1>
+    <div class="form-group">
+    <label for="email">Email:</label>
+    <input type="email" placeholder="Email" name="email" id="email" oninput="checkValue('email')" required>
     </div>
+    <button onclick="sendEmail('email')">Submit</button>
 
     {% include 'scripts-required.html' %}
     <script src="/static/js/recuperation-mdp.js"></script>

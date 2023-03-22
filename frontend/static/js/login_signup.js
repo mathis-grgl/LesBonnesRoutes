@@ -85,7 +85,7 @@ loginButton.addEventListener("click", () => {
 });
 
 function openRecuperationWindow(){
-  window.open('/recuperation-mot-de-passe', 'Example', 'width=400,height=400');
+  window.open('/recuperation-mot-de-passe', 'Example', 'width=550,height=220');
 }
 
 function displayMessage(res, message){
