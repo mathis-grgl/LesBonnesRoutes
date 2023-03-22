@@ -483,6 +483,8 @@ def getNotifs(token):
             notif['typeNotif'] = None
 
         notifs.append(notif)
+
+    print(notifs)
         
     conn.close()
     return jsonify(notifs)

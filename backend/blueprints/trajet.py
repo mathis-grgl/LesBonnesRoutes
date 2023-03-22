@@ -357,7 +357,7 @@ def createTrajet(token):
                     
 
                     #On envoie une notif au groupe
-                    sendNotifGroupe(idCompte, idGroupe, "un nouveau trajet est disponible pour le groupe !")
+                    sendNotifGroupe(idCompte, idGroupe, "Un nouveau trajet privé est disponible pour le groupe !")
 
                 else:
                     c.execute("INSERT INTO TRAJET_PUBLIC VALUES (?)", (idTrajet,))
