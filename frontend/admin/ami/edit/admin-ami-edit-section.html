@@ -1,20 +1,17 @@
-<div class="container-fluid">
-    <form id = "modifier_groupe" method="post">
-        <div class="form-group">
-            <label for="group-name">Nouveau Nom du groupe d'amis :</label>
-            <input type="text" id="group-name" name="nomGroupe" required>
-        </div>
-        <button type="submit">Modifier le groupe d'amis</button>
+<div class="center">
+    <form id="modifier_groupe" method="post">
+        <a class="btn btn-primary btn-dark center" href="/admin/search-ami">Retour</a>
+        <label for="group-name">Nouveau nom pour le groupe :</label><br>
+        <input type="text" id="group-name" name="nomGroupe" required><br>
+        <button class="btn btn-primary" type="submit">Modifier le groupe d'amis</button>
     </form>
 </div>
 
 <div class="card mb-4">
-    <div class="card-header">
-
+    <div class="card-header center">
         Tous les membres du groupe d'amis
     </div>
-    <div class="card-body">
+    <div class="card-body center">
         <div id="members-container"></div>
-
     </div>
 </div>

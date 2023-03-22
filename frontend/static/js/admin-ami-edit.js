@@ -4,6 +4,7 @@ let token = null;
 
 // Récupération du token admin
 token = getCookieToken();
+url = '/admin/getGroupes/' + token;
 
 // Si le token est null, on redirige vers la page de connexion
 if (token == null) {
@@ -20,57 +21,10 @@ if (token == null) {
     }
 }
 
-url = '/admin/getGroupes/' + token;
-
-function charger_groupe(){
-    fetch(url)
-        .then(reponse => {
-            if (!reponse.ok) {
-                throw new Error("network issue");
-            }
-            return reponse.json();
-        })
-        .then(data => {
-            for (let i = 0; i < data.length; i++) {
-                if (i+1 == id) {
-                    $('#group-name').val(data[i].nomGroupe);
-                }
-            }
-        })
-        .catch(error => {
-            console.error(error);
-        });
-    charger_membres();
-}
-
-$('#modifier_groupe').submit(function (event) {
-    event.preventDefault(); // pour empêcher la soumission normale du formulaire
-    let nomGroupe = $('#group-name').val();
-
-    // Récupérer toutes les valeurs sélectionnées dans le select
-    const urlmodif = '/admin/modifNom/' + token + '/' + id + '/' + nomGroupe;
-
-    fetch(urlmodif, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({'nomGroupe': nomGroupe})
-    })
-        .then(reponse => {
-            if (reponse.ok) {window.location.href = '/admin/search-ami';} 
-            else {alert("network issue");}
-        })
-        .catch(error => {console.error(error);});
-});
-
 const idGroupe = id;
 const infoCompteCo = '/compte/getInfoCompte/' + token;
 const getMembres = '/ami/getMembers/' + idGroupe;
-
-console.log(infoCompteCo);
-console.log(getMembres);
-
 let idUserco;
-
 
 fetch(infoCompteCo)
     .then(reponse => {
@@ -79,30 +33,6 @@ fetch(infoCompteCo)
     })
     .then(data => {idUserco = data.idCompte;})
     .catch(error => {console.error(error);})
-
-
-
-function charger_membres() {
-    console.log("affichage des membres.")
-    const membersContainer = $('#members-container');
-    fetch(getMembres)
-        .then(reponse => {
-            if (!reponse.ok) {
-                throw new Error(reponse.statusText);
-            }
-            return reponse.json();
-        })
-        .then(data => {
-            console.log(data);
-            for (let i = 0; i < data.length; i++) {
-                displayMembres(data[i], membersContainer);
-            }
-        })
-        .catch(error => {
-            console.error(error);
-        })
-}
-
 
 function displayMembres(data, container) {
 
@@ -138,14 +68,72 @@ function displayMembres(data, container) {
     container.append(card);
 }
 
+function charger_groupe(){
+    fetch(url)
+        .then(reponse => {
+            if (!reponse.ok) {
+                throw new Error("network issue");
+            }
+            return reponse.json();
+        })
+        .then(data => {
+            for (let i = 0; i < data.length; i++) {
+                if (i+1 == id) {
+                    $('#group-name').val(data[i].nomGroupe);
+                }
+            }
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    charger_membres();
+}
+
+function charger_membres() {
+    console.log("affichage des membres.")
+    const membersContainer = $('#members-container');
+    fetch(getMembres)
+        .then(reponse => {
+            if (!reponse.ok) {
+                throw new Error(reponse.statusText);
+            }
+            return reponse.json();
+        })
+        .then(data => {
+            console.log(data);
+            for (let i = 0; i < data.length; i++) {
+                displayMembres(data[i], membersContainer);
+            }
+        })
+        .catch(error => {
+            console.error(error);
+        })
+}
+
+$('#modifier_groupe').submit(function (event) {
+    event.preventDefault(); // pour empêcher la soumission normale du formulaire
+    let nomGroupe = $('#group-name').val();
+
+    // Récupérer toutes les valeurs sélectionnées dans le select
+    const urlmodif = '/admin/modifNom/' + token + '/' + id + '/' + nomGroupe;
+
+    fetch(urlmodif, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({'nomGroupe': nomGroupe})
+    })
+        .then(reponse => {
+            if (reponse.ok) {window.location.href = '/admin/search-ami';} 
+            else {alert("network issue");}
+        })
+        .catch(error => {console.error(error);});
+});
+
 
 $(document).on('click', '.delete-btn', function () {
 
-    console.log('Le bouton "delete user" a été cliqué.');
     let id = $(this).attr('id');
-    console.log(id);
     let del = '/ami/removeMember/' + token + '/' + idGroupe + '/' + id;
-    console.log(del);
     if (window.confirm("Etes-vous sûr de vouloir supprimer cet utilisateur du groupe d'amis ? ")) {
         fetch(del)
             .then(reponse => {
@@ -156,9 +144,7 @@ $(document).on('click', '.delete-btn', function () {
 
             })
             .then(data => {
-                console.log("On retire le trajet " + id);
                 location.reload();
-
             })
             .catch(error => {
                 console.error(error);

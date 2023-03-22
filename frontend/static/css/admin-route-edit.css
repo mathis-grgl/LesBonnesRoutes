@@ -62,3 +62,13 @@ button[type="submit"] {
 .section {
     padding :0%;
 }
+
+.block1{
+    display: flex;
+    flex : 1;
+}
+
+.block2{
+    display: flex;
+    flex : 2;
+}

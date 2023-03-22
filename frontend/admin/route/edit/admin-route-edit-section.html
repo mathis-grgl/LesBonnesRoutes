@@ -1,12 +1,10 @@
 <section class="section privacy-section" id="next">
     <div id="layoutSidenav_content">
         <main>
-
-
-                <div class="card mb-4">
-                    <form id="editTrajet" method="POST">
-                        <!-- <h2>Créer un nouveau trajet</h2> -->
-
+            <div class="card mb-4">
+                <form id="editTrajet" method="POST">
+                    <!-- <h2>Créer un nouveau trajet</h2> -->
+                    <div class="block1">
                         <div>
                             <label for="date-depart">Date de départ :</label>
                             <input type="date" id="date-depart" name="dateDepart" required>
@@ -23,7 +21,7 @@
                             </select>
                         </div>
 
-                        <div>
+                        <div class="ml-3">
                             <label for="ville-arrivee">Ville d'arrivée :</label>
                             <!-- <input type="text" id="ville-arrivee" name="ville-arrivee" required> -->
                             <select id="city_end" name="villeArrivee" class="form-control">
@@ -32,7 +30,7 @@
                             </select>
                         </div>
 
-                        <div>
+                        <div class="ml-3">
                             <label for="heure-depart">Heure de départ :</label>
                             <input type="time" id="heure-depart" name="heureDepart" required>
                         </div>
@@ -43,7 +41,8 @@
                             </br>
                             <small id="2"></small>
                         </div>
-
+                    </div>
+                    <div class="block2">
                         <div>
                             <label for="prix-place">Prix par place :</label>
                             <input type="number" id="prix-place" name="prix" required>
@@ -60,11 +59,13 @@
                             <textarea id="precision" name="precisionRdv" rows="5" cols="30"></textarea>
                         </div>
 
-                        <div class="button-container">
-                            <button type="submit">Modifier le trajet</button>
-                        </div>
-                    </form>
-                </div>
+                    </div>
+                    <div class="button-container">
+                        <a class="btn btn-primary btn-dark center" href="/admin/search-route">Retour</a>
+                        <button type="submit">Modifier le trajet</button>
+                    </div>
+                </form>
             </div>
-        </main>
+    </div>
+    </main>
 </section>

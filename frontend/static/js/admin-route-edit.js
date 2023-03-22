@@ -100,12 +100,13 @@ $(document).ready(function () {
             if (data.idTrajet == id) {
                 $('#city_start').val(data.villeDepart);
                 $('#city_end').val(data.villeArrivee);
+                if(data.heureDepart.length < 5) data.heureDepart = "0" + data.heureDepart;
                 console.log('heure : ' + data.heureDepart.replace('h', ':'))
                 $('#heure-depart').val(data.heureDepart.replace('h', ':'));
-                console.log('nbPlaces : ' + data.nbPlaces);
+                console.log('nbPlaces : ' + data.nbPlacesRestantes);
                 console.log('prix : ' + data.prix);
 
-                $('#nb-places').val(data.nbPlaces);
+                $('#nb-places').val(data.nbPlacesRestantes);
                 $('#prix-place').val(data.prix);
                 $('#commentaires').val(data.commentaires);
                 $('#precision').val(data.precisionRdv);
@@ -162,14 +163,14 @@ $('#editTrajet').submit(function (event) {
         $('#1').append($('<b>').text("La date doit être dans plus de 24h."));
     }
 
-    let nbPlaces = $('#nb-places').val();
+    let nbPlacesRestantes = $('#nb-places').val();
     let prix = $('#prix-place').val();
     let commentaires = $('#commentaires').val();
     let precision = $('#precision').val();
     let vd = $('#city_start').val();
     let va = $('#city_end').val();
 
-    if (nbPlaces <= 0) {
+    if (nbPlacesRestantes <= 0) {
         valide = false;
         $('#nb-places').css('border', '2px solid red');
         $('#2').empty();
@@ -195,7 +196,7 @@ $('#editTrajet').submit(function (event) {
             body: JSON.stringify({
                 'heureDepart': heure,
                 'dateDepart': dateFormatted,
-                'nbPlaces': nbPlaces,
+                'nbPlaces': nbPlacesRestantes,
                 'prix': prix,
                 'commentaires': commentaires,
                 'precisionRdv': precision,

@@ -106,6 +106,16 @@ def get_user(idCompte):
     return jsonify(compte_dict)
 
 
+# Renvoie si le token est admin
+@admin_bp.route('/users/<string:token>/isadmin')
+def is_admin(token):
+    conn = sqlite3.connect(URI_DATABASE)
+    c = conn.cursor()
+    c.execute("SELECT isAdmin FROM COMPTE WHERE token = ?", (token,))
+    row = c.fetchone()
+    conn.close()
+    return jsonify(row[0])
+
 
 #Recuperer tous les trajets avec le type
 @admin_bp.route('/trajets/<string:typeTrajet>')
@@ -445,17 +455,17 @@ def modifTrajet(token, idTrajet):
                     values = ()
                     if not commentaires:
                         if not precisionRdv:
-                            query = "UPDATE TRAJET SET heureDepart = ?, dateDepart = ?, nbPlaces = ?, prix = ?, villeDepart = ?, villeArrivee = ? WHERE idTrajet = ?"
+                            query = "UPDATE TRAJET SET heureDepart = ?, dateDepart = ?, nbPlacesRestantes = ?, prix = ?, villeDepart = ?, villeArrivee = ? WHERE idTrajet = ?"
                             values = (heureDepart, dateDepart, nbPlaces, prix, villeDepart, villeArrivee, idTrajet)
                         else:
-                            query = "UPDATE TRAJET SET heureDepart = ?, dateDepart = ?, nbPlaces = ?, prix = ?, villeDepart = ?, villeArrivee = ?, precisionRdv = ? WHERE idTrajet = ?"
+                            query = "UPDATE TRAJET SET heureDepart = ?, dateDepart = ?, nbPlacesRestantes = ?, prix = ?, villeDepart = ?, villeArrivee = ?, precisionRdv = ? WHERE idTrajet = ?"
                             values = (heureDepart, dateDepart, nbPlaces, prix, villeDepart, villeArrivee, precisionRdv, idTrajet)
                     else:
                         if not precisionRdv:
-                            query = "UPDATE TRAJET SET heureDepart = ?, dateDepart = ?, nbPlaces = ?, prix = ?, villeDepart = ?, villeArrivee = ?, commentaires = ? WHERE idTrajet = ?"
+                            query = "UPDATE TRAJET SET heureDepart = ?, dateDepart = ?, nbPlacesRestantes = ?, prix = ?, villeDepart = ?, villeArrivee = ?, commentaires = ? WHERE idTrajet = ?"
                             values = (heureDepart, dateDepart, nbPlaces, prix, villeDepart, villeArrivee, commentaires, idTrajet)
                         else:
-                            query = "UPDATE TRAJET SET heureDepart = ?, dateDepart = ?, nbPlaces = ?, prix = ?, villeDepart = ?, villeArrivee = ?, commentaires = ?, precisionRdv = ? WHERE idTrajet = ?"
+                            query = "UPDATE TRAJET SET heureDepart = ?, dateDepart = ?, nbPlacesRestantes = ?, prix = ?, villeDepart = ?, villeArrivee = ?, commentaires = ?, precisionRdv = ? WHERE idTrajet = ?"
                             values = (heureDepart, dateDepart, nbPlaces, prix, villeDepart, villeArrivee, commentaires, precisionRdv, idTrajet)
                     if query:
                         c.execute(query, values)

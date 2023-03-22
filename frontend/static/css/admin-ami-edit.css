@@ -1,9 +1,3 @@
-.container{
-    display:relative !important; 
-    top: 15vw !important; 
-    left: 45vw !important;
-}
-
 .center{
     display: flex;
     justify-content: center;
