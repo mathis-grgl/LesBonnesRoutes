@@ -1,4 +1,5 @@
 const nbTrajets = document.getElementById("nbtrajets");
+const type = document.getElementById("type");
 const nbNotes = document.getElementById("nbnotes");
 const nameUser = document.getElementById("prenom");
 const depart = document.getElementById("depart");
@@ -23,6 +24,7 @@ fetch(`/trajet/trajet/${id}`, {
 .then(response => response.json())
 .then(data => {
     console.log(data);
+    type.innerHTML = data.typeTrajet;
     depart.innerHTML = data.villeDepart;
     arrivee.innerHTML = data.villeArrivee;
     placesRestantes.innerHTML = data.nbPlacesRestantes;

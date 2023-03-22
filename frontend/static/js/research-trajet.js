@@ -68,7 +68,7 @@ function displayOffer(event){
         console.error('Erreur : ' + error.message);
     });
 }
-
+/*
 function displayTrajet(trajets){
     const trajetsContainer = document.getElementById('row');
     trajetsContainer.innerHTML = ""; // retire le contenu de l'élément
@@ -97,7 +97,70 @@ function displayTrajet(trajets){
         trajetsContainer.appendChild(trajetElement);
       }
     });
+}*/
+
+async function displayTrajet(trajets) {
+  const trajetsContainer = document.getElementById('display');
+  trajetsContainer.innerHTML = ""; // retire le contenu de l'élément
+
+  // Séparer les trajets privés et publics
+  const trajetsPrives = trajets.filter(trajet => trajet.typeTrajet === "prive");
+  const trajetsPublics = trajets.filter(trajet => trajet.typeTrajet === "public");
+
+  // Ajouter tous les trajets publics au tableau de trajets
+  const tousLesTrajets = trajetsPrives;
+
+  // Ajouter tous les trajets privés au tableau de trajets
+  tousLesTrajets.push(...trajetsPublics);
+  const trajetRow = document.createElement('div');
+  trajetRow.classList.add('row');
+  const trajetRow1 = document.createElement('div');
+  trajetRow1.classList.add('row');
+
+  // Afficher tous les trajets dans l'ordre
+  let trajetsPrivesAdded = false; // marqueur pour le titre des trajets privés
+  let trajetsPublicsAdded = false; // marqueur pour le titre des trajets publics
+
+  for (const trajet of tousLesTrajets) {
+    const coordsDep = await getCoordinates(trajet.villeDepart);
+    const coordsArr = await getCoordinates(trajet.villeArrivee);
+    const trajetElement = document.createElement('div');
+    trajetElement.classList.add('col-md-6', 'col-lg-4');
+    if (trajet.typeTrajet === "prive" && !trajetsPrivesAdded) { // Ajoute le titre "Trajets privés" avant la première section des trajets privés
+      trajetsContainer.innerHTML = `<h2>Trajets privés</h2>`;
+      trajetsContainer.appendChild(trajetRow);
+      trajetsPrivesAdded = true;
+    } else if (trajet.typeTrajet === "public" && !trajetsPublicsAdded) { // Ajoute le titre "Trajets publics" avant la première section des trajets publics
+      trajetsContainer.innerHTML += `<h2>Trajets publics</h2>`;
+      trajetsContainer.appendChild(trajetRow1);
+      trajetsPublicsAdded = true;
+    }
+    trajetElement.innerHTML = `
+      <a href="/trajet?id=${trajet.idTrajet}" class="room" style="position: relative;">
+        <div class="img-wrap" style="position: relative;">
+          <img src="https://maps.geoapify.com/v1/staticmap?style=osm-carto&width=480&height=480&center=lonlat:${coordsDep.longitude},${coordsDep.latitude}&zoom=8.468&marker=lonlat:-${coordsArr.longitude},${coordsArr.latitude};color:%23ff0000;size:medium&apiKey=28ed3d4ce3664398aa6e2f080d227bbc" alt="Free website template" class="img-fluid mb-3">
+          ${trajet.nbPlacesRestantes == 0 ? '<img src="static/images/sold_out.png" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain;">' : ''}
+        </div>
+        <div class="p-3 text-center room-info">
+          <h2>${trajet.villeDepart} - ${trajet.villeArrivee}</h2>
+          <span class="text-uppercase letter-spacing-1">${trajet.prix}€ -</span> 
+          <span style='color: ${trajet.nbPlacesRestantes == 0 ? "#FF0000" : "#4BC35B"}' class="text-uppercase letter-spacing-1">${trajet.nbPlacesRestantes == 0 ? "Plus de places" : trajet.nbPlacesRestantes + " places restantes"}</span><br>
+          ${trajet.typeTrajet === "prive" ? `<span style='color: #4E5BFF;' class="text-uppercase letter-spacing-1">Groupe : ${trajet.nomGroupe}</span>` : ""}
+        </div>
+      </a>
+    `;
+    if (trajet.typeTrajet === "prive"){
+      trajetRow.appendChild(trajetElement);
+      trajetsContainer.appendChild(trajetRow);
+    } else if (trajet.typeTrajet === "public"){
+      trajetRow1.appendChild(trajetElement);
+      trajetsContainer.appendChild(trajetRow1);
+    }
+  }
 }
+
+
+
 
 async function getCoordinates(city) {
     try { // Au cas ou l'api ne fonctionne pas
