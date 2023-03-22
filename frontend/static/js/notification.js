@@ -196,7 +196,7 @@ async function getPhoto(){
 }
 
 function deleteNotif(id){
-  fetch(`compte/suppNotif/${tokenH}/${id}`, {
+  fetch(`/compte/suppNotif/${tokenH}/${id}`, {
     method: 'DELETE',
   })
   .then(response => {
@@ -223,7 +223,7 @@ function deleteNotif(id){
 }
 
 function deleteAllNotif(){
-  fetch(`compte/suppAllNotif/${tokenH}`, {
+  fetch(`/compte/suppAllNotif/${tokenH}`, {
     method: 'DELETE',
   })
   .then(response => {
