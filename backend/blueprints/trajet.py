@@ -832,7 +832,7 @@ def deletePassager(token, idComptePassager, idTrajet):
                     return jsonify({'message': 'Cet utilisateur ne participe pas au trajet'}), 404
                 else:
                     #On envoie une notif au passager
-                    sendNotifTrajet(idConducteur, idCompte, idTrajet, "Vous avez été supprimé du trajet")
+                    sendNotifTrajet(idConducteur, idComptePassager, idTrajet, "Vous avez été supprimé du trajet")
 
                     #On peut supprimer la participation
                     c.execute("DELETE FROM TRAJET_EN_COURS_PASSAGER WHERE idCompte = ?", (idComptePassager,))
