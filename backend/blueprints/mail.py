@@ -32,9 +32,10 @@ def contact():
     name = json.get('name')
     mail = json.get('email')
     tel = json.get('phone')
-    message = json.get('message')
+    message = "Votre mail a bien été envoyé à LBR :\n\t" + json.get('message').replace('<br>', '\n\t')
+    print(message)
     subject = "Contacter LBR"
-    if (re.match(regexMail, mail) and re.match(regexName, name) and re.match(regexTel, tel) and re.match(regexMessageNotEmpty, message)):
+    if (re.match(regexMail, mail) and re.match(regexName, name) and re.match(regexTel, tel)):
         m = Mail(current_app)
         msg = Message(subject=subject, sender='noreply@lesbonnesrout.es', recipients=[mail])
         msg.body = message
