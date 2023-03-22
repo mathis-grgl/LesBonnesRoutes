@@ -76,13 +76,7 @@ function displayNotifs(){
             console.error('Problème dans le fetch', error);
         });
         } else if (res.typeNotif === "Groupe"){
-        await getGroupe()
-        .then(res1 => {
-            type = `<p>${res.typeNotif} : ${res1}</p>`;
-        })
-        .catch(error => {
-            console.error('Problème dans le fetch', error);
-        });
+          type = `<p>${res.typeNotif} : ${res.nomGroupe}</p>`;
         }
 
         infoDiv.innerHTML = type + `<p class="notify_message">${res.messageNotification}</p>`;
@@ -279,7 +273,7 @@ function openPopupNotif(id) {
             </div>
             <div class="notify_info">
                 ${res.typeNotif === "Trajet" ? `<p>${res.typeNotif} : ${await getTrajet(res.idTrajet)}</p>` :
-                res.typeNotif === "Groupe" ? `<p>${res.typeNotif} : ${await getGroupe()}</p>` : ''}
+                res.typeNotif === "Groupe" ? `<p>${res.typeNotif} : ${res.nomGroupe}</p>` : ''}
                 <p class="notif-message">${res.messageNotification}</p>
             </div>
         </div>
