@@ -14,13 +14,13 @@ INSERT INTO COMPTE(nomCompte, prenomCompte, email, adresse, ville, codePostal, p
     VALUES ('ADMIN', 'Admin', 'admin@mail.com', 'admin', 'ADMIN', '54000', 'FRANCE', 'femme', 0, '0606060606', '52f81cbcffa9c2fcc51990ea4e579c2f2c15271015df5eb2b8e10ef7ed43e18a9d4c06907549796346f059fa4ac5a3a9c6b29765612c82aa69736814e1e99b7c', 0, 1);
 
 INSERT INTO TRAJET(idConducteur, heureDepart, dateDepart, nbPlaces, prix, nbPlacesRestantes, statusTrajet, commentaires, precisionRdv, villeDepart, villeArrivee)
-    VALUES (4, '10h30', '20230414', 5, 7, 3, 'a pourvoir', 'Non fumeur', 'Devant le Leclerc', 30, 27);
+    VALUES (4, '10h30', '20230414', 5, 7, 0, 'a pourvoir', 'Non fumeur', 'Devant le Leclerc', 30, 27);
 INSERT INTO TRAJET(idConducteur, heureDepart, dateDepart, nbPlaces, prix, nbPlacesRestantes, statusTrajet, commentaires, precisionRdv, villeDepart, villeArrivee)
     VALUES (1, '14h00', '20230420', 4, 5, 2, 'a pourvoir', NULL, NULL, 23, 41);
 INSERT INTO TRAJET(idConducteur, heureDepart, dateDepart, nbPlaces, prix, nbPlacesRestantes, statusTrajet, commentaires, precisionRdv, villeDepart, villeArrivee)
     VALUES (1, '18h00', '20230415', 4, 10, 2, 'en cours', NULL, NULL, 27, 35);
 INSERT INTO TRAJET(idConducteur, heureDepart, dateDepart, nbPlaces, prix, nbPlacesRestantes, statusTrajet, commentaires, precisionRdv, villeDepart, villeArrivee)
-   VALUES (4, '12h00', '20230401', 5, 10, 3, 'a pourvoir', 'non fumeur', 'Devant le Leclerc', 30, 27);
+   VALUES (4, '12h00', '20230401', 5, 10, 0, 'a pourvoir', 'non fumeur', 'Devant le Leclerc', 30, 27);
 INSERT INTO TRAJET(idConducteur, heureDepart, dateDepart, nbPlaces, prix, nbPlacesRestantes, statusTrajet, commentaires, precisionRdv, villeDepart, villeArrivee)
    VALUES (4, '14h00', '20230402', 5, 10, 3, 'a pourvoir', 'non fumeur', 'A cote de l’Eglise', 27, 30);
 INSERT INTO TRAJET(idConducteur, heureDepart, dateDepart, nbPlaces, prix, nbPlacesRestantes, statusTrajet, commentaires, precisionRdv, villeDepart, villeArrivee)

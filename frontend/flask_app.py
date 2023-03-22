@@ -55,6 +55,13 @@ def account():
 def about():
     return render_template('about/about.html')
 
+@app.route('/recuperation-mot-de-passe')
+def recuperation():
+    return render_template('recuperation_mdp/recuperation-mdp.html')
+
+@app.route('/changer-mdp')
+def changer_mdp():
+    return render_template('changer_mdp/changer-mdp.html')
 
 # Requetes
 from backend.blueprints.compte import compte_bp
@@ -73,3 +80,4 @@ app.register_blueprint(mail_bp, url_prefix='/mail')
 
 if __name__ == '__main__':
     app.run(threaded=True, debug=True, port=5050)
+

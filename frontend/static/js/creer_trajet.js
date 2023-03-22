@@ -1,5 +1,7 @@
 const token = getCookieToken();
-const createTrajetURL = 'trajet/createTrajet/' + token;
+const createTrajetURL = '/trajet/createTrajet/' + token;
+
+const url = '/ami/getGroupes/' + token;
 
 // Menu deroulant ville de départ
 const select = document.querySelector("select[name='villeDepart']");
@@ -62,11 +64,45 @@ else {
         });
 }
 
+let typeTrajet = "";
+
+$(document).ready(function () {
+    $('input[name="amis"]').on('change', function () {
+        if ($(this).val() === "oui") {
+            typeTrajet = "Prive";
+            fetch(url)
+            .then(reponse => {
+                if(!reponse.ok){
+                    throw new Error(reponse.statusText);
+                }
+                return reponse.json();
+            })
+            .then(data => {
+                console.log(data);
+                data.forEach(res => {
+                    $('#groupes-amis').append('<option value="' + res.idGroupe + '">' + res.nomGroupe + '</option>');
+                })
+            })
+            .catch(error => {
+                console.error(error);
+            });
+            
+            $('#select-amis').show();
+        } else {
+            $('#select-amis').hide();
+        }
+    });
+});
+
+
 
 
 
 $('#forminput').submit(function (event) {
     event.preventDefault();
+
+    let val = parseInt($('#groupes-amis').val());
+    console.log(val);
 
     let valide = true;
 
@@ -136,7 +172,10 @@ $('#forminput').submit(function (event) {
                 'commentaires': commentaires,
                 'precisionRdv': precision,
                 'villeDepart': vd,
-                'villeArrivee': va
+                'villeArrivee': va,
+                'typeTrajet' : typeTrajet,
+                'idGroupe' : val
+
             })
         })
             .then(reponse => {

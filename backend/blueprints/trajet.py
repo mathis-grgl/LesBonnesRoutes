@@ -50,7 +50,7 @@ def getTrajet(idTrajet):
 
     if not trajet:
         conn.close()
-        return jsonify({'message': 'Trajet non trouvé'}), 40
+        return jsonify({'message': 'Trajet non trouvé'}), 404
 
     else:
 
@@ -74,7 +74,7 @@ def getTrajet(idTrajet):
         if idTrajet in [id[0] for id in c.execute("SELECT idTrajet FROM TRAJET_PRIVE")]:
             trajet['typeTrajet'] = 'prive'
             #On recupere le nom du groupe
-            trajet['nomGroupe'] = [groupe[0] for groupe in c.execute("SELECT nomGroupe FROM TRAJET_PRIVE NATURAL JOIN GROUPE WHERE idTrajet=?", (row[0],))][0]
+            trajet['nomGroupe'] = [groupe[0] for groupe in c.execute("SELECT nomGroupe FROM TRAJET_PRIVE NATURAL JOIN GROUPE WHERE idTrajet=?", (idTrajet,))][0]
         elif idTrajet in [id[0] for id in c.execute("SELECT idTrajet FROM TRAJET_PUBLIC")]:
             trajet['typeTrajet'] = 'public'
         else:
@@ -333,8 +333,11 @@ def createTrajet(token):
                 idTrajet = c.execute(sql).fetchone()[0]
 
                 if typeTrajet == 'Prive':
+                    print("test")
                     idGroupe = data.get('idGroupe')
                     c.execute("INSERT INTO TRAJET_PRIVE VALUES (?, ?)", (idTrajet, idGroupe))
+                    conn.commit()
+                    
 
                     #On envoie une notif au groupe
                     sendNotifGroupe(idCompte, idGroupe, "un nouveau trajet est disponible pour le groupe !")

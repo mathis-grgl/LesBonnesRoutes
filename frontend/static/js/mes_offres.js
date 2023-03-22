@@ -73,9 +73,12 @@ function charger_trajets() {
                 if (trajet.idCompte == trajet.idConducteur) {
                     console.log("Le trajet correspond à un trajet que l'utilisateur connecté a crée.")
                     let ligne = $("<tr>");
+                    let typeTrajet = (trajet.typeTrajet.charAt(0).toUpperCase() + trajet.typeTrajet.slice(1)).replace('e', 'é');
+
+                    ligne.append($('<td>').text( typeTrajet + " : " + trajet.nomGroupe));
                     ligne.append($('<td>').text(trajet.villeDepart));
                     ligne.append($('<td>').text(trajet.villeArrivee));
-                    ligne.append($('<td>').text(trajet.dateDepart));
+                    ligne.append($('<td>').text(dateObject.format('DD-MM-YYYY')));
                     ligne.append($('<td>').text(trajet.heureDepart));
                     ligne.append($('<td>').text(trajet.nbPlacesRestantes + '/' + trajet.nbPlaces));
                     ligne.append($('<td>').text(trajet.statusTrajet));
@@ -109,7 +112,7 @@ function charger_trajets() {
 
                     } else {
                         // Il n'y a pas plus de 24 heures d'écart entre les deux dates
-                        $('.delete-btn#' + trajet.idTrajet).hide();
+                        $('.delete-btn#' + trajet.idTrajet).remove();
                     }
 
                     tbody.append(ligne);
@@ -131,9 +134,10 @@ function charger_trajets() {
                             nomConducteur = data.nomCompte;
                             console.log(nomConducteur);
                             let row = $("<tr>");
+                            row.append($('<td>').text(trajet.typeTrajet.charAt(0).toUpperCase() + trajet.typeTrajet.slice(1)));
                             row.append($('<td>').text(trajet.villeDepart));
                             row.append($('<td>').text(trajet.villeArrivee));
-                            row.append($('<td>').text(trajet.dateDepart));
+                            row.append($('<td>').text(dateObject.format('DD-MM-YYYY')));
                             row.append($('<td>').text(trajet.heureDepart));
                             row.append($('<td>').text(trajet.nbPlacesRestantes + '/' + trajet.nbPlaces));
                             row.append($('<td>').text(trajet.statusTrajet));

@@ -9,7 +9,7 @@ $('#formcontact').submit(function (event) {
     let name = $('#name').val();
     let mail = $('#email').val();
     let tel = $('#phone').val();
-    let message = $('#message').val();
+    let message = $('#message').val().replaceAll(/\n/g, '<br>');
 
     /*console.log(name);
     console.log(mail);
@@ -38,6 +38,10 @@ $('#formcontact').submit(function (event) {
 function displayMessage(res) {
     if (res) {
         $('#okok').text("L'email a été envoyé.").css('color', 'red');
+        $('#name').val('');
+        $('#email').val('');
+        $('#phone').val('');
+        $('#message').val('');
     } else {
         $('#okok').text("L'email n'a pas été envoyé.").css('color', 'red');
     }

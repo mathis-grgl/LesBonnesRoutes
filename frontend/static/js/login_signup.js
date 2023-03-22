@@ -84,39 +84,9 @@ loginButton.addEventListener("click", () => {
   container.classList.remove("right-panel-active");
 });
 
-function sendEmail(){
-  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-  
-  if (regex.test(emailLog.value)) {
-    const message = "" + 
-      "<h2>Bonjour, suite à votre demande de récupération de votre mot de passe,<br>" +
-          "cliquez ci dessous pour récuperer votre mot de passe</h2><br>" +
-      "<a href='#' style='border-radius: 10px; border: 0px; background-color: #67ac5b;>Cliquez ici</a>";
-
-    const subject = "LBR Récupération mot de passe";
-
-    Email.send({
-      Host : "smtp.elasticemail.com",
-      Port : 2525,
-      Username : "sandygehin2@gmail.com",
-      Password : "820DA5C445081CE2534D0AF842122D336A11",
-      To : emailLog.value,
-      From : "noreply@lesbonnesrout.es",
-      Subject : subject,
-      Body : message
-    }).then(
-      function() {
-        displayMessage(true, "Le mail de récupération a bien été envoyé, vérifiez bien vos spams.");
-      }
-    ).catch(
-      function() {
-        displayMessage(false, "Le mail de récupération n'a pas été envoyé, vérifiez bien votre email et réessayez.");
-      }
-    );
-  }
+function openRecuperationWindow(){
+  window.open('/recuperation-mot-de-passe', 'Example', 'width=550,height=220');
 }
-
 
 function displayMessage(res, message){
   emailSending.innerHTML = message
@@ -134,15 +104,17 @@ function signIn(event) {
   event.preventDefault(); // Prevent the default behavior of the button click
   const formData = new FormData();
   const fileInput = document.querySelector("input[name='file-sign']");
-  const file = fileInput.files[0];
-  const fileExtension = file.name.split('.').pop();
-  const fileName = `${document.querySelector("input[name='name-sign']").value}-${document.querySelector("input[name='last-name-sign']").value}-${Date.now()}.${fileExtension}`;
+  if(fileInput.files[0]){
+    const file = fileInput.files[0];
+    const fileExtension = file.name.split('.').pop();
+    const fileName = `${document.querySelector("input[name='name-sign']").value}-${document.querySelector("input[name='last-name-sign']").value}-${Date.now()}.${fileExtension}`;
+  
+    // Create a new File object with the unique name
+    const newFile = new File([file], fileName, { type: file.type });
 
-  // Create a new File object with the unique name
-  const newFile = new File([file], fileName, { type: file.type });
-
-  // Append the new file to the form data
-  formData.append('file-sign', newFile);
+    // Append the new file to the form data
+    formData.append('file-sign', newFile);
+  }
 
   if (checkValue('name-sign') && checkValue('last-name-sign') && checkValue("gender-sign") && checkValue('email-sign') && checkValue('phone-sign') &&checkValue("address-sign") && checkValue("city-sign") && checkValue("postal-sign") && checkValue("country-sign") && checkValue('password-sign')) {
     // Stockage de la valeur dans une variable booléenne
