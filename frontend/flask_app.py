@@ -73,3 +73,10 @@ app.register_blueprint(mail_bp, url_prefix='/mail')
 
 if __name__ == '__main__':
     app.run(threaded=True, debug=True, port=5050)
+
+    app.config['MAIL_SERVER'] = 'smtp.elasticemail.com'
+    app.config['MAIL_PORT'] = 465
+    app.config['MAIL_USERNAME'] = 'sandygehin2@gmail.com'
+    app.config['MAIL_PASSWORD'] = '820DA5C445081CE2534D0AF842122D336A11'
+    app.config['MAIL_USE_TLS'] = False
+    app.config['MAIL_USE_SSL'] = True
