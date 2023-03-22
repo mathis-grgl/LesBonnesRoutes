@@ -188,14 +188,11 @@ def supprimerGroupe(token, idGroupe):
         return jsonify({'message': 'Seul le createur du groupe peut modifier le groupe'}), 403
 
 
-    #On peut supprimer le groupe
-    sendNotifDeleteGroupe(idCompte, idGroupe)
+    #On peut supprimer le groupe et ses trajets
+    sendNotifDeleteGroupe(idCompte, idGroupe) #On envoie une notif avant de supprimer
     c.execute("DELETE FROM GROUPE WHERE idGroupe = ?", (idGroupe,))
     conn.commit()
     conn.close()
-
-    #On envoie une notif aux membres
-    #sendNotifGroupe(idCompte, idGroupe, "Le groupe a été supprimé")
 
     return jsonify({'message': 'Le groupe a bien été supprimé.'}), 200
 

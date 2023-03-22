@@ -138,7 +138,7 @@ async function displayTrajet(trajets) {
     trajetElement.innerHTML = `
       <a href="/trajet?id=${trajet.idTrajet}" class="room" style="position: relative;">
         <div class="img-wrap" style="position: relative;">
-          <img src="https://maps.geoapify.com/v1/staticmap?style=osm-carto&width=480&height=480&center=lonlat:${coordsDep.longitude},${coordsDep.latitude}&zoom=8.468&marker=lonlat:-${coordsArr.longitude},${coordsArr.latitude};color:%23ff0000;size:medium&apiKey=28ed3d4ce3664398aa6e2f080d227bbc" alt="Free website template" class="img-fluid mb-3">
+          <img src="https://maps.geoapify.com/v1/staticmap?style=osm-carto&width=480&height=480&center=lonlat:${coordsDep.longitude},${coordsDep.latitude}&zoom=8.468&marker=lonlat:${coordsArr.longitude},${coordsArr.latitude};color:%23ff0000;size:medium&apiKey=28ed3d4ce3664398aa6e2f080d227bbc" alt="Free website template" class="img-fluid mb-3">
           ${trajet.nbPlacesRestantes == 0 ? '<img src="static/images/sold_out.png" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain;">' : ''}
         </div>
         <div class="p-3 text-center room-info">
@@ -164,11 +164,16 @@ async function displayTrajet(trajets) {
 
 async function getCoordinates(city) {
     try { // Au cas ou l'api ne fonctionne pas
-      const response = await fetch(`https://nominatim.openstreetmap.org/search?q=${city}&format=json&addressdetails=1&limit=1&polygon_svg=1`);
+      const response = await fetch(`https://nominatim.openstreetmap.org/search?q=${city}&format=json&addressdetails=1&limit=1&polygon_svg=1`, {
+        method: 'GET',
+        headers: {
+          'Access-Control-Allow-Origin': '*'
+        }
+      });
       const data = await response.json();
       const latitude = data[0].lat;
       const longitude = data[0].lon;
-      //console.log("Coordonnées : " + latitude + "  " + longitude + "  Ville : " + city);
+      console.log("Coordonnées : " + latitude + "  " + longitude + "  Ville : " + city);
       return { latitude, longitude };
     } catch (error) {
       console.error('Erreur : ' + error.message);
