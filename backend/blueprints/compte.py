@@ -351,6 +351,7 @@ def modifCompte(token):
             #On insere les données
             c.execute("UPDATE COMPTE SET telephone=?, prenomCompte=?, nomCompte=?, mdp=?, adresse=?, ville=?, pays=?, codePostal=?, genre=?, voiture=?, notificationMail=?, email=?, photo=? WHERE idCompte=?",
                 (tel, prenom, nom, mdp, adresse, ville, pays, codePostal, genre, voiture, notifs, email, photo, idCompte))
+            c.execute("INSERT INTO CONDUCTEUR (idCompte) VALUES (?)", (idCompte ,))
             conn.commit()
             conn.close()
             return jsonify({'message': 'ok'}), 200

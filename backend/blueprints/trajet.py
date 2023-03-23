@@ -40,6 +40,11 @@ def trajet():
     return render_template('trajet/trajet.html')
 
 
+@trajet_bp.route('/historique_trajets')
+def historique():
+    return "<h1>Historique des trajets non-implémenté (sprint 4)</h1><br><a href='/'>Retour à l'accueil</a>"
+
+
 #Voir un trajet
 @trajet_bp.route('/trajet/<int:idTrajet>', methods=['POST'])
 def getTrajet(idTrajet):
@@ -294,6 +299,7 @@ def createTrajet(token):
     typeTrajet = data.get('typeTrajet')
 
     if not heureDepart or not dateDepart or not nbPlaces or not prix or not villeDepart or not villeArrivee:
+        conn.close()
         return jsonify({'message': 'Il manque une ou plusieurs infos'}), 401
         
 
@@ -365,6 +371,7 @@ def createTrajet(token):
                     #On envoie une notif si on trouve une recherche en attente correspondant au critères
                     #....................
 
+            
             conn.commit()
             conn.close()
             return jsonify({'message': 'Le trajet a bien été créé.'}), 200
