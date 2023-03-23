@@ -16,13 +16,13 @@ $(document).ready(function () {
     return reponse.json();
     })
     .then(data => {
-    console.log(data);
+    // console.log(data);
     let nbGroupes = data.length;
     for (let i = 0; i < nbGroupes; i++) {
         let groupe = data[i];
         let idGroupe = parseInt(i)+1;
-        console.log(idGroupe);
-        console.log(groupe);
+        // console.log(idGroupe);
+        // console.log(groupe);
         
         // Création d'une nouvelle ligne
         let tr = document.createElement("tr");
