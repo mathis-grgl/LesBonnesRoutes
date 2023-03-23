@@ -79,7 +79,6 @@ $(document).ready(function () {
             })
             .then(data => {
                 console.log(data);
-                $('#groupes-amis').empty();
                 data.forEach(res => {
                     $('#groupes-amis').append('<option value="' + res.idGroupe + '">' + res.nomGroupe + '</option>');
                 })
@@ -95,8 +94,6 @@ $(document).ready(function () {
         }
     });
 });
-
-
 
 
 
@@ -122,7 +119,10 @@ $('#forminput').submit(function (event) {
         $('#nb-places').css('border', '2px solid red');
         $('#2').empty();
         $('#2').append($('<b>').text("Vous devez rentrer un nombre de places positif."));
-
+    }
+    else {
+        $('#nb-places').css('border', '1px solid #d1d3e2');
+        $('#2').empty();
     }
 
     if (prix < 0) {
@@ -131,9 +131,10 @@ $('#forminput').submit(function (event) {
         $('#3').empty();
         $('#3').append($('<b>').text("Vous devez rentrer un prix positif."));
     }
-
-
-
+    else {
+        $('#prix-place').css('border', '1px solid #d1d3e2');
+        $('#3').empty();
+    }
 
     let dateObject = moment(date, 'YYYY/MM/DD');
     let dateFormatted = dateObject.format('D MMMM, YYYY');
@@ -151,6 +152,8 @@ $('#forminput').submit(function (event) {
     if (differenceMS > (24 * 60 * 60 * 1000)) {
         // Il y a plus de 24 heures d'écart entre les deux dates
         console.log("Il y a plus de 24 heures d'écart entre la date d'aujourd'hui et l'autre date.");
+        $('#date-depart').css('border', '1px solid #d1d3e2');
+        $('#1').empty();
     } else {
         // Il n'y a pas plus de 24 heures d'écart entre les deux dates
         valide = false;
@@ -160,7 +163,6 @@ $('#forminput').submit(function (event) {
     }
 
     if (valide) {
-
         fetch(createTrajetURL, {
             method: 'POST',
             headers: {
@@ -182,25 +184,14 @@ $('#forminput').submit(function (event) {
         })
             .then(reponse => {
                 if (reponse.ok) {
-
                     window.location.href = '/trajet/mes_trajets';
                 } else {
                     alert("Probleme dans le fetch");
-
                 }
-
             }).catch(error => {
                 console.error(error);
             });
-
     } else {
         alert('Certains champs sont mal remplis dans le formulaire.');
     }
-
-
-
-
-
-
-
 });
