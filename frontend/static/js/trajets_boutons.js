@@ -15,26 +15,52 @@ $(document).on('click', '.edit-btn', function () {
     // Récupérer l'URL existante
     let u = new URL(window.location.href);
     u.searchParams.delete("id");
-    
-    let url = new URL(window.location.href);
 
-    console.log(url);
+    let test = new URL(window.location.href);
 
-    url.pathname = '/trajet/modifier_trajet';
-    // Ajouter un paramètre "id" à l'URL
-    url.searchParams.set("id", id);
-    
+    fetch('/trajet/trajet/' + id, {
+        method: 'POST'
+    })
+        .then(reponse => {
+            if (!reponse.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return reponse.json();
 
-    // console.log(url);
-    // window.location.href = url.href;
+        })
+        .then(data => {
 
-    
+            // Affectation du trajet à la variable trajet
+            trajet = data;
+            date = trajet.dateDepart;
+
+            // Créer une date à partir de la date de départ du trajet
+            let targetDate = new Date(date);
+
+            // Créer une date à partir de maintenant
+            let now = new Date();
+
+            // Calcule la différence entre les deux dates
+            let diffMs = now.getTime() - targetDate.getTime();
+
+            // Vérifie si le trajet est à plus de 3 heures
+            let is24HoursOrMore = diffMs >= 24 * 60 * 60 * 1000;
+
+            // Si le trajet est à plus de 3 heures, on peut le terminer
+            if (is24HoursOrMore) {
+                test.pathname = '/trajet/modifier_trajet';
+                // Ajouter un paramètre "id" à l'URL
+                test.searchParams.set("id", id);
+                window.location.href = test.href;
 
 
-    // Rediriger vers la nouvelle URL avec le paramètre "id"
-    window.location.href = url.href;
+            } else {
+                alert("Un trajet ne peut pas être modifié moins de 24h avant son départ.");
+            }
 
-    // window.location.href = '/trajet/modifier_trajet' + '/' + id;
+        });
+
+
 
 });
 
