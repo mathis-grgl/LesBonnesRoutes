@@ -114,6 +114,34 @@ def sendNotifDeleteGroupe(idCompte, idGroupe):
     createur = res[1] + " " + res[2]
     message = "Le groupe " + nomGroupe + " a été supprimé "
 
+    #On verifie s'il y a des des trajets privés en cours 
+    c.execute("SELECT TRAJET.idTrajet, TRAJET.villeDepart, TRAJET.villeArrivee FROM TRAJET_PRIVE INNER JOIN TRAJET ON TRAJET_PRIVE.idTrajet = TRAJET.idTrajet WHERE idGroupe = ?", (idGroupe,))
+    trajets = c.fetchall()
+    print("###############################################################")
+    for trajet in trajets:
+        print(trajet)
+        idTrajet = trajet[0]
+        villeDepart = trajet[1]
+        villeArrivee = trajet[2]
+        # Conversion de l'idVille en nomVille et de la date
+        c.execute("SELECT nomVille FROM VILLE WHERE idVille = ?", (villeDepart,))
+        villeDepart = c.fetchone()[0]
+        c.execute("SELECT nomVille FROM VILLE WHERE idVille = ?", (villeArrivee,))
+        villeArrivee = c.fetchone()[0]
+        messageNotif = "Le trajet " + villeDepart + " -> " + villeArrivee + " du groupe " + nomGroupe + " a été supprimé"
+
+        #On récupère les participants de ce trajet
+        c.execute("SELECT idCompte FROM TRAJET_EN_COURS_PASSAGER WHERE idTrajet = ?", (idTrajet,))
+        users = c.fetchall()
+        for user in users:
+            idUser = user[0]
+            #On insère les notifs
+            c.execute("INSERT INTO NOTIFICATION(idCompteEnvoyeur, messageNotification) VALUES (?, ?)", (idCompte, messageNotif))
+            c.execute("SELECT last_insert_rowid() FROM NOTIFICATION")
+            idNotif = c.fetchone()[0]
+            c.execute("INSERT INTO NOTIF_RECUE VALUES(?, ?)", (idUser, idNotif))
+
+
     #On supprime toutes les notifs en rapport avec ce groupe
     c.execute("SELECT idNotification FROM NOTIF_GROUPE WHERE idGroupe = ?", (idGroupe,))
     notifs = c.fetchall()
