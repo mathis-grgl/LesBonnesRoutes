@@ -120,6 +120,7 @@ function charger_users() {
         })
         .then(data => {
             const $select = $('#select-users');
+            $select.empty();
             const addedNames = []; // tableau pour stocker les noms des personnes déjà ajoutées
             for(let i = 0; i < data.length; i++) {
                 const user = data[i];
