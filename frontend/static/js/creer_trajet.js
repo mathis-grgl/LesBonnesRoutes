@@ -79,6 +79,7 @@ $(document).ready(function () {
             })
             .then(data => {
                 console.log(data);
+                $('#groupes-amis').empty();
                 data.forEach(res => {
                     $('#groupes-amis').append('<option value="' + res.idGroupe + '">' + res.nomGroupe + '</option>');
                 })
