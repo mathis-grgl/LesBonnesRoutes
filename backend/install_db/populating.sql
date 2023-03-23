@@ -18,7 +18,7 @@ INSERT INTO TRAJET(idConducteur, heureDepart, dateDepart, nbPlaces, prix, nbPlac
 INSERT INTO TRAJET(idConducteur, heureDepart, dateDepart, nbPlaces, prix, nbPlacesRestantes, statusTrajet, commentaires, precisionRdv, villeDepart, villeArrivee)
     VALUES (1, '14h00', '20230420', 4, 5, 2, 'a pourvoir', NULL, NULL, 23, 41);
 INSERT INTO TRAJET(idConducteur, heureDepart, dateDepart, nbPlaces, prix, nbPlacesRestantes, statusTrajet, commentaires, precisionRdv, villeDepart, villeArrivee)
-    VALUES (1, '18h00', '20230415', 4, 10, 2, 'en cours', NULL, NULL, 27, 35);
+    VALUES (1, '18h00', '20230415', 4, 10, 2, 'a pourvoir', NULL, NULL, 27, 35);
 INSERT INTO TRAJET(idConducteur, heureDepart, dateDepart, nbPlaces, prix, nbPlacesRestantes, statusTrajet, commentaires, precisionRdv, villeDepart, villeArrivee)
    VALUES (4, '12h00', '20230401', 5, 10, 0, 'a pourvoir', 'non fumeur', 'Devant le Leclerc', 30, 27);
 INSERT INTO TRAJET(idConducteur, heureDepart, dateDepart, nbPlaces, prix, nbPlacesRestantes, statusTrajet, commentaires, precisionRdv, villeDepart, villeArrivee)
@@ -26,9 +26,9 @@ INSERT INTO TRAJET(idConducteur, heureDepart, dateDepart, nbPlaces, prix, nbPlac
 INSERT INTO TRAJET(idConducteur, heureDepart, dateDepart, nbPlaces, prix, nbPlacesRestantes, statusTrajet, commentaires, precisionRdv, villeDepart, villeArrivee)
    VALUES (1, '10h00', '20230403', 5, 10, 3, 'a pourvoir', 'non fumeur', 'Devant le Leclerc', 30, 27);
 INSERT INTO TRAJET(idConducteur, heureDepart, dateDepart, nbPlaces, prix, nbPlacesRestantes, statusTrajet, commentaires, precisionRdv, villeDepart, villeArrivee)
-   VALUES (1, '8h00', '20230402', 5, 10, 3, 'a pourvoir', 'non fumeur', 'A cote de l’Eglise', 27, 30);
+   VALUES (1, '8h00', '20230324', 5, 10, 3, 'en cours', 'non fumeur', 'A cote de l’Eglise', 27, 30);
 INSERT INTO TRAJET(idConducteur, heureDepart, dateDepart, nbPlaces, prix, nbPlacesRestantes, statusTrajet, commentaires, precisionRdv, villeDepart, villeArrivee)
-   VALUES (1, '8h00', '20230324', 5, 10, 3, 'a pourvoir', 'non fumeur', 'A cote de l’Eglise', 27, 30);
+   VALUES (1, '8h00', '20230328', 5, 10, 3, 'a pourvoir', 'non fumeur', 'A cote de l’Eglise', 27, 30);
 
 UPDATE TRAJET SET nbPlacesRestantes = 0 WHERE idTrajet = 1; /* Test trajet complet */
 
@@ -44,6 +44,15 @@ INSERT INTO TRAJET_EN_COURS_PASSAGER VALUES(2, 2, 1);
 INSERT INTO TRAJET_EN_COURS_PASSAGER VALUES(3, 2, 1);
 INSERT INTO TRAJET_EN_COURS_PASSAGER VALUES(1, 1, 1);
 INSERT INTO TRAJET_EN_COURS_PASSAGER VALUES(5, 1, 1);
+INSERT INTO TRAJET_EN_COURS_PASSAGER VALUES(1, 4, 1);
+INSERT INTO TRAJET_EN_COURS_PASSAGER VALUES(3, 4, 1);
+INSERT INTO TRAJET_EN_COURS_PASSAGER VALUES(5, 5, 1);
+INSERT INTO TRAJET_EN_COURS_PASSAGER VALUES(2, 6, 1);
+INSERT INTO TRAJET_EN_COURS_PASSAGER VALUES(5, 6, 1);
+INSERT INTO TRAJET_EN_COURS_PASSAGER VALUES(4, 7, 1);
+INSERT INTO TRAJET_EN_COURS_PASSAGER VALUES(3, 7, 1);
+INSERT INTO TRAJET_EN_COURS_PASSAGER VALUES(2, 8, 1);
+INSERT INTO TRAJET_EN_COURS_PASSAGER VALUES(5, 8, 1);
 
 
 INSERT INTO DEMANDE_TRAJET_EN_COURS VALUES (1, 4, 1, 'en cours', NULL);
