@@ -111,7 +111,7 @@ def get_user(idCompte):
 def is_admin(token):
     conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
-    c.execute("SELECT isAdmin FROM COMPTE WHERE token = ?", (token,))
+    c.execute("SELECT isAdmin FROM COMPTE NATURAL JOIN TOKEN WHERE auth_token = ?", (token,))
     row = c.fetchone()
     conn.close()
     return jsonify(row[0])
