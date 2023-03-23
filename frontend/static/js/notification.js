@@ -21,11 +21,8 @@ iconWrapper.addEventListener('click', function() {
 
 function displayNotifs(){
     //On adapte l'url selon la page actuelle
-    let url = "compte/getNotifs/";
-    if(!window.location.pathname.endsWith("index.html")){
-      url = "../compte/getNotifs/";
-    }
-
+    let url = "/compte/getNotifs/";
+    
     //Récuperation des notifs et affichage
     fetch(url + tokenH)
     .then(response => {
