@@ -11,7 +11,7 @@ $(document).ready(function () {
     else {
 
         id = window.location.href.split("/").slice(-1)[0];
-        // Si l'id de l'utilisateur est null, on affiche une alerte et on redirige vers la page de gestion des comptes
+        // Si l'id de l'utilisateur est null, on affiche une alerte et on redirige vers la page de gestion des trajets
         if (id == null || !id.match(/^[0-9]+$/)) {
             alert("Veuillez sélectionner un trajet");
             window.location.href = "/search-route";

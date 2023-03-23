@@ -25,7 +25,7 @@ $(document).ready(function () {
     let user = [];
     for (let i = 0; i < nbTrajet; i++) {
         let route = data[i];
-        console.log(route);
+        // console.log(route);
         
         // Création d'une nouvelle ligne
         let tr = document.createElement("tr");
