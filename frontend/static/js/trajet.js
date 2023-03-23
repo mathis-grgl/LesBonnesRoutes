@@ -52,6 +52,12 @@ fetch(`/trajet/conducteur/${id}`, {
       }
     });    
 
+    await getUsersTrajet().then(result => {
+      if (id in result){
+        document.getElementById("btnAsk").disabled = true;
+      }
+    });
+
     switch(data1.noteCompte){
         case 1:
             document.getElementById("rating-star-1").style = "opacity: 100;";
@@ -126,4 +132,18 @@ function askJourney(event){
   .catch(error => {
     console.error('Erreur : ' + error.message);
   });
+}
+
+async function getUsersTrajet(){
+   try {
+    const response = await fetch("/trajet/trajetsCompte/" + getCookieToken());
+    if (!response.ok) {
+      throw new Error("Erreur lors de l'appel à la fonction get_users: " + response.statusText);
+    }
+    const data = await response.json();
+    return data.map(trajet => trajet.idTrajet);;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
 }

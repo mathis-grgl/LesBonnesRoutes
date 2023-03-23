@@ -260,10 +260,12 @@ def trajetsCompte(token):
             # Ajouter le type de trajet en fonction de la table dans laquelle se trouve l'idTrajet
             if row[0] in [id[0] for id in c.execute("SELECT idTrajet FROM TRAJET_PRIVE")]:
                 trajet['typeTrajet'] = 'prive'
+                trajet['idTrajet'] = row[0]
                 #On recupere le nom du groupe
                 trajet['nomGroupe'] = [groupe[0] for groupe in c.execute("SELECT nomGroupe FROM TRAJET_PRIVE NATURAL JOIN GROUPE WHERE idTrajet=?", (row[0],))][0]
             elif row[0] in [id[0] for id in c.execute("SELECT idTrajet FROM TRAJET_PUBLIC")]:
                 trajet['typeTrajet'] = 'public'
+                trajet['idTrajet'] = row[0]
             else:
                 trajet['typeTrajet'] = None
 
