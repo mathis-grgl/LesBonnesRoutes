@@ -3,6 +3,9 @@ const regexTel = /^0[1-9]([-. ]?[0-9]{2}){4}$/;
 const regexName = /^[a-zA-ZÀ-ÿ]+$/;
 const regexMessageNotEmpty = /^.{1,}$/;
 
+
+
+
 $('#formcontact').submit(function (event) {
 
     event.preventDefault();
@@ -10,6 +13,19 @@ $('#formcontact').submit(function (event) {
     let mail = $('#email').val();
     let tel = $('#phone').val();
     let message = $('#message').val().replaceAll(/\n/g, '<br>');
+
+    if (!$('#phone').val().match(regexTel) && $('#phone').val() !== "") {
+        $('#phone').css('border', '2px solid red');
+        $('#phone').val('');
+        // $('#phone').attr('placeholder', 'Numéro invalide');
+        let messageErreur = document.getElementById('message-erreur');
+        messageErreur.innerHTML = 'Numéro de téléphone invalide : doit contenir 10 chiffres en commençant par 0.';
+
+
+
+    }
+
+
 
     /*console.log(name);
     console.log(mail);
