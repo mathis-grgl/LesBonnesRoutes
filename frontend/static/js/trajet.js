@@ -101,7 +101,7 @@ function closePopup() {
 }
 
 function askJourney(event){
-    event.preventDefault(); // Prevent the default behavior of the button click
+  event.preventDefault(); // Prevent the default behavior of the button click
   fetch(`/trajet/demandeTrajet/${getCookieToken()}/${id}/${nbPlacesInput.value}`, {
     method: 'POST',
     headers: {
