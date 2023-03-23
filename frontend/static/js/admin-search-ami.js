@@ -52,9 +52,7 @@ $(document).ready(function () {
 
         let btnEdit = document.createElement("a");
         btnEdit.classList.add("btn", "btn-primary", "btn-xs");
-        // btnEdit.onclick = () => {
-        //   location.href = "/admin/route/" + route.idTrajet + "/edit/";
-        // }
+ 
         btnEdit.setAttribute("onclick", "onModifyGroupe(" + i+1 + ")");
         btnEdit.setAttribute("data-title", "Edit");
         btnEdit.setAttribute("data-toggle", "modal");
@@ -76,9 +74,7 @@ $(document).ready(function () {
 
         let btnDelete = document.createElement("a");
         btnDelete.classList.add("btn", "btn-danger", "btn-xs");
-        // btnDelete.onclick = () => {
-        //   location.href = "/admin/route/delete/" + route.idTrajet;
-        // }
+
         btnDelete.setAttribute("onclick", "onDeleteGroupe(" + idGroupe + ")");
         btnDelete.setAttribute("data-title", "Delete");
         btnDelete.setAttribute("data-toggle", "modal");
@@ -102,14 +98,14 @@ $(document).ready(function () {
 
 
 function onDeleteGroupe(id) {
-    if (confirm("Voulez-vous vraiment supprimer ce trajet ?")) {
+    if (confirm("Voulez-vous vraiment supprimer ce groupe ?")) {
     fetch('/admin/supprimerGroupe/'+ tokenAdmin + '/' + id, {
         method: 'DELETE'
     }).then(response => {
         if (response.ok) {
         location.reload();
         } else {
-        alert("Une erreur est survenue lors de la suppression du trajet.");
+        alert("Une erreur est survenue lors de la suppression du groupe.");
         console.log(response);
         }
     });
