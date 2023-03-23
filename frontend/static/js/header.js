@@ -9,30 +9,35 @@ const admin = document.querySelector("li[name='admin']");
 const tokenH = getCookieToken();
 let isAdmin = false;
 
-fetch('/users/'+ tokenH + '/isadmin')
+fetch('/admin/users/'+ tokenH + '/isadmin')
     .then(reponse => {
         if (!reponse.ok) {  throw new Error(reponse.statusText); }
         return reponse.json();
     })
     .then(data => {
-        if (data.isAdmin === true) {
+        console.log(data.isAdmin);
+        if (data === 1) {
+            console.log("admin");
             isAdmin = true;
         }
+        if (tokenH === null){
+            connection.style = "display: block;";
+            deconnection.style = "display: none;";
+            profil.style = "display: none";
+            rechercherTrajet.style = "display: none";
+            groupes.style = "display: none";
+            iconWrapper.style = "display: none;";
+            admin.style = "display: none;";
+          } else {
+            connection.style = "display: none";
+            if (isAdmin) {
+                admin.style = "display: block;";
+                rechercherTrajet.style = "display: none";
+                groupes.style = "display: none";
+            }
+            else admin.style = "display: none;";
+          }
     })
     .catch(error => {
         console.error(error);
     })
-
-if (tokenH === null){
-  connection.style = "display: block;";
-  deconnection.style = "display: none;";
-  profil.style = "display: none";
-  rechercherTrajet.style = "display: none";
-  groupes.style = "display: none";
-  iconWrapper.style = "display: none;";
-  admin.style = "display: none;";
-} else {
-  connection.style = "display: none";
-  if (isAdmin) admin.style = "display: block;";
-  else admin.style = "display: none;";
-}
