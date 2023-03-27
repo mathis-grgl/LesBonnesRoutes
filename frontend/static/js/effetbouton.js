@@ -1,7 +1,7 @@
 document.querySelectorAll(".logoutButton").forEach((button) => {
     button.state = "default";
 
-    // function to transition a button from one state to the next
+    // Les états du bouton
     let updateButtonState = (button, state) => {
         if (logoutButtonStates[state]) {
             button.state = state;
@@ -11,21 +11,25 @@ document.querySelectorAll(".logoutButton").forEach((button) => {
         }
     };
 
-    // mouse hover listeners on button
+    // Gestion de la souris qui entre dans le bouton
     button.addEventListener("mouseenter", () => {
         if (button.state === "default") {
             updateButtonState(button, "hover");
         }
     });
+    // Gestion de la souris qui quitte le bouton
     button.addEventListener("mouseleave", () => {
         if (button.state === "hover") {
             updateButtonState(button, "default");
         }
     });
 
-    // click listener on button
+    // Gestion du clic sur le bouton
     button.addEventListener("click", (event) => {
+
+        // Si le bouton est dans l'état par défaut ou hover
         if (button.state === "default" || button.state === "hover") {
+            
             button.classList.add("clicked");
             updateButtonState(button, "walking1");
             setTimeout(() => {
@@ -43,6 +47,8 @@ document.querySelectorAll(".logoutButton").forEach((button) => {
                             // sessionStorage.removeItem('user');
                             // console.log("On se déconnecte.");
                             // location.replace('./deconnexion');
+
+                            // Supprime le cookie utilisateur
                             fetch('/compte/deconnectCompte/' + getCookieToken(),
                                 {
                                     method: 'POST',
@@ -57,9 +63,11 @@ document.querySelectorAll(".logoutButton").forEach((button) => {
                                         throw new Error('Erreur : ' + response.status);
                                     }
                                 })
-                                .then(data => {
+                                .then(() => {
+                                    // Supprime le cookie utilisateur
                                     deleteCookie(getCookieToken());
-                                    console.log("On se déconnecte.");
+
+                                    // Redirige vers la page de confirmation de déconnexion
                                     location.replace('/deconnexion');
                                 })
                                 .catch(error => {

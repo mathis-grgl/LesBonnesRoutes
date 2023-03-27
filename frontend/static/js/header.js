@@ -9,35 +9,41 @@ const admin = document.querySelector("li[name='admin']");
 const tokenH = getCookieToken();
 let isAdmin = false;
 
-fetch('/admin/users/'+ tokenH + '/isadmin')
-    .then(reponse => {
-        if (!reponse.ok) {  throw new Error(reponse.statusText); }
-        return reponse.json();
-    })
-    .then(data => {
-        console.log(data.isAdmin);
-        if (data === 1) {
-            console.log("admin");
-            isAdmin = true;
-        }
-        if (tokenH === null){
-            connection.style = "display: block;";
-            deconnection.style = "display: none;";
-            profil.style = "display: none";
-            rechercherTrajet.style = "display: none";
-            groupes.style = "display: none";
-            iconWrapper.style = "display: none;";
-            admin.style = "display: none;";
-          } else {
+// Si le token est null, on affiche le bouton de connexion et on cache les autres
+if (tokenH === null) {
+    connection.style = "display: block;";
+    deconnection.style = "display: none;";
+    profil.style = "display: none";
+    rechercherTrajet.style = "display: none";
+    groupes.style = "display: none";
+    iconWrapper.style = "display: none;";
+    admin.style = "display: none;";
+} 
+
+// Sinon on affiche tous les boutons liés à l'utilisateur connecté et on cache le bouton de connexion
+else {
+
+    // Requête pour vérifier si l'utilisateur est admin
+    fetch('/admin/users/' + tokenH + '/isadmin')
+        .then(reponse => {
+            if (!reponse.ok) { throw new Error(reponse.statusText); }
+            return reponse.json();
+        })
+        .then(data => {
+
+            // On cache le bouton de connexion et on affiche le bouton de déconnexion
             connection.style = "display: none";
-            if (isAdmin) {
-                admin.style = "display: block;";
+
+            // Si l'utilisateur est admin, on affiche le bouton admin
+            if (data === 1){
                 rechercherTrajet.style = "display: none";
                 groupes.style = "display: none";
             }
+            
+            // Sinon on ne l'affiche pas
             else admin.style = "display: none;";
-          }
-    })
-    .catch(error => {
-        console.error(error);
-    })
+        })
+        .catch(error => {
+            console.error(error);
+        })
+}
