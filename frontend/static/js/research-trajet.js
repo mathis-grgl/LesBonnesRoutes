@@ -67,10 +67,10 @@ function displayOffer(event){
           descriptionOffres.innerHTML = "Retrouvez ici les offres de trajets correspondantes.";
         }
         
-        await displayTrajet(data);
-
-        //On remet 'onclick' du bouton recherche pour eviter bug
-        btnResearch.setAttribute('onclick', 'displayOffer(event)');
+        await displayTrajet(data).finally(() => {
+          // Réactiver le bouton recherche
+          btnResearch.setAttribute('onclick', 'displayOffer(event)');
+        });        
     })
     .catch(error => {
         //On remet 'onclick' du bouton recherche pour eviter bug
@@ -82,6 +82,7 @@ function displayOffer(event){
 
 
 async function displayTrajet(trajets) {
+  console.log("Clic rechercher");
   const trajetsContainer = document.getElementById('display');
   trajetsContainer.innerHTML = "";
 
@@ -90,10 +91,6 @@ async function displayTrajet(trajets) {
 
   const tousLesTrajets = trajetsPrives;
   tousLesTrajets.push(...trajetsPublics);
-  const trajetRow = document.createElement('div');
-  trajetRow.classList.add('row');
-  const trajetRow1 = document.createElement('div');
-  trajetRow1.classList.add('row');
 
   let trajetsPrivesAdded = false;
   let trajetsPublicsAdded = false;
@@ -106,28 +103,36 @@ async function displayTrajet(trajets) {
     worker.onmessage = function(event) {
       const trajetElement = document.createElement('div');
       trajetElement.classList.add('col-md-6', 'col-lg-4');
+
       if (trajet.typeTrajet === "prive" && !trajetsPrivesAdded) {
-        trajetsContainer.innerHTML = `<h2>Trajets privés</h2>`;
+        trajetsContainer.innerHTML += `<h2>Trajets privés</h2>`;
+        const trajetRow = document.createElement('div');
+        trajetRow.classList.add('row');
+        trajetRow.appendChild(trajetElement);
         trajetsContainer.appendChild(trajetRow);
         trajetsPrivesAdded = true;
       } else if (trajet.typeTrajet === "public" && !trajetsPublicsAdded) {
         trajetsContainer.innerHTML += `<h2>Trajets publics</h2>`;
+        const trajetRow1 = document.createElement('div');
+        trajetRow1.classList.add('row');
+        trajetRow1.appendChild(trajetElement);
         trajetsContainer.appendChild(trajetRow1);
         trajetsPublicsAdded = true;
+      } else {
+        if (trajet.typeTrajet === "prive") {
+          const trajetRow = trajetsContainer.querySelector('div.row:first-of-type');
+          trajetRow.appendChild(trajetElement);
+        } else if (trajet.typeTrajet === "public") {
+          const trajetRow1 = trajetsContainer.querySelector('div.row:last-of-type');
+          trajetRow1.appendChild(trajetElement);
+        }
       }
 
       trajetElement.innerHTML = event.data;
-
-      if (trajet.typeTrajet === "prive"){
-        trajetRow.appendChild(trajetElement);
-        trajetsContainer.appendChild(trajetRow);
-      } else if (trajet.typeTrajet === "public"){
-        trajetRow1.appendChild(trajetElement);
-        trajetsContainer.appendChild(trajetRow1);
-      }
     };
   }
 }
+
 
 
 // Menu deroulant ville de départ

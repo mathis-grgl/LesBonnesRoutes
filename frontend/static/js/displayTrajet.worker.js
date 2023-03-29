@@ -20,7 +20,7 @@ function processTrajet(trajet, keys) {
           </div>
           <div class="p-3 text-center room-info">
             <h2>${villeDepart} - ${villeArrivee}</h2>
-            <span class="text-uppercase letter-spacing-1">${trajet.prix}€ -</span> 
+            <span class="text-uppercase letter-spacing-1">${trajet[keys.indexOf("prix")]}€ -</span> 
             <span style='color: ${nbPlacesRestantes == 0 ? "#FF0000" : "#4BC35B"}' class="text-uppercase letter-spacing-1">${nbPlacesRestantes == 0 ? "Plus de places" : nbPlacesRestantes + " places restantes"}</span><br>
             ${trajet[keys.indexOf("typeTrajet")] === "prive" ? `<span style='color: #4E5BFF;' class="text-uppercase letter-spacing-1">Groupe : ${trajet[keys.indexOf("nomGroupe")]}</span>` : ""}
           </div>
