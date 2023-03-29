@@ -34,6 +34,8 @@ function displayOffer(event){
     console.log("Places : " + places.value);
     console.log("Prix < : " + prixInferieur.value);
     console.log("Prix > : " + prixSuperieur.value);*/
+    // Retirer l'attribut 'onclick' du bouton recherche pour eviter bug
+    btnResearch.removeAttribute('onclick');
 
     fetch(`/trajet/recherche/${getCookieToken()}`, {
         method: 'POST',
@@ -64,15 +66,15 @@ function displayOffer(event){
           titreOffre.innerHTML = "Trajets correspondants";
           descriptionOffres.innerHTML = "Retrouvez ici les offres de trajets correspondantes.";
         }
-        // Retirer l'attribut 'onclick' du bouton recherche pour eviter bug
-        btnResearch.removeAttribute('onclick');
-
+        
         await displayTrajet(data);
 
         //On remet 'onclick' du bouton recherche pour eviter bug
         btnResearch.setAttribute('onclick', 'displayOffer(event)');
     })
     .catch(error => {
+        //On remet 'onclick' du bouton recherche pour eviter bug
+        btnResearch.setAttribute('onclick', 'displayOffer(event)');
         titreOffre.innerHTML = "Aucun trajet correspondant";
         console.error('Erreur : ' + error.message);
     });
@@ -136,7 +138,7 @@ async function displayTrajet(trajets) {
     const coords = await getMiddleCoordinates(trajet.villeDepart, trajet.villeArrivee);
     const distance = getDistance(coordsDep.latitude, coordsDep.longitude, coordsArr.latitude, coordsArr.longitude);
     const zoom = getZoomLevel(distance);
-    console.log(trajet.villeDepart + " -> " + trajet.villeArrivee + " = " + distance + " Zoom : " + zoom);
+    //console.log(trajet.villeDepart + " -> " + trajet.villeArrivee + " = " + distance + " Zoom : " + zoom);
     const trajetElement = document.createElement('div');
     trajetElement.classList.add('col-md-6', 'col-lg-4');
     if (trajet.typeTrajet === "prive" && !trajetsPrivesAdded) { // Ajoute le titre "Trajets privés" avant la première section des trajets privés
@@ -220,7 +222,7 @@ async function getCoordinates(city) {
       const data = await response.json();
       const latitude = data[0].lat;
       const longitude = data[0].lon;
-      console.log("Coordonnées : " + latitude + "  " + longitude + "  Ville : " + city);
+      //console.log("Coordonnées : " + latitude + "  " + longitude + "  Ville : " + city);
       return { latitude, longitude };
     } catch (error) {
       console.error('Erreur : ' + error.message);

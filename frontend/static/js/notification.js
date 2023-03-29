@@ -111,7 +111,6 @@ function displayNotifs(){
 function displayNotif(event){
   event.preventDefault();
   const notifs = document.querySelectorAll(".notify_item");
-  const wrapper = document.querySelector(".icon-wrapper");
 
   notifs.forEach(notif => {
     if (notif.style.display === "flex"){
