@@ -9,6 +9,7 @@ import os
 import re
 from werkzeug.utils import secure_filename
 from hashlib import sha512
+from backend.notifManager import *
 
 compte_bp = Blueprint('compte', __name__)
 
@@ -385,6 +386,7 @@ def delCompte(token):
         return jsonify({'message': 'Token invalide ou expiré.'}), 401
     else:
         idCompte = compte[0]
+        sendNotifDeleteCompte(idCompte)
         c.execute("DELETE FROM COMPTE WHERE idCompte = ?", (idCompte,))
         c.execute("DELETE FROM TRAJET WHERE idConducteur = ?", (idCompte,))
         c.execute("DELETE FROM TRAJET_EN_COURS_PASSAGER WHERE idCompte = ?", (idCompte,))
