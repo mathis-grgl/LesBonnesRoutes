@@ -11,7 +11,6 @@ fetch("/admin/trajets/Public")
 // Bouton rechercher
 const btnResearch = document.getElementById("btn-research");
 
-
 // Champs de recherche
 const villeDepart = document.querySelector("select[name=city-start]");
 const villeArrivee = document.querySelector("select[name=city-end]");
@@ -28,12 +27,6 @@ function displayOffer(event){
     const descriptionOffres = document.querySelector("[name='description-offer']");
 
     event.preventDefault(); // Prevent the default behavior of the button click
-    /*console.log("Depart : " + villeDepart.value);
-    console.log("Arrivée : " + villeArrivee.value);
-    console.log("Date : " + date.value);
-    console.log("Places : " + places.value);
-    console.log("Prix < : " + prixInferieur.value);
-    console.log("Prix > : " + prixSuperieur.value);*/
     // Retirer l'attribut 'onclick' du bouton recherche pour eviter bug
     btnResearch.removeAttribute('onclick');
 

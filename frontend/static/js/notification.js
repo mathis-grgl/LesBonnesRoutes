@@ -15,6 +15,23 @@ window.addEventListener('DOMContentLoaded', function() {
   }
 });
 
+// Ajoute un gestionnaire d'événements de clic à l'objet document
+document.addEventListener("click", function(event) {
+  const notifs = document.querySelectorAll(".notify_item");
+  // Vérifie si l'élément clické est la bell-icon
+  if (event.target === bellIcon) {
+    return;
+  }
+  // Vérifie si l'élément clic est l'élément notifs ou l'un de ses descendants
+  if (!dropdown.contains(event.target)) {
+    // Si l'élément clic n'est pas l'élément notifs ou l'un de ses descendants, rend les éléments notifs invisibles
+    notifs.forEach(notif => {
+      notif.style.display = "none";
+    });
+    dropdown.classList.remove("active");
+  }
+});
+
 iconWrapper.addEventListener('click', function() {
   iconWrapper.classList.toggle('active');
 });
