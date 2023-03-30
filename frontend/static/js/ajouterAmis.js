@@ -64,6 +64,7 @@ function charger_users() {
         .then(data => {
             console.log(data);
             const $select = $('#select-users');
+            $select.append('<option value="' + 0 + '">' + " " + '</option>')
             const addedNames = []; // tableau pour stocker les noms des personnes déjà ajoutées
             $.each(data, function (index, user) {
                 const prenomUser = user.nomCompte;
@@ -86,17 +87,22 @@ function charger_users() {
 
 }
 
+$(document).ready(function() {
+    $('#select-users').select2();
+ });
+
 
 $('#ajouter_amis').submit(function (event) {
     event.preventDefault(); // pour empêcher la soumission normale du formulaire
 
-    const selectedValues = $('#select-users').val();
+    // const selectedValues = $('#select-users').val();
+    const selectedValues = $('#select-users').select2('data');
 
     // Faire quelque chose avec les valeurs sélectionnées
     console.log('Les valeurs sélectionnées sont : ', selectedValues);
     console.log(selectedValues.length);
     
-    let idAmi = parseInt(selectedValues[0]);
+    let idAmi = parseInt(selectedValues[0].id);
     let url = '/ami/addMember/' + token + '/' + idGroupe + '/' + idAmi;
 
     // for(let i = 0; i < selectedValues.length; i++){
