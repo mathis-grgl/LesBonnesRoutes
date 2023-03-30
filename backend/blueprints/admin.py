@@ -1,12 +1,20 @@
 URI_DATABASE = '../database.db'
 
 from werkzeug.routing import Rule
-from flask import Blueprint, jsonify, render_template, request
+from flask import Blueprint, jsonify, render_template, request, Flask
 from datetime import datetime
 import sqlite3
 from backend.notifManager import *
+from werkzeug.utils import secure_filename
+import os
 
 admin_bp = Blueprint('admin', __name__)
+
+app = Flask(__name__, template_folder=".")
+
+#Chemin pour enregistrer les photos
+UPLOAD_FOLDER = 'static/images/profils'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Pages
 @admin_bp.route('/')
@@ -309,7 +317,8 @@ def modifCompte(token, idCompte):
         conn.close()
         return jsonify({'message': 'Le token est invalide ou expiré'}), 401
 
-    data = request.get_json()
+    #data = request.get_json()
+    data = request.form
     email = data.get('email')
     #On verifie l'unicite de l'email
     idCompte = int(idCompte)
@@ -363,19 +372,32 @@ def modifCompte(token, idCompte):
             notifs = False
 
         # Est-ce bon ?
-        print("6")
-        poster = data.get('photo')
-        print(poster)
-        print("6")
+        #print("6")
+        #poster = data.get('photo')
+        #print(poster)
+        #print("6")
 
-        if poster :
-            #Il y a une photo : on inserer le nom dans la db
-            nomPhoto = poster.filename
+        if 'poster' in request.files:
+            if not os.path.exists(UPLOAD_FOLDER):
+                os.makedirs(UPLOAD_FOLDER, mode=0o777, exist_ok=True)
+            else:
+                c = conn.cursor()
+                c.execute("SELECT * FROM COMPTE inner join TOKEN on COMPTE.idCompte = TOKEN.idCompte WHERE auth_token = ?", (token,))
+                compte = c.fetchone()
+                if compte[15] and os.path.exists("/static/images/profils/" + compte[15]):
+                    os.remove("/static/images/profils/" + compte[15])
+
+            file = request.files['poster']
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+            # Récupérer le nom de fichier pour la photo
+            photo = secure_filename(request.files['poster'].filename)
+
             c.execute("UPDATE COMPTE SET telephone=?, prenomCompte=?, nomCompte=?, mdp=?, email=?, adresse=?, ville=?, pays=?, codePostal=?, genre=?, voiture=?, notificationMail=?, photo=? WHERE idCompte=?",
-                (tel, prenom, nom, mdp, email, adresse, ville, pays, codePostal, genre, voiture, notifs, nomPhoto, idCompte))
+                (tel, prenom, nom, mdp, email, adresse, ville, pays, codePostal, genre, voiture, notifs, photo, idCompte))
             conn.commit()
             conn.close()
-            return jsonify({'message': 'ok'}), 200
         else :
             #On n'insere pas de photo
             c.execute("UPDATE COMPTE SET telephone=?, prenomCompte=?, nomCompte=?, mdp=?, email=?, adresse=?, ville=?, pays=?, codePostal=?, genre=?, voiture=?, notificationMail=? WHERE idCompte=?",

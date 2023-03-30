@@ -42,7 +42,7 @@ $(document).ready(function () {
         // Ajout de la photo
         let tdImg = document.createElement("td");
         let img = document.createElement("img");
-        if(account.photo != null) img.src = "/static/images/"+account.photo;
+        if(account.photo != null) img.src = "/static/images/profils/"+account.photo;
         else img.src = "https://www.w3schools.com/howto/img_avatar.png";
         img.alt = account.nomCompte;
         img.width = 64;
