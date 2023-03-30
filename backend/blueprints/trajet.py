@@ -42,7 +42,7 @@ def trajet():
 
 @trajet_bp.route('/historique_trajets')
 def historique():
-    return "<h1>Historique des trajets non-implémenté (sprint 4)</h1><br><a href='/'>Retour à l'accueil</a>"
+    return render_template('historiqueTrajet/historiqueTrajet.html')
 
 
 #Voir un trajet

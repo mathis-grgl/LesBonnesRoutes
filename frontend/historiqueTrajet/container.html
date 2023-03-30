@@ -1,0 +1,78 @@
+<section class="section privacy-section" id="next">
+
+    <div id="layoutSidenav">
+        <div id="layoutSidenav_nav">
+            <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                <div class="sb-sidenav-menu">
+                    <div class="nav">
+                        <div class="sb-sidenav-menu-heading">Trajets</div>
+                        <a class="nav-link" href="/trajet/mes_trajets">
+                            <div class="sb-nav-link-icon"></div>
+                            Consulter mes trajets à venir
+                        </a>
+
+                        <!-- <a class="nav-link" href="/trajet/mes_trajets_crees">
+                            <div class="sb-nav-link-icon"></div>
+                            Consulter mes trajets crées
+                        </a> -->
+
+                        <a class="nav-link" href="/trajet/creer_trajet" id="creer">
+                            <div class="sb-nav-link-icon"></div>
+                            Créer un trajet
+                        </a>
+
+                        <a class="nav-link" href="/trajet/historique_trajets">
+                            <div class="sb-nav-link-icon"></div>
+                            Consulter mes précédents trajets
+                        </a>
+                    </div>
+                </div>
+
+            </nav>
+        </div>
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container-fluid px-4">
+                    <h1 class="mt-4">{{ title }}</h1>
+
+
+                    <div class="card mb-4">
+                        <div class="card-header">
+
+                            Liste des trajets correspondants
+                        </div>
+                        <div class="card-body">
+                            <table id="trajets">
+                                <thead>
+                                    <tr>
+                                        <th>Type de trajet </th>
+                                        <th>Ville de départ</th>
+                                        <th>Ville d'arrivée</th>
+                                        <th>Date de départ</th>
+                                        <th>Heure de départ</th>
+                                        <th>Places disponibles</th>
+                                        <th>Status du trajet</th>
+                                        <th>Prix</th>
+                                        <th>Précisions du Rendez-vous</th>
+                                        <th>Commentaires</th>
+                                        <th>Conducteur / Passager</th>
+
+                                    </tr>
+                                </thead>
+
+
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+</section>
