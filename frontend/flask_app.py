@@ -63,6 +63,10 @@ def recuperation():
 def changer_mdp():
     return render_template('changer_mdp/changer-mdp.html')
 
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404/404.html'), 404
+
 # Requetes
 from backend.blueprints.compte import compte_bp
 from backend.blueprints.trajet import trajet_bp

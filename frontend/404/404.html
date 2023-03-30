@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="fr-FR">
+    <head>
+        {% set title='404' %}
+        {% include 'head.html' %}
+    </head>
+    <body>
+        {% include 'header.html' %}
+
+        {% set section_name='Erreur 404 - Cette page n\'existe pas' %}
+        {% include 'inner-page.html' %}
+
+        {% include '404/404-section.html' %}
+
+        {% include 'bg-image-section.html' %}
+
+        {% include 'footer.html' %}
+        
+        {% include 'scripts-required.html' %}
+    </body>
+</html>
