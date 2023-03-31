@@ -861,12 +861,14 @@ def terminerTrajet(token, idTrajet):
                 #On envoie une notif aux passagers
                 sendNotifTrajetPassagers(idConducteur, idTrajet, "Le trajet a été marqué comme terminé")
 
-                #On bascule dans l'historique
-                basculerVersHistorique(idTrajet, idCompte)
-
                 c.execute("UPDATE TRAJET SET statusTrajet = 'termine' WHERE idTrajet = ?", (idTrajet,))
+
                 conn.commit()
                 conn.close()
+
+                #On bascule dans l'historique
+                basculerVersHistorique(idTrajet, idCompte)
+                
                 return jsonify({'message': 'Le trajet a bien été terminé.'}), 200
 
 
