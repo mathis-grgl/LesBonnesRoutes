@@ -1,5 +1,6 @@
 const token = getCookieToken();
 const url = '/trajet/historiqueTrajetsCompte/' + token;
+const getCompteURL = '/compte/getNomCompte/';
 
 
 function historique() {
