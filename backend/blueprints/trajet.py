@@ -6,6 +6,7 @@ import sqlite3
 from apscheduler.schedulers.background import BackgroundScheduler
 import atexit
 from backend.notifManager import *
+import json
 
 trajet_bp = Blueprint('trajet', __name__)
 
@@ -274,6 +275,8 @@ def trajetsCompte(token):
         conn.commit()
         conn.close()
 
+        print(trajets)
+
         # Retour de la réponse avec code 200
         return jsonify(trajets), 200
     else:
@@ -281,6 +284,39 @@ def trajetsCompte(token):
         conn.close()
         return jsonify({'message': 'Token invalide ou expiré'}), 401
 
+
+@trajet_bp.route('/historiqueTrajetsCompte/<string:token>', methods=['GET'])
+def historiqueTrajetsCompte(token):
+    conn = sqlite3.connect(URI_DATABASE)
+    c = conn.cursor()
+    c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
+    compte = c.fetchone()
+
+    if not compte:
+        conn.close()
+        return jsonify({'message': 'Token invalide ou expiré'}), 401
+
+    #On peut chercher l'historique de ses trajets
+    idCompte = compte[0]
+
+    c.execute("SELECT jsonTrajet FROM HISTORIQUE_TRAJET WHERE idCompte=?", (idCompte,))
+    rows = c.fetchall()
+
+    # Créez une liste pour stocker les trajets JSON
+    trajets = []
+
+    # Pour chaque ligne de la table HISTORIQUE_TRAJET, ajoutez le trajet JSON à la liste
+    for row in rows:
+        trajet = row[0]
+        trajet_json = json.loads(trajet)
+        trajet_json['idCompte'] = idCompte
+        trajets.append(trajet_json)
+
+    # Fermez la connexion à la base de données
+    conn.close()
+
+    # Retournez la liste de trajets sous forme de JSON
+    return jsonify(trajets)
 
 
 
@@ -409,13 +445,81 @@ def deleteTrajet(token, idTrajet):
             else:
                 #On envoie une notification aux passagers
                 sendNotifDeleteTrajet(idCompte, idTrajet)
-                #sendNotifTrajetPassagers(idCompte, idTrajet, "Le trajet a été annulé")
 
                 c.execute("DELETE FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
                 conn.commit()
                 conn.close()
 
                 return jsonify({'message': 'Le trajet a bien été supprimé.'}), 200
+
+
+
+def basculerVersHistorique(idTrajet, idCompte):
+    conn = sqlite3.connect(URI_DATABASE)
+    c = conn.cursor()
+
+    # Sélectionnez le trajet correspondant à l'ID de trajet donné
+    c.execute("SELECT * FROM TRAJET WHERE idTrajet=?", (idTrajet,))
+    row = c.fetchone()
+
+    # Si aucun trajet n'est trouvé, renvoyer une erreur
+    if not row:
+        return jsonify({'error': 'Trajet non trouvé'}), 404
+
+    # Sinon, convertissez le trajet en un dictionnaire et un JSON
+    idTrajet, idConducteur, heureDepart, dateDepart, nbPlaces, prix, nbPlacesRestantes, statusTrajet, commentaires, precisionRdv, villeDepart, villeArrivee = row
+
+    # Conversion de la date de la colonne 'dateTrajet'
+    dateDepart = datetime.strptime(dateDepart, '%Y%m%d').strftime('%d %B, %Y')
+
+    # Conversion de l'idVille en nomVille
+    c.execute("SELECT nomVille FROM VILLE WHERE idVille = ?", (villeDepart,))
+    villeDepart = c.fetchone()[0]
+    c.execute("SELECT nomVille FROM VILLE WHERE idVille = ?", (villeArrivee,))
+    villeArrivee = c.fetchone()[0]
+
+    # Ajouter le type de trajet en fonction de la table dans laquelle se trouve l'idTrajet
+    if idTrajet in [id[0] for id in c.execute("SELECT idTrajet FROM TRAJET_PRIVE")]:
+        typeTrajet = 'prive'
+        #On recupere le nom du groupe
+        nomGroupe = [groupe[0] for groupe in c.execute("SELECT nomGroupe FROM TRAJET_PRIVE NATURAL JOIN GROUPE WHERE idTrajet=?", (row[0],))][0]
+    elif idTrajet in [id[0] for id in c.execute("SELECT idTrajet FROM TRAJET_PUBLIC")]:
+        typeTrajet = 'public'
+    else:
+        typeTrajet = None
+
+    trajet_dict = {
+        "idTrajet": idTrajet,
+        "idConducteur": idConducteur,
+        "heureDepart": heureDepart,
+        "dateDepart": dateDepart,
+        "nbPlaces": nbPlaces,
+        "prix": prix,
+        "nbPlacesRestantes": nbPlacesRestantes,
+        "statusTrajet": statusTrajet,
+        "commentaires": commentaires,
+        "precisionRdv": precisionRdv,
+        "villeDepart": villeDepart,
+        "villeArrivee": villeArrivee,
+        "typeTrajet": typeTrajet
+    }
+    if typeTrajet == 'prive':
+        trajet_dict["nomGroupe"] = nomGroupe
+
+    
+    trajet_json = json.dumps(trajet_dict)
+
+    # On met dans l'historique du conducteur et des passagers
+    c.execute("SELECT idCompte FROM TRAJET_EN_COURS_PASSAGER WHERE idTrajet = ?", (idTrajet,))
+    passagers = c.fetchall()
+    for passager in passagers:
+        p = passager[0]
+        c.execute("INSERT INTO HISTORIQUE_TRAJET (idCompte, jsonTrajet) VALUES (?, ?)", (p, trajet_json))
+
+    c.execute("INSERT INTO HISTORIQUE_TRAJET (idCompte, jsonTrajet) VALUES (?, ?)", (idCompte, trajet_json))
+
+    conn.commit()
+    conn.close()
 
 
 
@@ -757,6 +861,9 @@ def terminerTrajet(token, idTrajet):
                 #On envoie une notif aux passagers
                 sendNotifTrajetPassagers(idConducteur, idTrajet, "Le trajet a été marqué comme terminé")
 
+                #On bascule dans l'historique
+                basculerVersHistorique(idTrajet, idCompte)
+
                 c.execute("UPDATE TRAJET SET statusTrajet = 'termine' WHERE idTrajet = ?", (idTrajet,))
                 conn.commit()
                 conn.close()
@@ -883,6 +990,7 @@ def valider_automatiquement_trajet():
         print("Vérification des trajets en cours")
         if dateTrajet <= datetime.now() - timedelta(hours=24):
             c.execute("UPDATE TRAJET SET statusTrajet = 'termine' WHERE idTrajet = ?", (trajet['idTrajet'],))
+            basculerVersHistorique(trajet[0], trajet[1])
             print("Suppression du trajet numéro " + str(trajet['idTrajet']))
             conn.commit()
         conn.close()
