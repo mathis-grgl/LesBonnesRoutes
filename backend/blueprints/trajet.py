@@ -996,7 +996,7 @@ def getListeANoter(token, idHistorique):
     compte = c.fetchone()
     if not compte:
         conn.close()
-        return 1#jsonify({'message': 'Token invalide ou expiré'}), 401
+        return jsonify({'message': 'Token invalide ou expiré'}), 401
     
     idCompte = compte[0]
 
@@ -1031,6 +1031,65 @@ def getListeANoter(token, idHistorique):
     return jsonify(result), 200
     
 
+
+#Attribuer une note à un user
+@trajet_bp.route('/noter/<string:token>/<int:idHistorique>/<int:idCompteNote>/<int:note>', methods=['GET'])
+def noter(token, idHistorique, idCompteNote, note):
+    conn = sqlite3.connect(URI_DATABASE)
+    c = conn.cursor()
+    #On recupere l'id du conducteur
+    c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
+    compte = c.fetchone()
+    if not compte:
+        conn.close()
+        return jsonify({'message': 'Token invalide ou expiré'}), 401
+    
+    idCompte = compte[0]
+
+    #On vérifie que le compte a bien le droit de noter ce user
+    c.execute("SELECT jsonTrajet FROM HISTORIQUE_TRAJET WHERE idHistorique = ?", (idHistorique,))
+    json_ = c.fetchone()
+    if not json_:
+        conn.close()
+        return jsonify({'message': 'Trajet non trouvé dans l\'historique'}), 404
+
+    jsonTrajet = json_[0]
+    jsonTrajet = json.loads(jsonTrajet)
+
+    notantInList = False
+    noteInList = False
+
+    for p in jsonTrajet['passagers']:
+        if idCompte == p['idCompte']:
+            notantInList = True
+        if idCompteNote == p['idCompte']:
+            noteInList = True
+
+    if idCompte == jsonTrajet['idConducteur']:
+        notantInList = True
+    if idCompteNote == jsonTrajet['idConducteur']:
+        noteInList = True
+    
+    if not noteInList or not notantInList or idCompte == idCompteNote:
+        conn.close()
+        return jsonify({'message': 'Les deux utilisateurs ne peuvent pas se noter l\'un l\'autre'}), 403
+
+
+    #On vérifie que la note n'existe pas déjà
+    c.execute("SELECT idNote FROM NOTE WHERE idHistorique = ? AND idCompteNotant = ? AND idCompteNote = ?", (idHistorique, idCompte, idCompteNote))
+    n = c.fetchone()
+    if n:
+        #La note existe : on doit la modifier
+        idNote = n[0]
+        c.execute("UPDATE NOTE SET note = ? WHERE idNote = ?", (note, idNote))
+    else:
+        #La note n'existe pas : on l'insère dans la table
+        c.execute("INSERT INTO NOTE(idHistorique, idCompteNotant, idCompteNote, note) VALUES (?, ?, ?, ?)", (idHistorique, idCompte, idCompteNote, note))
+    
+    conn.commit()
+    conn.close()
+    return jsonify({'La note a bien été attribuée'}), 200
+    
 
 
 # Valider une fin de trajet automatiquement
