@@ -137,12 +137,13 @@ INSERT INTO HISTORIQUE_TRAJET VALUES(2, 4);
 INSERT INTO HISTORIQUE_TRAJET VALUES(4, 5);
 INSERT INTO HISTORIQUE_TRAJET VALUES(3, 5);
 INSERT INTO HISTORIQUE_TRAJET VALUES(5, 5);
-*/
+
 
 INSERT INTO NOTE(idTrajet, idCompteNotant, idCompteNote, note) VALUES (4, 4, 1, 4);
 INSERT INTO NOTE(idTrajet, idCompteNotant, idCompteNote, note) VALUES (4, 2, 4, 3);
 INSERT INTO NOTE(idTrajet, idCompteNotant, idCompteNote, note) VALUES (5, 3, 5, 5);
 INSERT INTO NOTE(idTrajet, idCompteNotant, idCompteNote, note) VALUES (5, 5, 4, 1);
+*/
 
 INSERT INTO VILLE(nomVille, codePostal) VALUES('Aix-en-Provence', 13100);
 INSERT INTO VILLE(nomVille, codePostal) VALUES('Ajaccio', 20000);

@@ -285,6 +285,8 @@ def trajetsCompte(token):
         return jsonify({'message': 'Token invalide ou expiré'}), 401
 
 
+
+#Récupérer l'historique d'un compte
 @trajet_bp.route('/historiqueTrajetsCompte/<string:token>', methods=['GET'])
 def historiqueTrajetsCompte(token):
     conn = sqlite3.connect(URI_DATABASE)
@@ -320,6 +322,7 @@ def historiqueTrajetsCompte(token):
 
 
 
+#Créer un trajet
 @trajet_bp.route('/createTrajet/<string:token>', methods=['POST', 'GET'])
 def createTrajet(token):
     conn = sqlite3.connect(URI_DATABASE)
@@ -419,6 +422,7 @@ def createTrajet(token):
 
 
 
+#Supprimer un trajet
 @trajet_bp.route('/deleteTrajet/<string:token>/<int:idTrajet>', methods=['GET'])
 def deleteTrajet(token, idTrajet):
     conn = sqlite3.connect(URI_DATABASE)
@@ -454,6 +458,7 @@ def deleteTrajet(token, idTrajet):
 
 
 
+#def auxiliaire pour le basculement vers l'historique
 def basculerVersHistorique(idTrajet, idCompte):
     conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
@@ -506,12 +511,33 @@ def basculerVersHistorique(idTrajet, idCompte):
     if typeTrajet == 'prive':
         trajet_dict["nomGroupe"] = nomGroupe
 
+    #On recupere le nom et le prenom du conducteur
+    c.execute("SELECT nomCompte, prenomCompte FROM COMPTE WHERE idCompte = ?", (idConducteur,))
+    conducteur = c.fetchone()
+    if conducteur :
+        trajet_dict['nomConducteur'] = conducteur[0]
+        trajet_dict['prenomConducteur'] = conducteur[1]
+
+    passagers_json = []
+    #On récupère la liste des passagers
+    c.execute("SELECT idCompte, nomCompte, prenomCompte FROM TRAJET_EN_COURS_PASSAGER NATURAL JOIN COMPTE WHERE idTrajet = ?", (idTrajet,))
+    passagers = c.fetchall()
+    for passager in passagers:
+        idPassager = passager[0]
+        nomPassager = passager[1]
+        prenomPassager = passager[2]
+        p_json = {
+            'idCompte' : idPassager,
+            'nomCompte' : nomPassager,
+            'prenomCompte' : prenomPassager
+        }
+        passagers_json.append(p_json)
     
+    trajet_dict['passagers'] = passagers_json
+
     trajet_json = json.dumps(trajet_dict)
 
     # On met dans l'historique du conducteur et des passagers
-    c.execute("SELECT idCompte FROM TRAJET_EN_COURS_PASSAGER WHERE idTrajet = ?", (idTrajet,))
-    passagers = c.fetchall()
     for passager in passagers:
         p = passager[0]
         c.execute("INSERT INTO HISTORIQUE_TRAJET (idCompte, jsonTrajet) VALUES (?, ?)", (p, trajet_json))
@@ -692,7 +718,6 @@ def acceptInTrajet(token, idCompte, idTrajet, nbPlaces, accept):
 
 
 
-
 @trajet_bp.route('/modifTrajet/<string:token>/<int:idTrajet>', methods=['POST'])
 def modifTrajet(token, idTrajet):
     conn = sqlite3.connect(URI_DATABASE)
@@ -784,8 +809,6 @@ def modifTrajet(token, idTrajet):
 
 
 
-
-
 #Recuperer toutes les demandes en cours pour un trajets
 @trajet_bp.route('/getDemandesTrajet/<string:token>/<int:idTrajet>', methods = ['GET'])
 def getDemandesTrajet(token, idTrajet):
@@ -827,9 +850,6 @@ def getDemandesTrajet(token, idTrajet):
                         demande = {col_names[i]: row[i] for i in range(len(col_names))}
                         demandes.append(demande)
                     return jsonify(demandes), 200
-
-
-
 
 
 
@@ -879,7 +899,6 @@ def terminerTrajet(token, idTrajet):
 
 
 
-
 #Recuperer tous les passagers d'un trajet 
 @trajet_bp.route('/getPassagers/<string:token>/<int:idTrajet>', methods = ['GET'])
 def getPassagers(token, idTrajet):
@@ -924,6 +943,7 @@ def getPassagers(token, idTrajet):
 
 
 
+#Supprimer un passager d'un trajet
 @trajet_bp.route('/deletePassager/<string:token>/<int:idComptePassager>/<int:idTrajet>', methods = ['GET'])
 def deletePassager(token, idComptePassager, idTrajet):
     conn = sqlite3.connect(URI_DATABASE)
@@ -966,7 +986,50 @@ def deletePassager(token, idComptePassager, idTrajet):
 
 
 
+#Recuperer la liste des gens à noter
+@trajet_bp.route('/getListeANoter/<string:token>/<int:idHistorique>', methods=['GET'])
+def getListeANoter(token, idHistorique):
+    conn = sqlite3.connect(URI_DATABASE)
+    c = conn.cursor()
+    #On recupere l'id du conducteur
+    c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
+    compte = c.fetchone()
+    if not compte:
+        conn.close()
+        return 1#jsonify({'message': 'Token invalide ou expiré'}), 401
+    
+    idCompte = compte[0]
 
+    #On vérifie que le trajet fini existe bien dans la table
+    c.execute("SELECT jsonTrajet FROM HISTORIQUE_TRAJET WHERE idHistorique = ?", (idHistorique,))
+    trajet = c.fetchone()
+    if not trajet:
+        conn.close()
+        return jsonify({'message': 'Trajet non trouvé dans l\'historique'}), 404
+
+    jsonTrajet = json.loads(trajet[0])
+
+    #On peut recuperer la liste des personnes à noter en distinguant conducteur et passagers
+    liste_a_noter = []
+
+    passagers = jsonTrajet['passagers']
+    for p in passagers:
+        passager_dict = {'idCompte': p['idCompte'], 'nomCompte': p['nomCompte'], 'prenomCompte': p['prenomCompte'], 'type': 'passager'}
+        liste_a_noter.append(passager_dict)
+
+    #On recupere le conducteur
+    conducteur = {'idCompte': jsonTrajet['idConducteur'], 'nomCompte': jsonTrajet['nomConducteur'], 'prenomCompte': jsonTrajet['prenomConducteur'], 'type': 'conducteur'}
+    liste_a_noter.append(conducteur)
+
+    #On vérifie que le compte fait bien parti des personnes autorisées à noter et on l'enleve
+    result = [p for p in passagers if p['idCompte'] != idCompte]
+    if len(result) == len(liste_a_noter):
+        conn.close()
+        return jsonify({'message': 'Vous n\'êtes pas autorisé à noter'}), 403
+
+    conn.close()
+    return jsonify(result), 200
+    
 
 
 
