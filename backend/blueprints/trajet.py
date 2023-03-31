@@ -868,7 +868,13 @@ def terminerTrajet(token, idTrajet):
 
                 #On bascule dans l'historique
                 basculerVersHistorique(idTrajet, idCompte)
-                
+
+                conn = sqlite3.connect(URI_DATABASE)
+                c = conn.cursor()
+                c.execute("DELETE FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
+                conn.commit()
+                conn.close()
+
                 return jsonify({'message': 'Le trajet a bien été terminé.'}), 200
 
 
