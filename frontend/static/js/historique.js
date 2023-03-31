@@ -97,3 +97,27 @@ function historique() {
         })
 
 }
+
+
+$(document).on('click', '.signup-btn', function () {
+    let id = $(this).attr('id');
+    console.log("on a cliqué pour noter le conducteur ou les passagers du trajet d'id : " + id);
+    // faire ici le code pour rediriger vers la page ou soit directement ouvrir une petite fenêtre avec les passagers ou le conducteur
+    // pour ensuite attribuer une note donc voir comment bien faire ça
+
+
+
+
+
+
+    // let u = new URL(window.location.href);
+    // u.searchParams.delete("id");
+    // let url = new URL(window.location.href);
+    // console.log(url);
+    // url.pathname = '/trajet';
+    // url.searchParams.set("id", id);
+    // window.location.href = url.href;
+
+
+
+});
