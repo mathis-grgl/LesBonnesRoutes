@@ -72,7 +72,7 @@ function displayNotifs(){
 
         let imgDiv = document.createElement('div');
         imgDiv.classList.add('notify_img');
-        imgDiv.innerHTML = `<img id='image' src='${getPhoto(res.photo)}' alt='profile_pic' style='width: 50px;' class='img'><p>${res.nomCompte}<br>${res.prenomCompte}</p>`;
+        imgDiv.innerHTML = `<img id='image' src='${await getPhoto(res.photo)}' alt='profile_pic' style='width: 50px;' class='img'><p>${res.nomCompte}<br>${res.prenomCompte}</p>`;
         notificationDiv.appendChild(imgDiv);
 
         let infoDiv = document.createElement('div');
@@ -190,7 +190,7 @@ async function getGroupe(){
   }
 }
 
-function getPhoto(photo){
+async function getPhoto(photo){ // Asynchrone sinon le bouton tout supprimer s'affiche pas au dessus
   if (photo != null) {
     return '/static/images/profils/' + photo;
   } else {
