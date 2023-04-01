@@ -60,10 +60,12 @@ function displayOffer(event){
           descriptionOffres.innerHTML = "Retrouvez ici les offres de trajets correspondantes.";
         }
         
-        await displayTrajet(data).finally(() => {
-          // Réactiver le bouton recherche
+        await displayTrajet(data);
+
+        // Attendre 2 seconde avant de réactiver le bouton
+        setTimeout(() => {
           btnResearch.setAttribute('onclick', 'displayOffer(event)');
-        });        
+        }, 2000);
     })
     .catch(error => {
         //On remet 'onclick' du bouton recherche pour eviter bug
@@ -88,42 +90,39 @@ async function displayTrajet(trajets) {
   let trajetsPrivesAdded = false;
   let trajetsPublicsAdded = false;
 
-  for (const trajet of tousLesTrajets) {
+  let lastPrivateRow = null;
+let lastPublicRow = null;
+
+for (const trajet of tousLesTrajets) {
     const worker = new Worker('/static/js/displayTrajet.worker.js');
 
     worker.postMessage(trajet);
 
     worker.onmessage = function(event) {
-      const trajetElement = document.createElement('div');
-      trajetElement.classList.add('col-md-6', 'col-lg-4');
+        const trajetElement = document.createElement('div');
+        trajetElement.classList.add('col-md-6', 'col-lg-4');
+        trajetElement.innerHTML = event.data;
 
-      if (trajet.typeTrajet === "prive" && !trajetsPrivesAdded) {
-        trajetsContainer.innerHTML += `<h2>Trajets privés</h2>`;
-        const trajetRow = document.createElement('div');
-        trajetRow.classList.add('row');
-        trajetRow.appendChild(trajetElement);
-        trajetsContainer.appendChild(trajetRow);
-        trajetsPrivesAdded = true;
-      } else if (trajet.typeTrajet === "public" && !trajetsPublicsAdded) {
-        trajetsContainer.innerHTML += `<h2>Trajets publics</h2>`;
-        const trajetRow1 = document.createElement('div');
-        trajetRow1.classList.add('row');
-        trajetRow1.appendChild(trajetElement);
-        trajetsContainer.appendChild(trajetRow1);
-        trajetsPublicsAdded = true;
-      } else {
         if (trajet.typeTrajet === "prive") {
-          const trajetRow = trajetsContainer.querySelector('div.row:first-of-type');
-          trajetRow.appendChild(trajetElement);
+            if (!lastPrivateRow) {
+                trajetsContainer.innerHTML += `<h2>Trajets privés</h2>`;
+                lastPrivateRow = document.createElement('div');
+                lastPrivateRow.classList.add('row');
+                trajetsContainer.appendChild(lastPrivateRow);
+            }
+            lastPrivateRow.appendChild(trajetElement);
         } else if (trajet.typeTrajet === "public") {
-          const trajetRow1 = trajetsContainer.querySelector('div.row:last-of-type');
-          trajetRow1.appendChild(trajetElement);
+            if (!lastPublicRow) {
+                trajetsContainer.innerHTML += `<h2>Trajets publics</h2>`;
+                lastPublicRow = document.createElement('div');
+                lastPublicRow.classList.add('row');
+                trajetsContainer.appendChild(lastPublicRow);
+            }
+            lastPublicRow.appendChild(trajetElement);
         }
-      }
-
-      trajetElement.innerHTML = event.data;
     };
-  }
+}
+
 }
 
 
