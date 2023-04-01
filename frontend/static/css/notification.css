@@ -36,6 +36,14 @@
     padding-right: 5px;
 }
 
+.img{
+    padding-top: 5px;
+    width: 10%;
+    height: auto;
+    border-radius: 50%;
+    clip-path: circle(50%);
+}
+
 .imgCroix{
     position: absolute;
     width: 20px;

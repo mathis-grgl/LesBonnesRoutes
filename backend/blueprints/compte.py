@@ -461,7 +461,7 @@ def getNotifs(token):
     idCompte = compte[0]
     #On peut recuperer les notifications
     c.execute("""
-    SELECT NOTIFICATION.idNotification, messageNotification, nomCompte, prenomCompte FROM NOTIF_RECUE 
+    SELECT NOTIFICATION.idNotification, messageNotification, nomCompte, prenomCompte, photo FROM NOTIF_RECUE 
         inner join NOTIFICATION on NOTIF_RECUE.idNotification = NOTIFICATION.idNotification
         inner join COMPTE on NOTIFICATION.idCompteEnvoyeur = COMPTE.idCompte
         WHERE NOTIF_RECUE.idCompte = ? """, (idCompte,))

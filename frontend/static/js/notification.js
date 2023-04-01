@@ -72,7 +72,7 @@ function displayNotifs(){
 
         let imgDiv = document.createElement('div');
         imgDiv.classList.add('notify_img');
-        imgDiv.innerHTML = `<img id='image' src='${await getPhoto()}' alt='profile_pic' style='width: 50px;' class='rounded-circle'><p>${res.nomCompte}<br>${res.prenomCompte}</p>`;
+        imgDiv.innerHTML = `<img id='image' src='${getPhoto(res.photo)}' alt='profile_pic' style='width: 50px;' class='img'><p>${res.nomCompte}<br>${res.prenomCompte}</p>`;
         notificationDiv.appendChild(imgDiv);
 
         let infoDiv = document.createElement('div');
@@ -190,21 +190,11 @@ async function getGroupe(){
   }
 }
 
-async function getPhoto(){
-  try {
-    const response = await fetch(`/compte/getInfoCompte/${tokenH}`);
-    if (!response.ok) {
-      throw new Error("Erreur lors de l'appel à la fonction get_users: " + response.statusText);
-    }
-    const data = await response.json();
-    if (data.photo != null) {
-      return '/static/images/profils/' + data.photo;
-    } else {
-      return "/static/images/person_4.jpg";
-    }
-  } catch (error) {
-    console.error('Erreur : ', error);
-    throw error;
+function getPhoto(photo){
+  if (photo != null) {
+    return '/static/images/profils/' + photo;
+  } else {
+    return "https://www.w3schools.com/howto/img_avatar.png";
   }
 }
 
