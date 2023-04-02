@@ -151,16 +151,18 @@ function closePopup() {
 function noter(note, idCompte, idHistorique){
     console.log("Note : " + note + " " + idCompte + " " + idHistorique + " " + getCookieToken());
 
-    try {
-        const response = fetch(`/trajet/noter/${getCookieToken()}/${idHistorique}/${idCompte}/${note}`);
+    fetch(`/trajet/noter/${getCookieToken()}/${idHistorique}/${idCompte}/${note}`)
+    .then(response => {
         if (!response.ok) {
-            throw new Error("Erreur lors de l'appel à la requete noter " + response.statusText);
+        throw new Error('Erreur lors de l\'appel à la requete noter');
         }
+        return response.json();
+    })
+    .then(data => {
+        console.log("Résultat requete noter : " + Object.values(data));
         document.getElementById(idCompte).innerHTML = "<div class='infos'>Merci pour votre avis !</div>";
-        const data = response.json();
-        return data.map(trajet => trajet.idTrajet);;
-    } catch (error) {
-        console.error(error);
-        return false;
-    }
+    })
+    .catch(error => {
+        console.error('Erreur : ', error);
+    });
 }
