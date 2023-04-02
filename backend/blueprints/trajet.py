@@ -116,6 +116,11 @@ def rechercher(token):
     nbPlaces = data.get('places')
     prixMin = data.get('lower-prices')
     prixMax = data.get('higher-prices')
+
+    print("zqsedrtfygbhuni,o;pm:ù!*")
+    print(prixMin)
+    print(prixMax)
+    print(nbPlaces)
     
     query = "SELECT * FROM TRAJET WHERE 1=1"
 
@@ -257,7 +262,7 @@ def rechercheEnAttente(token):
         date = date_obj.strftime('%Y%m%d')
 
     #On insère dans la table RECHERCHE_EN_ATTENTE
-    c.execute("INSERT INTO RECHERCHE_EN_ATTENTE VALUES (?, ?, ?, ?, ?, ?, ?)", (idCompte, nbPlaces, prixMin, prixMax, villeDepart, villeArrivee, date))
+    c.execute("INSERT INTO RECHERCHE_EN_ATTENTE(idCompte, nbPlaces, prix_min, prix_max, villeDebut, villeFin, dateDepart) VALUES (?, ?, ?, ?, ?, ?, ?)", (idCompte, nbPlaces, prixMin, prixMax, villeDepart, villeArrivee, date))
     conn.commit()
     conn.close()
     return jsonify({'message': 'La recherche a bien été mise en attente'}), 200
@@ -455,18 +460,59 @@ def createTrajet(token):
 
                 else:
                     c.execute("INSERT INTO TRAJET_PUBLIC VALUES (?)", (idTrajet,))
-
-                    #On envoie une notif si on trouve une recherche en attente correspondant au critères
-                    #....................
-
             
             conn.commit()
             conn.close()
+
+            #On envoie une notif si on trouve une recherche en attente correspondant au critères
+            #On vérifie s'il y a des recherches en attente qui correspondent
+            verifRechEnAttente(idCompte, dateDepart, villeDepart, villeArrivee, nbPlaces, prix)
+
             return jsonify({'message': 'Le trajet a bien été créé.'}), 200
         else:
             conn.close()
             return jsonify({'message': 'Probleme au niveau de la requête'}), 401
 
+
+
+def verifRechEnAttente(idConducteur, dateDepart, villeDepart, villeArrivee, nbPlaces, prix):
+    conn = sqlite3.connect(URI_DATABASE)
+    c = conn.cursor()
+    c.execute("SELECT * FROM RECHERCHE_EN_ATTENTE")
+    rows = c.fetchall()
+
+    #On créé une liste des users à notifier
+    notifier = []
+
+    for row in rows:
+        idR = row[0]
+        idCompteR = row[1]
+        nbPlacesR = row[2]
+        prixMinR = row[3]
+        prixMaxR = row[4]
+        villeDebutR = row[5]
+        villeFinR = row[6]
+        dateR = row[7]
+
+        prixOk = (prix >= prixMinR) and (prix <= prixMaxR) #On teste le prix
+        nbPlacesOk = (nbPlaces is None) or (nbPlaces >= nbPlacesR) #On teste le nb de places
+        villeDepartOk = (villeDebutR is None) or (villeDebutR == villeDepart) #On teste la ville de depart
+        villeArriveeOk = (villeFinR is None) or (villeFinR == villeArrivee) #On teste la ville d'arrivee
+        dateOk = (dateR is None) or (dateR == dateDepart) #On teste la date
+
+        if prixOk and nbPlacesOk and villeDepartOk and villeArriveeOk and dateOk:
+            #On enleve la recherche en attente
+            c.execute("DELETE FROM RECHERCHE_EN_ATTENTE WHERE idRecherche = ? ", (idR,))
+            #On ajoute à la liste à notifier
+            notifier.append(idCompteR)
+
+    conn.commit()
+    conn.close()
+
+    for idANotifier in notifier:
+        #On envoie une notif
+        sendNotifCompte(idConducteur, idANotifier, "Un trajet correspondant à une de vos recherches en attente à été créé !")
+            
 
 
 #Supprimer un trajet
