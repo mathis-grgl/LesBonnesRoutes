@@ -33,6 +33,7 @@
   }
 
   .infos {
+    width: 100%;
     font-size: medium;
     padding-right: 5px;
   }
@@ -43,6 +44,7 @@
 * Rating styles
 */
 .rating {
+    direction: rtl;
     align-items: center;
     display: flex;
     width: 100%;
@@ -65,7 +67,7 @@
     cursor: pointer;
 }
 .rating2 {
-    direction: ltr;
+    direction: rtl;
 }
 .rating2 a {
     float:none
