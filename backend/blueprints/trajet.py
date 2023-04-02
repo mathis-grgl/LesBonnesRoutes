@@ -353,7 +353,7 @@ def historiqueTrajetsCompte(token):
     #On peut chercher l'historique de ses trajets
     idCompte = compte[0]
 
-    c.execute("SELECT jsonTrajet FROM HISTORIQUE_TRAJET WHERE idCompte=?", (idCompte,))
+    c.execute("SELECT idHistorique, jsonTrajet FROM HISTORIQUE_TRAJET WHERE idCompte=?", (idCompte,))
     rows = c.fetchall()
 
     # Créez une liste pour stocker les trajets JSON
@@ -361,9 +361,10 @@ def historiqueTrajetsCompte(token):
 
     # Pour chaque ligne de la table HISTORIQUE_TRAJET, ajoutez le trajet JSON à la liste
     for row in rows:
-        trajet = row[0]
+        trajet = row[1]
         trajet_json = json.loads(trajet)
         trajet_json['idCompte'] = idCompte
+        trajet_json['idHistorique'] = row[0]
         trajets.append(trajet_json)
 
     # Fermez la connexion à la base de données

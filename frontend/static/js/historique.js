@@ -1,6 +1,8 @@
 const token = getCookieToken();
 const url = '/trajet/historiqueTrajetsCompte/' + token;
 const getCompteURL = '/compte/getNomCompte/';
+var conducteur = false;
+var passagers = null;
 
 
 function historique() {
@@ -22,6 +24,7 @@ function historique() {
                 let date = data[i].dateDepart;
                 let dateObject = moment(date, 'D MMMM, YYYY');
                 if (trajet.idCompte == trajet.idConducteur) {
+                    conducteur = true;
                     let ligne = $("<tr>");
                     let typeTrajet = (trajet.typeTrajet.charAt(0).toUpperCase() + trajet.typeTrajet.slice(1)).replace('e', 'é');
                     console.log(typeTrajet);
@@ -90,6 +93,36 @@ function historique() {
                             tbody.append(row);
                         });
                 }
+
+                // On crée un pop up pour chaque trajet          
+                const tmpKeys = Object.keys(data[i].passagers);
+                const tmpValues = Object.values(data[i].passagers);
+                let popupContent = "";
+
+                tmpKeys.forEach(element => {
+                    const key = Object.keys(tmpValues[tmpKeys.indexOf(element)]);
+                    const value = Object.values(tmpValues[tmpKeys.indexOf(element)]);
+                    // Ajoute le contenu HTML à la variable popupContent
+                    popupContent +=
+                        `<div class="rating" id="${value[key.indexOf("idCompte")]}">` +
+                            `<div class="infos">${value[key.indexOf("nomCompte")]} ${value[key.indexOf("prenomCompte")]} : </div>` +
+                            `<a href="#1" onclick="noter(1, ${value[key.indexOf("idCompte")]}, ${data[i].idHistorique})">★</a>` +
+                            `<a href="#2" onclick="noter(2, ${value[key.indexOf("idCompte")]}, ${data[i].idHistorique})">★</a>` +
+                            `<a href="#3" onclick="noter(3, ${value[key.indexOf("idCompte")]}, ${data[i].idHistorique})">★</a>` +
+                            `<a href="#4" onclick="noter(4, ${value[key.indexOf("idCompte")]}, ${data[i].idHistorique})">★</a>` +
+                            `<a href="#5" onclick="noter(5, ${value[key.indexOf("idCompte")]}, ${data[i].idHistorique})">★</a>` +
+                        "</div>";
+                });
+
+                // Ajoute le contenu HTML final à l'élément avec l'ID 'notation'
+                document.getElementById("notation").innerHTML = 
+                    `<div id="popup-container">` +
+                        `<div id="popup">` +
+                            `<div class="form_control_container__time" id="texte">Noter un conducteur : </div><br>` +
+                            popupContent +
+                            `<button class="btn btn-success btn-block text-white" onclick="closePopup()">Fermer</button>` +
+                        `</div>` +
+                    `</div>`;
             }
             table.append(tbody);
         })
@@ -103,22 +136,31 @@ function historique() {
 $(document).on('click', '.signup-btn', function () {
     let id = $(this).attr('id');
     console.log("on a cliqué pour noter le conducteur ou les passagers du trajet d'id : " + id);
-    // faire ici le code pour rediriger vers la page ou soit directement ouvrir une petite fenêtre avec les passagers ou le conducteur
-    // pour ensuite attribuer une note donc voir comment bien faire ça
-
-
-
-
-
-
-    // let u = new URL(window.location.href);
-    // u.searchParams.delete("id");
-    // let url = new URL(window.location.href);
-    // console.log(url);
-    // url.pathname = '/trajet';
-    // url.searchParams.set("id", id);
-    // window.location.href = url.href;
-
+    document.getElementById("popup-container").style.display = "block";
+    if (conducteur){
+        document.getElementById("texte").innerText = "Noter des passagers :"
+    }
 
 
 });
+
+function closePopup() {
+    document.getElementById("popup-container").style.display = "none";
+}
+
+function noter(note, idCompte, idHistorique){
+    console.log("Note : " + note + " " + idCompte + " " + idHistorique + " " + getCookieToken());
+
+    try {
+        const response = fetch(`/trajet/noter/${getCookieToken()}/${idHistorique}/${idCompte}/${note}`);
+        if (!response.ok) {
+            throw new Error("Erreur lors de l'appel à la requete noter " + response.statusText);
+        }
+        document.getElementById(idCompte).innerHTML = "<div class='infos'>Merci pour votre avis !</div>";
+        const data = response.json();
+        return data.map(trajet => trajet.idTrajet);;
+    } catch (error) {
+        console.error(error);
+        return false;
+    }
+}
