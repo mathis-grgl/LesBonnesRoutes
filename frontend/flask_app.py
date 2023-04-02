@@ -83,5 +83,5 @@ app.register_blueprint(mail_bp, url_prefix='/mail')
 
 
 if __name__ == '__main__':
-    app.run(threaded=True, debug=True, port=5050)
+    app.run(threaded=True, debug=True, port=5051)
 

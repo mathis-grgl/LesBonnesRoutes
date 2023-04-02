@@ -475,6 +475,7 @@ def createTrajet(token):
 
 
 
+#Def auxiliaire pour l'envoi de notif
 def verifRechEnAttente(idConducteur, dateDepart, villeDepart, villeArrivee, nbPlaces, prix):
     conn = sqlite3.connect(URI_DATABASE)
     c = conn.cursor()
@@ -494,13 +495,13 @@ def verifRechEnAttente(idConducteur, dateDepart, villeDepart, villeArrivee, nbPl
         villeFinR = row[6]
         dateR = row[7]
 
-        prixOk = (prix >= prixMinR) and (prix <= prixMaxR) #On teste le prix
-        nbPlacesOk = (nbPlaces is None) or (nbPlaces >= nbPlacesR) #On teste le nb de places
+        prixOk = (int(prix) >= prixMinR) and (int(prix) <= prixMaxR) #On teste le prix
+        nbPlacesOk = (nbPlaces is None) or (int(nbPlaces) >= nbPlacesR) #On teste le nb de places
         villeDepartOk = (villeDebutR is None) or (villeDebutR == villeDepart) #On teste la ville de depart
         villeArriveeOk = (villeFinR is None) or (villeFinR == villeArrivee) #On teste la ville d'arrivee
-        dateOk = (dateR is None) or (dateR == dateDepart) #On teste la date
+        dateOk = (dateR is None) or (dateR == int(dateDepart)) #On teste la date
 
-        if prixOk and nbPlacesOk and villeDepartOk and villeArriveeOk and dateOk:
+        if idCompteR != idConducteur and prixOk and nbPlacesOk and villeDepartOk and villeArriveeOk and dateOk:
             #On enleve la recherche en attente
             c.execute("DELETE FROM RECHERCHE_EN_ATTENTE WHERE idRecherche = ? ", (idR,))
             #On ajoute à la liste à notifier
