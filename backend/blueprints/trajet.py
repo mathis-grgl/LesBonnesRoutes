@@ -257,7 +257,7 @@ def rechercheEnAttente(token):
         date = date_obj.strftime('%Y%m%d')
 
     #On insère dans la table RECHERCHE_EN_ATTENTE
-    c.execute("INSERT INTO RECHERCHE_EN_ATTENTE VALUES (?, ?, ?, ?, ?, ?)", (idCompte, nbPlaces, prixMin, prixMax, villeDepart, villeArrivee))
+    c.execute("INSERT INTO RECHERCHE_EN_ATTENTE VALUES (?, ?, ?, ?, ?, ?, ?)", (idCompte, nbPlaces, prixMin, prixMax, villeDepart, villeArrivee, date))
     conn.commit()
     conn.close()
     return jsonify({'message': 'La recherche a bien été mise en attente'}), 200
