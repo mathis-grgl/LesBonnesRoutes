@@ -1094,6 +1094,10 @@ def noter(token, idHistorique, idCompteNote, note):
     
     conn.commit()
     conn.close()
+
+    #On envoie une notification au compte noté
+    sendNotifCompte(idCompte, idCompteNote, "Vous avez reçu une évaluation !")
+
     return jsonify({'La note a bien été attribuée'}), 200
     
 

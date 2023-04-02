@@ -229,8 +229,24 @@ def sendNotifDeleteCompte(idCompte):
     conn.close()
 
 
+def sendNotifCompte(idCompteEnvoyeur, idCompte, message):
+    conn = sqlite3.connect(URI_DATABASE)
+    c = conn.cursor()
+
+    c.execute("INSERT INTO NOTIFICATION(idCompteEnvoyeur, messageNotification) VALUES (?, ?)", (idCompteEnvoyeur, message))
+    #On recupere l'id de cette notification
+    c.execute("SELECT last_insert_rowid() FROM NOTIFICATION")
+    idNotif = c.fetchone()[0]
+    c.execute("INSERT INTO NOTIF_RECUE VALUES (?, ?)", (idCompte, idNotif))
+
+    conn.commit()
+    conn.close()
+
+
+
 #sendNotifTrajet(1, 2, 1, "message pour le trajet ...")
 #sendNotifGroupe(1, 1, "message pour le groupe !")
 #sendNotifTrajetPassagers(1, 2, "le trajet a été modifié")
 #sendNotifAmi(1, 2, 1, "Vous avez été ajouté au groupe !")
 #sendNotifDeleteTrajet(1, 1)
+#sendNotifCompte(1, 2, "j'ai un message")
