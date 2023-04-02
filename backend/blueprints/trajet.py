@@ -1193,7 +1193,7 @@ def noter(token, idHistorique, idCompteNote, note):
     #On envoie une notification au compte noté
     sendNotifCompte(idCompte, idCompteNote, "Vous avez reçu une évaluation !")
 
-    return jsonify({'La note a bien été attribuée'}), 200
+    return jsonify({'message': 'La note a bien été attribuée'}), 200
     
 
 
