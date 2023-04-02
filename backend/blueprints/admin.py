@@ -1,5 +1,6 @@
 URI_DATABASE = '../database.db'
 
+import json
 from werkzeug.routing import Rule
 from flask import Blueprint, jsonify, render_template, request, Flask
 from datetime import datetime
@@ -114,6 +115,7 @@ def get_user(idCompte):
     return jsonify(compte_dict)
 
 
+
 # Renvoie si le token est admin
 @admin_bp.route('/users/<string:token>/isadmin')
 def is_admin(token):
@@ -123,6 +125,7 @@ def is_admin(token):
     row = c.fetchone()
     conn.close()
     return jsonify(row[0])
+
 
 
 #Recuperer tous les trajets avec le type
@@ -178,6 +181,7 @@ def get_trajets(typeTrajet):
     return jsonify(trajets)
 
 
+
 #Recuperer un trajet avec son id
 @admin_bp.route('/trajets/<string:token>/<int:idTrajet>')
 def get_trajet(token, idTrajet):
@@ -228,6 +232,7 @@ def get_trajet(token, idTrajet):
 
     conn.close()
     return jsonify(trajet)
+
 
 
 #Supprimer un compte
@@ -291,7 +296,6 @@ def deleteTrajet(token, idTrajet):
                 return jsonify({'message': 'Le trajet a bien été supprimé.'}), 200
                 
     
-
 
 #Recuperer toutes les villes
 @admin_bp.route('/villes', methods=['GET'])
@@ -408,7 +412,6 @@ def modifCompte(token, idCompte):
 
 
 
-
 #Modifier un trajet côté admin
 @admin_bp.route('/modifTrajet/<string:token>/<int:idTrajet>', methods=['POST'])
 def modifTrajet(token, idTrajet):
@@ -503,6 +506,7 @@ def modifTrajet(token, idTrajet):
                         return jsonify({'message': 'Probleme au niveau de la requête'}), 401
 
 
+
 #Recuperer tous les passagers d'un trajet 
 @admin_bp.route('/getPassagers/<string:token>/<int:idTrajet>', methods = ['GET'])
 def getPassagers(token, idTrajet):
@@ -540,6 +544,7 @@ def getPassagers(token, idTrajet):
 
 
 
+#Recuperer tous les groupes
 @admin_bp.route('/getGroupes/<string:token>', methods=['GET'])
 def getGroupes(token):
     #On verifie que le token existe et est admin
@@ -578,6 +583,8 @@ def getGroupes(token):
     return jsonify(result), 200
 
 
+
+#Modifier le nom d'un groupe
 @admin_bp.route('/modifNom/<string:token>/<int:idGroupe>/<string:nouveauNom>', methods=['POST'])
 def modifNom(token, idGroupe, nouveauNom):
     #On verifie que le token existe et est admin
@@ -612,6 +619,7 @@ def modifNom(token, idGroupe, nouveauNom):
     sendNotifGroupe(idCompte, idGroupe, "Le nom du groupe a été modifié par un administrateur")
 
     return jsonify({'message': 'Le nom du groupe a bien été modifié.'}), 200
+
 
 
 #Ajouter un membre au groupe d'amis
@@ -654,6 +662,7 @@ def addMember(token, idGroupe, idAmi):
     sendNotifAmi(idCompte, idAmi, idGroupe, "Vous avez été ajouté au groupe par un administrateur")
 
     return jsonify({'message': 'L\'ami a bien été ajouté au groupe.'}), 200
+
 
 
 #Supprimer un membre du groupe d'amis
@@ -711,6 +720,8 @@ def removeMember(token, idGroupe, idAmi):
     return jsonify({'message': 'L\'ami a bien été supprimé du groupe.'}), 200
 
 
+
+#Supprimer un groupe
 @admin_bp.route('/supprimerGroupe/<string:token>/<int:idGroupe>', methods=['DELETE'])
 def supprimerGroupe(token, idGroupe):
     #On verifie que le token existe et est admin
@@ -736,3 +747,64 @@ def supprimerGroupe(token, idGroupe):
     conn.close()
 
     return jsonify({'message': 'Le groupe a bien été supprimé.'}), 200
+
+
+
+#Recuperer les notes d'un compte
+@admin_bp.route('/recupNotes/<string:token>/<int:idCompte>', methods=['GET'])
+def recupNotes(token, idCompte):
+    #On verifie que le token existe et est admin
+    conn = sqlite3.connect(URI_DATABASE)
+    c = conn.cursor()
+    c.execute("SELECT isAdmin, idCompte FROM TOKEN NATURAL JOIN COMPTE WHERE auth_token = ?", (token,))
+    admin = c.fetchone()
+    if not admin:
+        conn.close()
+        return jsonify({'message': 'Le token est invalide ou expiré'}), 401
+    
+    isAdmin = admin[0]
+    if not isAdmin:
+        conn.close()
+        return jsonify({'message': 'Le token n\'est pas admin'}), 401
+
+    #On verifie que le compte existe
+    c.execute("SELECT nomCompte FROM COMPTE WHERE idCompte = ?", (idCompte,))
+    if not c.fetchone():
+        conn.close()
+        return jsonify({'message': 'le compte est inexistant'}), 404
+
+    #On peut récupérer les notes du compte
+    c.execute("SELECT idCompteNotant, jsonTrajet, note FROM NOTE NATURAL JOIN HISTORIQUE_TRAJET WHERE idCompteNote = ?", (idCompte,))
+    rows = c.fetchall()
+
+    if not rows:
+        conn.close()
+        return jsonify({'message': 'Aucune note pour l\'instant'}), 204
+
+    notesJson = []
+
+    for row in rows:
+        idCompteNotant = row[0]
+        jsonTrajet = json.loads(row[1])
+        note = row[2]
+
+        #On recupere le nom et prenom du user qui a noté
+        c.execute("SELECT nomCompte, prenomCompte FROM COMPTE WHERE idCompte = ?", (idCompteNotant,))
+        user = c.fetchone()
+        if not user:
+            conn.close()
+            return jsonify({'message': 'compte notant inexistant'}), 404
+        user = user[0] + " " + user[1] #Sous la forme 'NOM Prenom'
+
+        #On recupere les infos du trajet noté
+        infoTrajet = jsonTrajet['dateDepart'] + " : " + jsonTrajet['villeDepart'] + " -> " + jsonTrajet['villeArrivee']
+
+        noteJson = {
+            'compteNotant' : user,
+            'infoTrajet' : infoTrajet,
+            'note' : note
+        }
+        notesJson.append(noteJson)
+
+    conn.close()
+    return jsonify(notesJson), 200
