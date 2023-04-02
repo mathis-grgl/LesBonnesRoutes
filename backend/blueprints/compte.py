@@ -1,5 +1,6 @@
 URI_DATABASE = '../database.db'
 
+import json
 from flask import Blueprint, Flask, jsonify, request
 from datetime import datetime
 from io import BytesIO
@@ -239,6 +240,7 @@ def getInfoCompte(token):
         return jsonify({'message': 'Token invalide ou expiré.'}), 401
 
 
+
 # Récupère le nom d'un compte avec son id
 @compte_bp.route('/getNomCompte/<string:id>', methods=['GET'])
 def getNomCompte(id):
@@ -262,6 +264,7 @@ def getNomCompte(id):
     else:
         conn.close()
         return jsonify({'message': 'Token invalide ou expiré.'}), 401
+
 
 
 #Modifier son compte avec son token
@@ -364,7 +367,7 @@ def modifCompte(token):
 
 
 
-
+#Supprimer un compte
 @compte_bp.route('/deleteCompte/<string:token>', methods=['DELETE'])
 def delCompte(token):
     #On verifie le token
@@ -446,6 +449,7 @@ def getDemandesEnCours(token):
 
 
 
+#Recuperer les notifs d'un compte
 @compte_bp.route('/getNotifs/<string:token>', methods=['GET'])
 def getNotifs(token):
     #On verifie le token
@@ -493,6 +497,8 @@ def getNotifs(token):
     return jsonify(notifs)
 
 
+
+#Supprimer une notif
 @compte_bp.route('/suppNotif/<string:token>/<int:idNotif>', methods=['DELETE'])
 def suppNotif(token, idNotif):
     #On verifie le token
@@ -521,6 +527,8 @@ def suppNotif(token, idNotif):
     return jsonify({'message': 'La notification a bien été supprimé.'}), 200
 
 
+
+#Supprimer toutes les notifs
 @compte_bp.route('/suppAllNotif/<string:token>', methods=['DELETE'])
 def suppAllNotif(token):
     #On verifie le token
@@ -542,6 +550,8 @@ def suppAllNotif(token):
     return jsonify({'message': 'Les notifications ont bien été supprimées.'}), 200
 
 
+
+#Modifier son mdp
 @compte_bp.route('/modifMdp/<string:token>/<string:mdp>', methods=['POST'])
 def modifMdp(token, mdp):
     #On verifie le token
@@ -583,3 +593,56 @@ def modifMdp(token, mdp):
     conn.commit()
     conn.close()
     return jsonify('message : Le mdp a bien été modifié'), 200
+
+
+
+#Recuperer les notes d'un compte
+@compte_bp.route('/recupNotes/<string:token>', methods=['GET'])
+def recupNotes(token):
+    #On verifie le token
+    conn = sqlite3.connect(URI_DATABASE)
+    c = conn.cursor()
+    #On recupere l'id du conducteur
+    c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
+    compte = c.fetchone()
+    if not compte:
+        conn.close()
+        return jsonify({'message': 'Token invalide ou expiré'}), 401
+    
+    idCompte = compte[0]
+
+    #On peut récupérer ses notes
+    c.execute("SELECT idCompteNotant, jsonTrajet, note FROM NOTE NATURAL JOIN HISTORIQUE_TRAJET WHERE idCompteNote = ?", (idCompte,))
+    rows = c.fetchall()
+
+    if not rows:
+        conn.close()
+        return jsonify({'message': 'Aucune note pour l\'instant'}), 204
+
+    notesJson = []
+
+    for row in rows:
+        idCompteNotant = row[0]
+        jsonTrajet = json.loads(row[1])
+        note = row[2]
+
+        #On recupere le nom et prenom du user qui a noté
+        c.execute("SELECT nomCompte, prenomCompte FROM COMPTE WHERE idCompte = ?", (idCompteNotant,))
+        user = c.fetchone()
+        if not user:
+            conn.close()
+            return jsonify({'message': 'compte notant inexistant'}), 404
+        user = user[0] + " " + user[1] #Sous la forme 'NOM Prenom'
+
+        #On recupere les infos du trajet noté
+        infoTrajet = jsonTrajet['dateDepart'] + " : " + jsonTrajet['villeDepart'] + " -> " + jsonTrajet['villeArrivee']
+
+        noteJson = {
+            'compteNotant' : user,
+            'infoTrajet' : infoTrajet,
+            'note' : note
+        }
+        notesJson.append(noteJson)
+
+    conn.close()
+    return jsonify(notesJson), 200
