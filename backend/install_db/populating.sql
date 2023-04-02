@@ -130,20 +130,29 @@ INSERT INTO NOTIF_GROUPE VALUES (13, 2);
 INSERT INTO NOTIF_GROUPE VALUES (14, 2);
 INSERT INTO NOTIF_GROUPE VALUES (15, 2);
 
-/*
-INSERT INTO HISTORIQUE_TRAJET VALUES(4, 4);
-INSERT INTO HISTORIQUE_TRAJET VALUES(1, 4);
-INSERT INTO HISTORIQUE_TRAJET VALUES(2, 4);
-INSERT INTO HISTORIQUE_TRAJET VALUES(4, 5);
-INSERT INTO HISTORIQUE_TRAJET VALUES(3, 5);
-INSERT INTO HISTORIQUE_TRAJET VALUES(5, 5);
+INSERT INTO HISTORIQUE_TRAJET(idCompte, jsonTrajet) VALUES 
+    (1, '{"idTrajet": 0, "idConducteur": 1, "heureDepart": "15h30", "dateDepart": "28 January, 2023", "nbPlaces": 5, "prix": 5, "nbPlacesRestantes": 0, "statusTrajet": "termine", "commentaires": "non fumeur", "precisionRdv": "", "villeDepart": "Angers", "villeArrivee": "Nancy", "typeTrajet": "public", "nomConducteur": "DURAND", "prenomConducteur": "Olivier", "passagers": [{"idCompte": 2, "nomCompte": "FRANCOIS", "prenomCompte": "Marie"}, {"idCompte": 3, "nomCompte": "LEGRAND", "prenomCompte": "Paul"}, {"idCompte": 4, "nomCompte": "PIERRE", "prenomCompte": "Harry"}, {"idCompte": 5, "nomCompte": "DIDIER", "prenomCompte": "Sophie"}]}');
+INSERT INTO HISTORIQUE_TRAJET(idCompte, jsonTrajet) VALUES 
+    (2, '{"idTrajet": 0, "idConducteur": 1, "heureDepart": "15h30", "dateDepart": "28 January, 2023", "nbPlaces": 5, "prix": 5, "nbPlacesRestantes": 0, "statusTrajet": "termine", "commentaires": "non fumeur", "precisionRdv": "", "villeDepart": "Angers", "villeArrivee": "Nancy", "typeTrajet": "public", "nomConducteur": "DURAND", "prenomConducteur": "Olivier", "passagers": [{"idCompte": 2, "nomCompte": "FRANCOIS", "prenomCompte": "Marie"}, {"idCompte": 3, "nomCompte": "LEGRAND", "prenomCompte": "Paul"}, {"idCompte": 4, "nomCompte": "PIERRE", "prenomCompte": "Harry"}, {"idCompte": 5, "nomCompte": "DIDIER", "prenomCompte": "Sophie"}]}');
+INSERT INTO HISTORIQUE_TRAJET(idCompte, jsonTrajet) VALUES 
+    (3, '{"idTrajet": 0, "idConducteur": 1, "heureDepart": "15h30", "dateDepart": "28 January, 2023", "nbPlaces": 5, "prix": 5, "nbPlacesRestantes": 0, "statusTrajet": "termine", "commentaires": "non fumeur", "precisionRdv": "", "villeDepart": "Angers", "villeArrivee": "Nancy", "typeTrajet": "public", "nomConducteur": "DURAND", "prenomConducteur": "Olivier", "passagers": [{"idCompte": 2, "nomCompte": "FRANCOIS", "prenomCompte": "Marie"}, {"idCompte": 3, "nomCompte": "LEGRAND", "prenomCompte": "Paul"}, {"idCompte": 4, "nomCompte": "PIERRE", "prenomCompte": "Harry"}, {"idCompte": 5, "nomCompte": "DIDIER", "prenomCompte": "Sophie"}]}');
+INSERT INTO HISTORIQUE_TRAJET(idCompte, jsonTrajet) VALUES 
+    (4, '{"idTrajet": 0, "idConducteur": 1, "heureDepart": "15h30", "dateDepart": "28 January, 2023", "nbPlaces": 5, "prix": 5, "nbPlacesRestantes": 0, "statusTrajet": "termine", "commentaires": "non fumeur", "precisionRdv": "", "villeDepart": "Angers", "villeArrivee": "Nancy", "typeTrajet": "public", "nomConducteur": "DURAND", "prenomConducteur": "Olivier", "passagers": [{"idCompte": 2, "nomCompte": "FRANCOIS", "prenomCompte": "Marie"}, {"idCompte": 3, "nomCompte": "LEGRAND", "prenomCompte": "Paul"}, {"idCompte": 4, "nomCompte": "PIERRE", "prenomCompte": "Harry"}, {"idCompte": 5, "nomCompte": "DIDIER", "prenomCompte": "Sophie"}]}');
+INSERT INTO HISTORIQUE_TRAJET(idCompte, jsonTrajet) VALUES 
+    (5, '{"idTrajet": 0, "idConducteur": 1, "heureDepart": "15h30", "dateDepart": "28 January, 2023", "nbPlaces": 5, "prix": 5, "nbPlacesRestantes": 0, "statusTrajet": "termine", "commentaires": "non fumeur", "precisionRdv": "", "villeDepart": "Angers", "villeArrivee": "Nancy", "typeTrajet": "public", "nomConducteur": "DURAND", "prenomConducteur": "Olivier", "passagers": [{"idCompte": 2, "nomCompte": "FRANCOIS", "prenomCompte": "Marie"}, {"idCompte": 3, "nomCompte": "LEGRAND", "prenomCompte": "Paul"}, {"idCompte": 4, "nomCompte": "PIERRE", "prenomCompte": "Harry"}, {"idCompte": 5, "nomCompte": "DIDIER", "prenomCompte": "Sophie"}]}');
 
 
-INSERT INTO NOTE(idTrajet, idCompteNotant, idCompteNote, note) VALUES (4, 4, 1, 4);
-INSERT INTO NOTE(idTrajet, idCompteNotant, idCompteNote, note) VALUES (4, 2, 4, 3);
-INSERT INTO NOTE(idTrajet, idCompteNotant, idCompteNote, note) VALUES (5, 3, 5, 5);
-INSERT INTO NOTE(idTrajet, idCompteNotant, idCompteNote, note) VALUES (5, 5, 4, 1);
-*/
+INSERT INTO NOTE(idHistorique, idCompteNotant, idCompteNote, note) VALUES (1, 1, 2, 4);
+INSERT INTO NOTE(idHistorique, idCompteNotant, idCompteNote, note) VALUES (1, 1, 4, 2);
+INSERT INTO NOTE(idHistorique, idCompteNotant, idCompteNote, note) VALUES (2, 2, 1, 5);
+INSERT INTO NOTE(idHistorique, idCompteNotant, idCompteNote, note) VALUES (2, 2, 3, 3);
+INSERT INTO NOTE(idHistorique, idCompteNotant, idCompteNote, note) VALUES (3, 3, 5, 5);
+INSERT INTO NOTE(idHistorique, idCompteNotant, idCompteNote, note) VALUES (3, 3, 4, 5);
+INSERT INTO NOTE(idHistorique, idCompteNotant, idCompteNote, note) VALUES (4, 4, 1, 2);
+INSERT INTO NOTE(idHistorique, idCompteNotant, idCompteNote, note) VALUES (4, 4, 2, 2);
+INSERT INTO NOTE(idHistorique, idCompteNotant, idCompteNote, note) VALUES (5, 5, 3, 4);
+INSERT INTO NOTE(idHistorique, idCompteNotant, idCompteNote, note) VALUES (5, 5, 4, 2);
+
 
 INSERT INTO VILLE(nomVille, codePostal) VALUES('Aix-en-Provence', 13100);
 INSERT INTO VILLE(nomVille, codePostal) VALUES('Ajaccio', 20000);

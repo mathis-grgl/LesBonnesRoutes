@@ -491,7 +491,7 @@ def basculerVersHistorique(idTrajet, idCompte):
     elif idTrajet in [id[0] for id in c.execute("SELECT idTrajet FROM TRAJET_PUBLIC")]:
         typeTrajet = 'public'
     else:
-        typeTrajet = None
+        typeTrajet = ''
 
     trajet_dict = {
         "idTrajet": idTrajet,
@@ -510,6 +510,12 @@ def basculerVersHistorique(idTrajet, idCompte):
     }
     if typeTrajet == 'prive':
         trajet_dict["nomGroupe"] = nomGroupe
+
+    #On enleve toutes les valeurs nulles
+    for key in trajet_dict:
+        if trajet_dict[key] is None:
+            trajet_dict[key] = ""
+
 
     #On recupere le nom et le prenom du conducteur
     c.execute("SELECT nomCompte, prenomCompte FROM COMPTE WHERE idCompte = ?", (idConducteur,))
