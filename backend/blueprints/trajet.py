@@ -217,6 +217,53 @@ def rechercher(token):
 
 
 
+#Mettre en attente la recherche d'un trajet
+@trajet_bp.route('/rechercheEnAttente/<string:token>', methods=['POST'])
+def rechercheEnAttente(token):
+    conn = sqlite3.connect(URI_DATABASE)
+    c = conn.cursor()
+
+    #On recupere l'id de l'utilisateur
+    c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
+    compte = c.fetchone()
+    if not compte:
+        conn.close()
+        return jsonify({'message': 'Token invalide ou expiré'}), 404
+
+    idCompte = compte[0]
+
+    # Récupérer les données envoyées dans la requête
+    data = request.get_json()
+    villeDepart = data.get('city-start')
+    villeArrivee = data.get('city-end')
+    date = data.get('date')
+    nbPlaces = data.get('places')
+    prixMin = data.get('lower-prices')
+    prixMax = data.get('higher-prices')
+
+    #On recupere les id des villes
+    c.execute("SELECT idVille FROM VILLE WHERE nomVille = ?", (villeDepart,))
+    v = c.fetchone()
+    if v:
+        villeDepart = v[0]
+    c.execute("SELECT idVille FROM VILLE WHERE nomVille = ?", (villeArrivee,))
+    v = c.fetchone()
+    if v:
+        villeArrivee = v[0]
+
+    if date:
+        #On reformate la date sous la forme YYYYMMDD
+        date_obj = datetime.strptime(date, '%d %B, %Y')
+        date = date_obj.strftime('%Y%m%d')
+
+    #On insère dans la table RECHERCHE_EN_ATTENTE
+    c.execute("INSERT INTO RECHERCHE_EN_ATTENTE VALUES (?, ?, ?, ?, ?, ?)", (idCompte, nbPlaces, prixMin, prixMax, villeDepart, villeArrivee))
+    conn.commit()
+    conn.close()
+    return jsonify({'message': 'La recherche a bien été mise en attente'}), 200
+
+
+
 #Voir la liste des trajets d'un compte avec son token
 @trajet_bp.route('/trajetsCompte/<string:token>', methods=['GET'])
 def trajetsCompte(token):
