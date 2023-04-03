@@ -265,7 +265,7 @@ $(document).ready(function () {
             }).then(reponse => {
             if (reponse.ok) {
                 console.log(mdp);
-                alert("Votre compte a bien été modifié.");
+                alert("Le compte a bien été modifié.");
                 window.location.href = '/account';
             } else {
                 alert("Probleme dans le fetch");

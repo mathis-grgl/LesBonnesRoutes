@@ -103,7 +103,7 @@ def get_user(idCompte):
     compte_dict['nbnotes'] = nbnotes[0]
 
     # Récupération du nombre de trajets
-    c.execute("SELECT count(distinct(idTrajet)) as nbtrajets FROM HISTORIQUE_TRAJET WHERE idCompte = ?", (idCompte,))
+    c.execute("SELECT count(distinct(idHistorique)) as nbtrajets FROM HISTORIQUE_TRAJET WHERE idCompte = ?", (idCompte,))
 
     # Affectation du nombre de trajets à une variable
     nbtrajets = c.fetchone()
