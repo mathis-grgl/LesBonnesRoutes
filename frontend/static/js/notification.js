@@ -23,7 +23,7 @@ document.addEventListener("click", function(event) {
     return;
   }
   // Vérifie si l'élément clic est l'élément notifs ou l'un de ses descendants
-  if (!dropdown.contains(event.target)) {
+  if (!dropdown.contains(event.target) && !document.getElementById("popup-container-notif").contains(event.target)) {
     // Si l'élément clic n'est pas l'élément notifs ou l'un de ses descendants, rend les éléments notifs invisibles
     notifs.forEach(notif => {
       notif.style.display = "none";
