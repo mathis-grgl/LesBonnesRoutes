@@ -7,7 +7,6 @@ import { FontLoader } from 'https://unpkg.com/three@0.149/examples/jsm/loaders/F
 import { MTLLoader } from 'https://unpkg.com/three@0.149/examples/jsm/loaders/MTLLoader.js';
 import { GLTFLoader } from 'https://unpkg.com/three@0.149/examples/jsm/loaders/GLTFLoader.js';
 
-
 // Setup de tout
 const bienvenueHeader = document.querySelector('header[name="bienvenue"]');
 const bienvenueBlockquote = document.querySelector('blockquote[name="bienvenue"]');
@@ -23,7 +22,10 @@ window.addEventListener('scroll', function() {
   }
 });
 
-
+// Ajout de l'événement onclick au bouton passer
+document.getElementById("btn-passer").addEventListener("click", function() {
+    crerCookie(event);
+});
 
 // Setup
 const scene = new THREE.Scene();
@@ -431,7 +433,7 @@ function animate() {
 
           // Lance l'animation et la transition vers la nouvelle page HTML après 5 secondes
           //setTimeout(() => {
-            window.location.href = "index";
+            crerCookie();
           //}, 5000);
         }
       }
@@ -439,6 +441,21 @@ function animate() {
   }
 
   renderer.render(scene, camera);
+}
+
+function crerCookie(event){
+  event.preventDefault();
+
+  // Vérification de l'existence du cookie
+  if (document.cookie.indexOf("premier") < 0) {
+    // Cookie valide 5 jours
+    const expirationDate = new Date();
+    expirationDate.setFullYear(expirationDate.getFullYear() + 1);
+    const expirationString = expirationDate.toUTCString();
+    document.cookie = "premier=non" + "; expires=" + expirationString + "; path=/";
+
+    window.location.href = "/";
+  }
 }
 
 animate();
