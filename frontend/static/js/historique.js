@@ -116,7 +116,7 @@ function getPassagers(idHistorique, nomConducteur, prenomConducteur, idConducteu
     })
     .then(data => {
         if (!conducteur){
-            console.log("Résultat requete getPassagers : " + nomConducteur + " " + prenomConducteur);
+            const note = Object.values(element)[Object.keys(element).indexOf("note")];
             // Ajoute le contenu HTML final à l'élément avec l'ID 'notation'*/
             document.getElementById("notation").innerHTML = 
             `<div id="popup-container">` +
@@ -128,7 +128,7 @@ function getPassagers(idHistorique, nomConducteur, prenomConducteur, idConducteu
                             `<a href="#" onclick="noter(event, 3, ${idConducteur}, ${idHistorique})">★</a>` +
                             `<a href="#" onclick="noter(event, 2, ${idConducteur}, ${idHistorique})">★</a>` +
                             `<a href="#" onclick="noter(event, 1, ${idConducteur}, ${idHistorique})">★</a>` +
-                            `<div class="infos" name="infos-${idConducteur}"> : ${nomConducteur} ${prenomConducteur}</div>` +
+                            `<div class="infos" name="infos-${idConducteur}">${note !== undefined ? `${note}/5` : 'Non noté'} : ${nomConducteur} ${prenomConducteur}</div>` +
                         "</div>" +
                     `<button class="btn btn-success btn-block text-white" onclick="closePopup()">Fermer</button>` +
                 `</div>` +
@@ -136,6 +136,7 @@ function getPassagers(idHistorique, nomConducteur, prenomConducteur, idConducteu
         } else {
             let popUpContainer = "";
             Object.values(data).forEach(element =>{
+                const note = Object.values(element)[Object.keys(element).indexOf("note")];
                 //console.log("Résultat requete getPassagers : " + Object.values(element) + " " + Object.keys(element));
                 const key = Object.keys(element);
                 const value = Object.values(element);
@@ -148,7 +149,7 @@ function getPassagers(idHistorique, nomConducteur, prenomConducteur, idConducteu
                     `<a href="#" onclick="noter(event, 3, ${value[key.indexOf("idCompte")]}, ${idHistorique})">★</a>` +
                     `<a href="#" onclick="noter(event, 2, ${value[key.indexOf("idCompte")]}, ${idHistorique})">★</a>` +
                     `<a href="#" onclick="noter(event, 1, ${value[key.indexOf("idCompte")]}, ${idHistorique})">★</a>` +
-                    `<div class="infos" name="infos-${value[key.indexOf("idCompte")]}"> : ${value[key.indexOf("nomCompte")]} ${value[key.indexOf("prenomCompte")]}</div>` +
+                    `<div class="infos" name="infos-${value[key.indexOf("idCompte")]}">${note !== undefined ? `${note}/5` : 'Non noté'} : ${value[key.indexOf("nomCompte")]} ${value[key.indexOf("prenomCompte")]}</div>` +
                 "</div>";
             });
 
@@ -176,7 +177,7 @@ $(document).on('click', '.signup-btn', function () {
     console.log("on a cliqué pour noter le conducteur ou les passagers du trajet d'id : " + id);
     document.getElementById("popup-container").style.display = "block";
     if (conducteur){
-        document.querySelector("texte").innerText = "Noter des passagers :"
+        document.getElementById("texte").innerText = "Noter des passagers :"
     }
 
 
