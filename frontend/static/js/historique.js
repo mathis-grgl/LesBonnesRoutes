@@ -83,8 +83,10 @@ function historique() {
                                 $('<td>').append(
                                     $('<div>').addClass('div-container')
                                         .append(
-                                            $('<button>').addClass('signup-btn').attr('id', trajet.idTrajet)
-                                                .html("Noter le conducteur")
+                                            $('<button>').addClass('signup-btn').attr({
+                                                id: trajet.idTrajet,
+                                                name: "btn-noter"
+                                             }).html("Noter le conducteur")                                          
                                         )
                                 )
                             );
@@ -108,7 +110,7 @@ function getPassagers(idHistorique, nomConducteur, prenomConducteur, idConducteu
     fetch(`/trajet/getListeANoter/${getCookieToken()}/${idHistorique}`)
     .then(response => {
         if (!response.ok) {
-        throw new Error('Erreur lors de l\'appel à la requete getPassagers');
+        throw new Error(response.status);
         }
         return response.json();
     })
@@ -162,6 +164,9 @@ function getPassagers(idHistorique, nomConducteur, prenomConducteur, idConducteu
     })
     .catch(error => {
         console.error('Erreur : ', error);
+        if (error.message){
+            document.querySelector("button[name='btn-noter']").prop('disabled', true);
+        }
     });
 }
 
@@ -171,7 +176,7 @@ $(document).on('click', '.signup-btn', function () {
     console.log("on a cliqué pour noter le conducteur ou les passagers du trajet d'id : " + id);
     document.getElementById("popup-container").style.display = "block";
     if (conducteur){
-        document.getElementById("texte").innerText = "Noter des passagers :"
+        document.querySelector("texte").innerText = "Noter des passagers :"
     }
 
 
