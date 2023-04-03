@@ -426,6 +426,7 @@ def modifCompte(token, idCompte):
                 (tel, prenom, nom, mdp, email, adresse, ville, pays, codePostal, genre, voiture, notifs, photo, idCompte))
             conn.commit()
             conn.close()
+            return jsonify({'message': 'ok'}), 200
         else :
             #On n'insere pas de photo
             c.execute("UPDATE COMPTE SET telephone=?, prenomCompte=?, nomCompte=?, mdp=?, email=?, adresse=?, ville=?, pays=?, codePostal=?, genre=?, voiture=?, notificationMail=? WHERE idCompte=?",
