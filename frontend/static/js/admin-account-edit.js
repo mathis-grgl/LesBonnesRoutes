@@ -266,7 +266,7 @@ $(document).ready(function () {
             if (reponse.ok) {
                 console.log(mdp);
                 alert("Le compte a bien été modifié.");
-                window.location.href = '/account';
+                window.location.href = '/admin/search-account';
             } else {
                 alert("Probleme dans le fetch");
             }
