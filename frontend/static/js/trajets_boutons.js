@@ -41,7 +41,8 @@ $(document).on('click', '.edit-btn', function () {
             let now = new Date();
 
             // Calcule la différence entre les deux dates
-            let diffMs = now.getTime() - targetDate.getTime();
+            let diffMs = targetDate.getTime() - now.getTime();
+
 
             // Vérifie si le trajet est à plus de 3 heures
             let is24HoursOrMore = diffMs >= 24 * 60 * 60 * 1000;

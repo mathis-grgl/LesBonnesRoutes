@@ -15,6 +15,23 @@ window.addEventListener('DOMContentLoaded', function() {
   }
 });
 
+// Ajoute un gestionnaire d'événements de clic à l'objet document
+document.addEventListener("click", function(event) {
+  const notifs = document.querySelectorAll(".notify_item");
+  // Vérifie si l'élément clické est la bell-icon
+  if (event.target === bellIcon) {
+    return;
+  }
+  // Vérifie si l'élément clic est l'élément notifs ou l'un de ses descendants
+  if (!dropdown.contains(event.target)) {
+    // Si l'élément clic n'est pas l'élément notifs ou l'un de ses descendants, rend les éléments notifs invisibles
+    notifs.forEach(notif => {
+      notif.style.display = "none";
+    });
+    dropdown.classList.remove("active");
+  }
+});
+
 iconWrapper.addEventListener('click', function() {
   iconWrapper.classList.toggle('active');
 });
@@ -55,7 +72,7 @@ function displayNotifs(){
 
         let imgDiv = document.createElement('div');
         imgDiv.classList.add('notify_img');
-        imgDiv.innerHTML = `<img id='image' src='${await getPhoto()}' alt='profile_pic' style='width: 50px;' class='rounded-circle'><p>${res.nomCompte}<br>${res.prenomCompte}</p>`;
+        imgDiv.innerHTML = `<img id='image' src='${await getPhoto(res.photo)}' alt='profile_pic' style='width: 50px;' class='img'><p>${res.nomCompte}<br>${res.prenomCompte}</p>`;
         notificationDiv.appendChild(imgDiv);
 
         let infoDiv = document.createElement('div');
@@ -111,7 +128,6 @@ function displayNotifs(){
 function displayNotif(event){
   event.preventDefault();
   const notifs = document.querySelectorAll(".notify_item");
-  const wrapper = document.querySelector(".icon-wrapper");
 
   notifs.forEach(notif => {
     if (notif.style.display === "flex"){
@@ -174,21 +190,11 @@ async function getGroupe(){
   }
 }
 
-async function getPhoto(){
-  try {
-    const response = await fetch(`/compte/getInfoCompte/${tokenH}`);
-    if (!response.ok) {
-      throw new Error("Erreur lors de l'appel à la fonction get_users: " + response.statusText);
-    }
-    const data = await response.json();
-    if (data.photo != null) {
-      return '/static/images/profils/' + data.photo;
-    } else {
-      return "/static/images/person_4.jpg";
-    }
-  } catch (error) {
-    console.error('Erreur : ', error);
-    throw error;
+async function getPhoto(photo){ // Asynchrone sinon le bouton tout supprimer s'affiche pas au dessus
+  if (photo != null) {
+    return '/static/images/profils/' + photo;
+  } else {
+    return "https://www.w3schools.com/howto/img_avatar.png";
   }
 }
 

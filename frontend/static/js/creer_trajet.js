@@ -163,6 +163,16 @@ $('#forminput').submit(function (event) {
         $('#1').append($('<b>').text("La date doit être dans plus de 24h."));
     }
 
+    let choixTrajet = $('input[name="amis"]:checked').val();
+    if (choixTrajet === undefined) {
+        valide = false;
+        $('#groupe').css('border', '2px solid red');
+        $('#4').empty();
+        $('#4').append($('<b>').text("Vous devez sélectionner l'une des deux options."));
+    } else {
+        $('#4').empty();
+    }
+
     if (valide) {
         fetch(createTrajetURL, {
             method: 'POST',

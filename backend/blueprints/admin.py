@@ -1,12 +1,21 @@
 URI_DATABASE = '../database.db'
 
+import json
 from werkzeug.routing import Rule
-from flask import Blueprint, jsonify, render_template, request
+from flask import Blueprint, jsonify, render_template, request, Flask
 from datetime import datetime
 import sqlite3
 from backend.notifManager import *
+from werkzeug.utils import secure_filename
+import os
 
 admin_bp = Blueprint('admin', __name__)
+
+app = Flask(__name__, template_folder=".")
+
+#Chemin pour enregistrer les photos
+UPLOAD_FOLDER = 'static/images/profils'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Pages
 @admin_bp.route('/')
@@ -116,6 +125,7 @@ def get_user_id(token):
     return jsonify(row[0])
 
 
+
 # Renvoie si le token est admin
 @admin_bp.route('/users/<string:token>/isadmin')
 def is_admin(token):
@@ -125,6 +135,7 @@ def is_admin(token):
     row = c.fetchone()
     conn.close()
     return jsonify(row[0])
+
 
 
 #Recuperer tous les trajets avec le type
@@ -194,6 +205,7 @@ def get_trajets(typeTrajet):
     return jsonify(trajets)
 
 
+
 #Recuperer un trajet avec son id
 @admin_bp.route('/trajets/<string:token>/<int:idTrajet>')
 def get_trajet(token, idTrajet):
@@ -244,6 +256,7 @@ def get_trajet(token, idTrajet):
 
     conn.close()
     return jsonify(trajet)
+
 
 
 #Supprimer un compte
@@ -308,7 +321,6 @@ def deleteTrajet(token, idTrajet):
                 
     
 
-
 #Recuperer toutes les villes
 @admin_bp.route('/villes', methods=['GET'])
 def getRoutes():
@@ -333,7 +345,8 @@ def modifCompte(token, idCompte):
         conn.close()
         return jsonify({'message': 'Le token est invalide ou expiré'}), 401
 
-    data = request.get_json()
+    #data = request.get_json()
+    data = request.form
     email = data.get('email')
     #On verifie l'unicite de l'email
     idCompte = int(idCompte)
@@ -387,19 +400,32 @@ def modifCompte(token, idCompte):
             notifs = False
 
         # Est-ce bon ?
-        print("6")
-        poster = data.get('photo')
-        print(poster)
-        print("6")
+        #print("6")
+        #poster = data.get('photo')
+        #print(poster)
+        #print("6")
 
-        if poster :
-            #Il y a une photo : on inserer le nom dans la db
-            nomPhoto = poster.filename
+        if 'poster' in request.files:
+            if not os.path.exists(UPLOAD_FOLDER):
+                os.makedirs(UPLOAD_FOLDER, mode=0o777, exist_ok=True)
+            else:
+                c = conn.cursor()
+                c.execute("SELECT * FROM COMPTE inner join TOKEN on COMPTE.idCompte = TOKEN.idCompte WHERE auth_token = ?", (token,))
+                compte = c.fetchone()
+                if compte[15] and os.path.exists("/static/images/profils/" + compte[15]):
+                    os.remove("/static/images/profils/" + compte[15])
+
+            file = request.files['poster']
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+            # Récupérer le nom de fichier pour la photo
+            photo = secure_filename(request.files['poster'].filename)
+
             c.execute("UPDATE COMPTE SET telephone=?, prenomCompte=?, nomCompte=?, mdp=?, email=?, adresse=?, ville=?, pays=?, codePostal=?, genre=?, voiture=?, notificationMail=?, photo=? WHERE idCompte=?",
-                (tel, prenom, nom, mdp, email, adresse, ville, pays, codePostal, genre, voiture, notifs, nomPhoto, idCompte))
+                (tel, prenom, nom, mdp, email, adresse, ville, pays, codePostal, genre, voiture, notifs, photo, idCompte))
             conn.commit()
             conn.close()
-            return jsonify({'message': 'ok'}), 200
         else :
             #On n'insere pas de photo
             c.execute("UPDATE COMPTE SET telephone=?, prenomCompte=?, nomCompte=?, mdp=?, email=?, adresse=?, ville=?, pays=?, codePostal=?, genre=?, voiture=?, notificationMail=? WHERE idCompte=?",
@@ -407,7 +433,6 @@ def modifCompte(token, idCompte):
             conn.commit()
             conn.close()
             return jsonify({'message': 'ok'}), 200
-
 
 
 
@@ -505,6 +530,7 @@ def modifTrajet(token, idTrajet):
                         return jsonify({'message': 'Probleme au niveau de la requête'}), 401
 
 
+
 #Recuperer tous les passagers d'un trajet 
 @admin_bp.route('/getPassagers/<string:token>/<int:idTrajet>', methods = ['GET'])
 def getPassagers(token, idTrajet):
@@ -542,6 +568,7 @@ def getPassagers(token, idTrajet):
 
 
 
+#Recuperer tous les groupes
 @admin_bp.route('/getGroupes/<string:token>', methods=['GET'])
 def getGroupes(token):
     #On verifie que le token existe et est admin
@@ -580,6 +607,8 @@ def getGroupes(token):
     return jsonify(result), 200
 
 
+
+#Modifier le nom d'un groupe
 @admin_bp.route('/modifNom/<string:token>/<int:idGroupe>/<string:nouveauNom>', methods=['POST'])
 def modifNom(token, idGroupe, nouveauNom):
     #On verifie que le token existe et est admin
@@ -614,6 +643,7 @@ def modifNom(token, idGroupe, nouveauNom):
     sendNotifGroupe(idCompte, idGroupe, "Le nom du groupe a été modifié par un administrateur")
 
     return jsonify({'message': 'Le nom du groupe a bien été modifié.'}), 200
+
 
 
 #Ajouter un membre au groupe d'amis
@@ -656,6 +686,7 @@ def addMember(token, idGroupe, idAmi):
     sendNotifAmi(idCompte, idAmi, idGroupe, "Vous avez été ajouté au groupe par un administrateur")
 
     return jsonify({'message': 'L\'ami a bien été ajouté au groupe.'}), 200
+
 
 
 #Supprimer un membre du groupe d'amis
@@ -713,6 +744,8 @@ def removeMember(token, idGroupe, idAmi):
     return jsonify({'message': 'L\'ami a bien été supprimé du groupe.'}), 200
 
 
+
+#Supprimer un groupe
 @admin_bp.route('/supprimerGroupe/<string:token>/<int:idGroupe>', methods=['DELETE'])
 def supprimerGroupe(token, idGroupe):
     #On verifie que le token existe et est admin
@@ -738,3 +771,64 @@ def supprimerGroupe(token, idGroupe):
     conn.close()
 
     return jsonify({'message': 'Le groupe a bien été supprimé.'}), 200
+
+
+
+#Recuperer les notes d'un compte
+@admin_bp.route('/recupNotes/<string:token>/<int:idCompte>', methods=['GET'])
+def recupNotes(token, idCompte):
+    #On verifie que le token existe et est admin
+    conn = sqlite3.connect(URI_DATABASE)
+    c = conn.cursor()
+    c.execute("SELECT isAdmin, idCompte FROM TOKEN NATURAL JOIN COMPTE WHERE auth_token = ?", (token,))
+    admin = c.fetchone()
+    if not admin:
+        conn.close()
+        return jsonify({'message': 'Le token est invalide ou expiré'}), 401
+    
+    isAdmin = admin[0]
+    if not isAdmin:
+        conn.close()
+        return jsonify({'message': 'Le token n\'est pas admin'}), 401
+
+    #On verifie que le compte existe
+    c.execute("SELECT nomCompte FROM COMPTE WHERE idCompte = ?", (idCompte,))
+    if not c.fetchone():
+        conn.close()
+        return jsonify({'message': 'le compte est inexistant'}), 404
+
+    #On peut récupérer les notes du compte
+    c.execute("SELECT idCompteNotant, jsonTrajet, note FROM NOTE NATURAL JOIN HISTORIQUE_TRAJET WHERE idCompteNote = ?", (idCompte,))
+    rows = c.fetchall()
+
+    if not rows:
+        conn.close()
+        return jsonify({'message': 'Aucune note pour l\'instant'}), 204
+
+    notesJson = []
+
+    for row in rows:
+        idCompteNotant = row[0]
+        jsonTrajet = json.loads(row[1])
+        note = row[2]
+
+        #On recupere le nom et prenom du user qui a noté
+        c.execute("SELECT nomCompte, prenomCompte FROM COMPTE WHERE idCompte = ?", (idCompteNotant,))
+        user = c.fetchone()
+        if not user:
+            conn.close()
+            return jsonify({'message': 'compte notant inexistant'}), 404
+        user = user[0] + " " + user[1] #Sous la forme 'NOM Prenom'
+
+        #On recupere les infos du trajet noté
+        infoTrajet = jsonTrajet['dateDepart'] + " : " + jsonTrajet['villeDepart'] + " -> " + jsonTrajet['villeArrivee']
+
+        noteJson = {
+            'compteNotant' : user,
+            'infoTrajet' : infoTrajet,
+            'note' : note
+        }
+        notesJson.append(noteJson)
+
+    conn.close()
+    return jsonify(notesJson), 200

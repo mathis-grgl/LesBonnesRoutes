@@ -6,6 +6,7 @@ import sqlite3
 from apscheduler.schedulers.background import BackgroundScheduler
 import atexit
 from backend.notifManager import *
+import json
 
 trajet_bp = Blueprint('trajet', __name__)
 
@@ -42,7 +43,7 @@ def trajet():
 
 @trajet_bp.route('/historique_trajets')
 def historique():
-    return "<h1>Historique des trajets non-implémenté (sprint 4)</h1><br><a href='/'>Retour à l'accueil</a>"
+    return render_template('historiqueTrajet/historiqueTrajet.html')
 
 
 #Voir un trajet
@@ -115,6 +116,11 @@ def rechercher(token):
     nbPlaces = data.get('places')
     prixMin = data.get('lower-prices')
     prixMax = data.get('higher-prices')
+
+    print("zqsedrtfygbhuni,o;pm:ù!*")
+    print(prixMin)
+    print(prixMax)
+    print(nbPlaces)
     
     query = "SELECT * FROM TRAJET WHERE 1=1"
 
@@ -216,6 +222,53 @@ def rechercher(token):
 
 
 
+#Mettre en attente la recherche d'un trajet
+@trajet_bp.route('/rechercheEnAttente/<string:token>', methods=['POST'])
+def rechercheEnAttente(token):
+    conn = sqlite3.connect(URI_DATABASE)
+    c = conn.cursor()
+
+    #On recupere l'id de l'utilisateur
+    c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
+    compte = c.fetchone()
+    if not compte:
+        conn.close()
+        return jsonify({'message': 'Token invalide ou expiré'}), 404
+
+    idCompte = compte[0]
+
+    # Récupérer les données envoyées dans la requête
+    data = request.get_json()
+    villeDepart = data.get('city-start')
+    villeArrivee = data.get('city-end')
+    date = data.get('date')
+    nbPlaces = data.get('places')
+    prixMin = data.get('lower-prices')
+    prixMax = data.get('higher-prices')
+
+    #On recupere les id des villes
+    c.execute("SELECT idVille FROM VILLE WHERE nomVille = ?", (villeDepart,))
+    v = c.fetchone()
+    if v:
+        villeDepart = v[0]
+    c.execute("SELECT idVille FROM VILLE WHERE nomVille = ?", (villeArrivee,))
+    v = c.fetchone()
+    if v:
+        villeArrivee = v[0]
+
+    if date:
+        #On reformate la date sous la forme YYYYMMDD
+        date_obj = datetime.strptime(date, '%d %B, %Y')
+        date = date_obj.strftime('%Y%m%d')
+
+    #On insère dans la table RECHERCHE_EN_ATTENTE
+    c.execute("INSERT INTO RECHERCHE_EN_ATTENTE(idCompte, nbPlaces, prix_min, prix_max, villeDebut, villeFin, dateDepart) VALUES (?, ?, ?, ?, ?, ?, ?)", (idCompte, nbPlaces, prixMin, prixMax, villeDepart, villeArrivee, date))
+    conn.commit()
+    conn.close()
+    return jsonify({'message': 'La recherche a bien été mise en attente'}), 200
+
+
+
 #Voir la liste des trajets d'un compte avec son token
 @trajet_bp.route('/trajetsCompte/<string:token>', methods=['GET'])
 def trajetsCompte(token):
@@ -274,6 +327,8 @@ def trajetsCompte(token):
         conn.commit()
         conn.close()
 
+        print(trajets)
+
         # Retour de la réponse avec code 200
         return jsonify(trajets), 200
     else:
@@ -283,7 +338,44 @@ def trajetsCompte(token):
 
 
 
+#Récupérer l'historique d'un compte
+@trajet_bp.route('/historiqueTrajetsCompte/<string:token>', methods=['GET'])
+def historiqueTrajetsCompte(token):
+    conn = sqlite3.connect(URI_DATABASE)
+    c = conn.cursor()
+    c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
+    compte = c.fetchone()
 
+    if not compte:
+        conn.close()
+        return jsonify({'message': 'Token invalide ou expiré'}), 401
+
+    #On peut chercher l'historique de ses trajets
+    idCompte = compte[0]
+
+    c.execute("SELECT idHistorique, jsonTrajet FROM HISTORIQUE_TRAJET WHERE idCompte=?", (idCompte,))
+    rows = c.fetchall()
+
+    # Créez une liste pour stocker les trajets JSON
+    trajets = []
+
+    # Pour chaque ligne de la table HISTORIQUE_TRAJET, ajoutez le trajet JSON à la liste
+    for row in rows:
+        trajet = row[1]
+        trajet_json = json.loads(trajet)
+        trajet_json['idCompte'] = idCompte
+        trajet_json['idHistorique'] = row[0]
+        trajets.append(trajet_json)
+
+    # Fermez la connexion à la base de données
+    conn.close()
+
+    # Retournez la liste de trajets sous forme de JSON
+    return jsonify(trajets)
+
+
+
+#Créer un trajet
 @trajet_bp.route('/createTrajet/<string:token>', methods=['POST', 'GET'])
 def createTrajet(token):
     conn = sqlite3.connect(URI_DATABASE)
@@ -369,13 +461,14 @@ def createTrajet(token):
 
                 else:
                     c.execute("INSERT INTO TRAJET_PUBLIC VALUES (?)", (idTrajet,))
-
-                    #On envoie une notif si on trouve une recherche en attente correspondant au critères
-                    #....................
-
             
             conn.commit()
             conn.close()
+
+            #On envoie une notif si on trouve une recherche en attente correspondant au critères
+            #On vérifie s'il y a des recherches en attente qui correspondent
+            verifRechEnAttente(idCompte, dateDepart, villeDepart, villeArrivee, nbPlaces, prix)
+
             return jsonify({'message': 'Le trajet a bien été créé.'}), 200
         else:
             conn.close()
@@ -383,6 +476,48 @@ def createTrajet(token):
 
 
 
+#Def auxiliaire pour l'envoi de notif
+def verifRechEnAttente(idConducteur, dateDepart, villeDepart, villeArrivee, nbPlaces, prix):
+    conn = sqlite3.connect(URI_DATABASE)
+    c = conn.cursor()
+    c.execute("SELECT * FROM RECHERCHE_EN_ATTENTE")
+    rows = c.fetchall()
+
+    #On créé une liste des users à notifier
+    notifier = []
+
+    for row in rows:
+        idR = row[0]
+        idCompteR = row[1]
+        nbPlacesR = row[2]
+        prixMinR = row[3]
+        prixMaxR = row[4]
+        villeDebutR = row[5]
+        villeFinR = row[6]
+        dateR = row[7]
+
+        prixOk = (int(prix) >= prixMinR) and (int(prix) <= prixMaxR) #On teste le prix
+        nbPlacesOk = (nbPlaces is None) or (int(nbPlaces) >= nbPlacesR) #On teste le nb de places
+        villeDepartOk = (villeDebutR is None) or (villeDebutR == villeDepart) #On teste la ville de depart
+        villeArriveeOk = (villeFinR is None) or (villeFinR == villeArrivee) #On teste la ville d'arrivee
+        dateOk = (dateR is None) or (dateR == int(dateDepart)) #On teste la date
+
+        if idCompteR != idConducteur and prixOk and nbPlacesOk and villeDepartOk and villeArriveeOk and dateOk:
+            #On enleve la recherche en attente
+            c.execute("DELETE FROM RECHERCHE_EN_ATTENTE WHERE idRecherche = ? ", (idR,))
+            #On ajoute à la liste à notifier
+            notifier.append(idCompteR)
+
+    conn.commit()
+    conn.close()
+
+    for idANotifier in notifier:
+        #On envoie une notif
+        sendNotifCompte(idConducteur, idANotifier, "Un trajet correspondant à une de vos recherches en attente à été créé !")
+            
+
+
+#Supprimer un trajet
 @trajet_bp.route('/deleteTrajet/<string:token>/<int:idTrajet>', methods=['GET'])
 def deleteTrajet(token, idTrajet):
     conn = sqlite3.connect(URI_DATABASE)
@@ -409,13 +544,109 @@ def deleteTrajet(token, idTrajet):
             else:
                 #On envoie une notification aux passagers
                 sendNotifDeleteTrajet(idCompte, idTrajet)
-                #sendNotifTrajetPassagers(idCompte, idTrajet, "Le trajet a été annulé")
 
                 c.execute("DELETE FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
                 conn.commit()
                 conn.close()
 
                 return jsonify({'message': 'Le trajet a bien été supprimé.'}), 200
+
+
+
+#def auxiliaire pour le basculement vers l'historique
+def basculerVersHistorique(idTrajet, idCompte):
+    conn = sqlite3.connect(URI_DATABASE)
+    c = conn.cursor()
+
+    # Sélectionnez le trajet correspondant à l'ID de trajet donné
+    c.execute("SELECT * FROM TRAJET WHERE idTrajet=?", (idTrajet,))
+    row = c.fetchone()
+
+    # Si aucun trajet n'est trouvé, renvoyer une erreur
+    if not row:
+        return jsonify({'error': 'Trajet non trouvé'}), 404
+
+    # Sinon, convertissez le trajet en un dictionnaire et un JSON
+    idTrajet, idConducteur, heureDepart, dateDepart, nbPlaces, prix, nbPlacesRestantes, statusTrajet, commentaires, precisionRdv, villeDepart, villeArrivee = row
+
+    # Conversion de la date de la colonne 'dateTrajet'
+    dateDepart = datetime.strptime(dateDepart, '%Y%m%d').strftime('%d %B, %Y')
+
+    # Conversion de l'idVille en nomVille
+    c.execute("SELECT nomVille FROM VILLE WHERE idVille = ?", (villeDepart,))
+    villeDepart = c.fetchone()[0]
+    c.execute("SELECT nomVille FROM VILLE WHERE idVille = ?", (villeArrivee,))
+    villeArrivee = c.fetchone()[0]
+
+    # Ajouter le type de trajet en fonction de la table dans laquelle se trouve l'idTrajet
+    if idTrajet in [id[0] for id in c.execute("SELECT idTrajet FROM TRAJET_PRIVE")]:
+        typeTrajet = 'prive'
+        #On recupere le nom du groupe
+        nomGroupe = [groupe[0] for groupe in c.execute("SELECT nomGroupe FROM TRAJET_PRIVE NATURAL JOIN GROUPE WHERE idTrajet=?", (row[0],))][0]
+    elif idTrajet in [id[0] for id in c.execute("SELECT idTrajet FROM TRAJET_PUBLIC")]:
+        typeTrajet = 'public'
+    else:
+        typeTrajet = ''
+
+    trajet_dict = {
+        "idTrajet": idTrajet,
+        "idConducteur": idConducteur,
+        "heureDepart": heureDepart,
+        "dateDepart": dateDepart,
+        "nbPlaces": nbPlaces,
+        "prix": prix,
+        "nbPlacesRestantes": nbPlacesRestantes,
+        "statusTrajet": statusTrajet,
+        "commentaires": commentaires,
+        "precisionRdv": precisionRdv,
+        "villeDepart": villeDepart,
+        "villeArrivee": villeArrivee,
+        "typeTrajet": typeTrajet
+    }
+    if typeTrajet == 'prive':
+        trajet_dict["nomGroupe"] = nomGroupe
+
+    #On enleve toutes les valeurs nulles
+    for key in trajet_dict:
+        if trajet_dict[key] is None:
+            trajet_dict[key] = ""
+
+
+    #On recupere le nom et le prenom du conducteur
+    c.execute("SELECT nomCompte, prenomCompte FROM COMPTE WHERE idCompte = ?", (idConducteur,))
+    conducteur = c.fetchone()
+    if conducteur :
+        trajet_dict['nomConducteur'] = conducteur[0]
+        trajet_dict['prenomConducteur'] = conducteur[1]
+
+    passagers_json = []
+    #On récupère la liste des passagers
+    c.execute("SELECT idCompte, nomCompte, prenomCompte FROM TRAJET_EN_COURS_PASSAGER NATURAL JOIN COMPTE WHERE idTrajet = ?", (idTrajet,))
+    passagers = c.fetchall()
+    for passager in passagers:
+        idPassager = passager[0]
+        nomPassager = passager[1]
+        prenomPassager = passager[2]
+        p_json = {
+            'idCompte' : idPassager,
+            'nomCompte' : nomPassager,
+            'prenomCompte' : prenomPassager
+        }
+        passagers_json.append(p_json)
+    
+    trajet_dict['passagers'] = passagers_json
+
+    trajet_json = json.dumps(trajet_dict)
+
+    # On met dans l'historique du conducteur et des passagers
+    for passager in passagers:
+        p = passager[0]
+        c.execute("INSERT INTO HISTORIQUE_TRAJET (idCompte, jsonTrajet) VALUES (?, ?)", (p, trajet_json))
+
+    c.execute("INSERT INTO HISTORIQUE_TRAJET (idCompte, jsonTrajet) VALUES (?, ?)", (idCompte, trajet_json))
+
+    conn.commit()
+    conn.close()
 
 
 
@@ -588,7 +819,6 @@ def acceptInTrajet(token, idCompte, idTrajet, nbPlaces, accept):
 
 
 
-
 @trajet_bp.route('/modifTrajet/<string:token>/<int:idTrajet>', methods=['POST'])
 def modifTrajet(token, idTrajet):
     conn = sqlite3.connect(URI_DATABASE)
@@ -680,8 +910,6 @@ def modifTrajet(token, idTrajet):
 
 
 
-
-
 #Recuperer toutes les demandes en cours pour un trajets
 @trajet_bp.route('/getDemandesTrajet/<string:token>/<int:idTrajet>', methods = ['GET'])
 def getDemandesTrajet(token, idTrajet):
@@ -726,9 +954,6 @@ def getDemandesTrajet(token, idTrajet):
 
 
 
-
-
-
 # Valider une fin de trajet
 @trajet_bp.route('/terminerTrajet/<string:token>/<int:idTrajet>', methods = ['POST'])
 def terminerTrajet(token, idTrajet):
@@ -758,10 +983,20 @@ def terminerTrajet(token, idTrajet):
                 sendNotifTrajetPassagers(idConducteur, idTrajet, "Le trajet a été marqué comme terminé")
 
                 c.execute("UPDATE TRAJET SET statusTrajet = 'termine' WHERE idTrajet = ?", (idTrajet,))
+
                 conn.commit()
                 conn.close()
-                return jsonify({'message': 'Le trajet a bien été terminé.'}), 200
 
+                #On bascule dans l'historique
+                basculerVersHistorique(idTrajet, idCompte)
+
+                conn = sqlite3.connect(URI_DATABASE)
+                c = conn.cursor()
+                c.execute("DELETE FROM TRAJET WHERE idTrajet = ?", (idTrajet,))
+                conn.commit()
+                conn.close()
+
+                return jsonify({'message': 'Le trajet a bien été terminé.'}), 200
 
 
 
@@ -809,6 +1044,7 @@ def getPassagers(token, idTrajet):
 
 
 
+#Supprimer un passager d'un trajet
 @trajet_bp.route('/deletePassager/<string:token>/<int:idComptePassager>/<int:idTrajet>', methods = ['GET'])
 def deletePassager(token, idComptePassager, idTrajet):
     conn = sqlite3.connect(URI_DATABASE)
@@ -851,8 +1087,114 @@ def deletePassager(token, idComptePassager, idTrajet):
 
 
 
+#Recuperer la liste des gens à noter
+@trajet_bp.route('/getListeANoter/<string:token>/<int:idHistorique>', methods=['GET'])
+def getListeANoter(token, idHistorique):
+    conn = sqlite3.connect(URI_DATABASE)
+    c = conn.cursor()
+    #On recupere l'id du conducteur
+    c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
+    compte = c.fetchone()
+    if not compte:
+        conn.close()
+        return jsonify({'message': 'Token invalide ou expiré'}), 401
+    
+    idCompte = compte[0]
+
+    #On vérifie que le trajet fini existe bien dans la table
+    c.execute("SELECT jsonTrajet FROM HISTORIQUE_TRAJET WHERE idHistorique = ?", (idHistorique,))
+    trajet = c.fetchone()
+    if not trajet:
+        conn.close()
+        return jsonify({'message': 'Trajet non trouvé dans l\'historique'}), 404
+
+    jsonTrajet = json.loads(trajet[0])
+
+    #On peut recuperer la liste des personnes à noter en distinguant conducteur et passagers
+    liste_a_noter = []
+
+    passagers = jsonTrajet['passagers']
+    for p in passagers:
+        passager_dict = {'idCompte': p['idCompte'], 'nomCompte': p['nomCompte'], 'prenomCompte': p['prenomCompte'], 'type': 'passager'}
+        liste_a_noter.append(passager_dict)
+
+    #On recupere le conducteur
+    conducteur = {'idCompte': jsonTrajet['idConducteur'], 'nomCompte': jsonTrajet['nomConducteur'], 'prenomCompte': jsonTrajet['prenomConducteur'], 'type': 'conducteur'}
+    liste_a_noter.append(conducteur)
+
+    #On vérifie que le compte fait bien parti des personnes autorisées à noter et on l'enleve
+    result = [p for p in passagers if p['idCompte'] != idCompte]
+    if len(result) == len(liste_a_noter):
+        conn.close()
+        return jsonify({'message': 'Vous n\'êtes pas autorisé à noter'}), 403
+
+    conn.close()
+    return jsonify(result), 200
+    
 
 
+#Attribuer une note à un user
+@trajet_bp.route('/noter/<string:token>/<int:idHistorique>/<int:idCompteNote>/<int:note>', methods=['GET'])
+def noter(token, idHistorique, idCompteNote, note):
+    conn = sqlite3.connect(URI_DATABASE)
+    c = conn.cursor()
+    #On recupere l'id du conducteur
+    c.execute("SELECT idCompte FROM TOKEN WHERE auth_token = ?", (token,))
+    compte = c.fetchone()
+    if not compte:
+        conn.close()
+        return jsonify({'message': 'Token invalide ou expiré'}), 401
+    
+    idCompte = compte[0]
+
+    #On vérifie que le compte a bien le droit de noter ce user
+    c.execute("SELECT jsonTrajet FROM HISTORIQUE_TRAJET WHERE idHistorique = ?", (idHistorique,))
+    json_ = c.fetchone()
+    if not json_:
+        conn.close()
+        return jsonify({'message': 'Trajet non trouvé dans l\'historique'}), 404
+
+    jsonTrajet = json_[0]
+    jsonTrajet = json.loads(jsonTrajet)
+
+    notantInList = False
+    noteInList = False
+
+    for p in jsonTrajet['passagers']:
+        if idCompte == p['idCompte']:
+            notantInList = True
+        if idCompteNote == p['idCompte']:
+            noteInList = True
+
+    if idCompte == jsonTrajet['idConducteur']:
+        notantInList = True
+    if idCompteNote == jsonTrajet['idConducteur']:
+        noteInList = True
+    
+    if not noteInList or not notantInList or idCompte == idCompteNote:
+        conn.close()
+        return jsonify({'message': 'Les deux utilisateurs ne peuvent pas se noter l\'un l\'autre'}), 403
+
+
+    #On vérifie que la note n'existe pas déjà
+    c.execute("SELECT idNote FROM NOTE WHERE idHistorique = ? AND idCompteNotant = ? AND idCompteNote = ?", (idHistorique, idCompte, idCompteNote))
+    n = c.fetchone()
+    if n:
+        #La note existe : on doit la modifier
+        idNote = n[0]
+        c.execute("UPDATE NOTE SET note = ? WHERE idNote = ?", (note, idNote))
+    else:
+        #La note n'existe pas : on l'insère dans la table
+        c.execute("INSERT INTO NOTE(idHistorique, idCompteNotant, idCompteNote, note) VALUES (?, ?, ?, ?)", (idHistorique, idCompte, idCompteNote, note))
+    
+    conn.commit()
+    conn.close()
+
+    #On envoie une notification au compte noté
+    sendNotifCompte(idCompte, idCompteNote, "Vous avez reçu une évaluation !")
+
+    return jsonify({'message': 'La note a bien été attribuée'}), 200
+    
 
 
 # Valider une fin de trajet automatiquement
@@ -883,6 +1225,7 @@ def valider_automatiquement_trajet():
         print("Vérification des trajets en cours")
         if dateTrajet <= datetime.now() - timedelta(hours=24):
             c.execute("UPDATE TRAJET SET statusTrajet = 'termine' WHERE idTrajet = ?", (trajet['idTrajet'],))
+            basculerVersHistorique(trajet[0], trajet[1])
             print("Suppression du trajet numéro " + str(trajet['idTrajet']))
             conn.commit()
         conn.close()

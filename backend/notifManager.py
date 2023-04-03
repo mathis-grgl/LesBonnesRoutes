@@ -117,9 +117,7 @@ def sendNotifDeleteGroupe(idCompte, idGroupe):
     #On verifie s'il y a des des trajets privés en cours 
     c.execute("SELECT TRAJET.idTrajet, TRAJET.villeDepart, TRAJET.villeArrivee FROM TRAJET_PRIVE INNER JOIN TRAJET ON TRAJET_PRIVE.idTrajet = TRAJET.idTrajet WHERE idGroupe = ?", (idGroupe,))
     trajets = c.fetchall()
-    print("###############################################################")
     for trajet in trajets:
-        print(trajet)
         idTrajet = trajet[0]
         villeDepart = trajet[1]
         villeArrivee = trajet[2]
@@ -145,7 +143,6 @@ def sendNotifDeleteGroupe(idCompte, idGroupe):
     #On supprime toutes les notifs en rapport avec ce groupe
     c.execute("SELECT idNotification FROM NOTIF_GROUPE WHERE idGroupe = ?", (idGroupe,))
     notifs = c.fetchall()
-    print(notifs)
 
     for notif in notifs:
         n = notif[0]
@@ -190,13 +187,11 @@ def sendNotifDeleteTrajet(idCompte, idTrajet):
 
     message = "Le trajet " + villeDepart + " -> " + villeArrivee + " du " + dateDepart + " a été supprimé"
 
-    print(message)
 
 
     #On supprime toutes les notifs en rapport avec ce trajet
     c.execute("SELECT idNotification FROM NOTIF_TRAJET WHERE idTrajet = ?", (idTrajet,))
     notifs = c.fetchall()
-    print(notifs)
 
     for notif in notifs:
         n = notif[0]
@@ -218,8 +213,40 @@ def sendNotifDeleteTrajet(idCompte, idTrajet):
     conn.close()
 
 
+def sendNotifDeleteCompte(idCompte):
+    conn = sqlite3.connect(URI_DATABASE)
+    c = conn.cursor()
+
+    #On recupere les trajets de ce compte
+    c.execute("SELECT idTrajet FROM TRAJET WHERE idConducteur = ?", (idCompte,))
+    trajets = c.fetchall()
+
+    for trajet in trajets:
+        idTrajet = trajet[0]
+        sendNotifDeleteTrajet(idCompte, idTrajet)
+
+    conn.commit()
+    conn.close()
+
+
+def sendNotifCompte(idCompteEnvoyeur, idCompte, message):
+    conn = sqlite3.connect(URI_DATABASE)
+    c = conn.cursor()
+
+    c.execute("INSERT INTO NOTIFICATION(idCompteEnvoyeur, messageNotification) VALUES (?, ?)", (idCompteEnvoyeur, message))
+    #On recupere l'id de cette notification
+    c.execute("SELECT last_insert_rowid() FROM NOTIFICATION")
+    idNotif = c.fetchone()[0]
+    c.execute("INSERT INTO NOTIF_RECUE VALUES (?, ?)", (idCompte, idNotif))
+
+    conn.commit()
+    conn.close()
+
+
+
 #sendNotifTrajet(1, 2, 1, "message pour le trajet ...")
 #sendNotifGroupe(1, 1, "message pour le groupe !")
 #sendNotifTrajetPassagers(1, 2, "le trajet a été modifié")
 #sendNotifAmi(1, 2, 1, "Vous avez été ajouté au groupe !")
 #sendNotifDeleteTrajet(1, 1)
+#sendNotifCompte(1, 2, "j'ai un message")

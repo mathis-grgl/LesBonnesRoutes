@@ -228,36 +228,50 @@ $(document).ready(function () {
             // Sinon on envoie les données au serveur.
             let modif = '../../modifCompte/' + token + '/' + id;
 
-            fetch(modif, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    'nom': document.querySelector("input[name='nom']").value,
-                    'email': document.querySelector("input[name='email']").value,
-                    'prenom': document.querySelector("input[name='prenom']").value,
-                    'telephone': $('input[name="telephone"]').val(),
-                    'notif': $('input[name="notif"]:checked').val(),
-                    'voiture': $('input[name="voiture"]:checked').val(),
-                    'mdp': mdp,
-                    'ville': $('input[name="ville"]').val(),
-                    'adresse': $('input[name="adresse"]').val(),
-                    'pays': $('input[name="pays"]').val(),
-                    'codepostal': $('input[name="codepostal"]').val(),
-                    'genre': $('#genre').val(),
-                    'photo': $('input[name="poster"]').prop('files')
-                })
-            }).then(reponse => {
-                if (reponse.ok) {
-                    alert("Le compte a bien été modifié.");
-                    window.location.href = '/admin/search-account';
-                } else {
-                    alert("Probleme dans le fetch");
+            const formData = new FormData();
 
-                }
+            const fileInput = document.querySelector("input[name='poster']");
+            if (fileInput.files.length > 0){
+            const file = fileInput.files[0];
+            const fileExtension = file.name.split('.').pop();
+            const fileName = `${document.querySelector("input[name='nom']").value}-${document.querySelector("input[name='prenom']").value}-${Date.now()}.${fileExtension}`;
+            
+            // Create a new File object with the unique name
+            const newFile = new File([file], fileName, { type: file.type });
+
+            formData.append('poster', newFile);
+            } else {
+            formData.append('poster', null);
+            }
+
+            // Ajoutez les champs du formulaire à l'objet FormData
+            formData.append('nom', document.querySelector("input[name='nom']").value);
+            formData.append('email', document.querySelector("input[name='email']").value);
+            formData.append('prenom', document.querySelector("input[name='prenom']").value);
+            formData.append('telephone', $('input[name="telephone"]').val());
+            formData.append('notif', $('input[name="notif"]:checked').val());
+            formData.append('voiture', $('input[name="voiture"]:checked').val());
+            formData.append('mdp', mdp);
+            formData.append('ville', $('input[name="ville"]').val());
+            formData.append('adresse', $('input[name="adresse"]').val());
+            formData.append('pays', $('input[name="pays"]').val());
+            formData.append('codepostal', $('input[name="codepostal"]').val());
+            formData.append('genre', $('#genre').val());
+
+            // Envoyez la requête
+            fetch(modif, {
+            method: 'POST',
+            body: formData
+            }).then(reponse => {
+            if (reponse.ok) {
+                console.log(mdp);
+                alert("Votre compte a bien été modifié.");
+                window.location.href = '/account';
+            } else {
+                alert("Probleme dans le fetch");
+            }
             }).catch(error => {
-                console.error(error);
+            console.error(error);
             })
         }
     })

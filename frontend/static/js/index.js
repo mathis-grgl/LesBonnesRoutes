@@ -5,6 +5,21 @@ if (token === null){
   search.style = "display: none;";
 }
 
+// Ajoute un gestionnaire d'événements de clic à l'objet document
+document.addEventListener("click", function(event) {
+  const btn = document.getElementById("btn-tarifs");
+  var section = document.getElementById("slidersSection");
+  // Vérifie si l'élément clické est la bell-icon
+  if (event.target === btn) {
+    return;
+  }
+  // Vérifie si l'élément clic est l'élément notifs ou l'un de ses descendants
+  if (!section.contains(event.target)) {
+    // Si l'élément clic n'est pas l'élément section ou l'un de ses descendants, rend les éléments invisibles
+    section.setAttribute("hidden", "");
+  }
+});
+
 function showSection(event) {
     event.preventDefault(); // Prevent the default behavior of the button click
     var section = document.getElementById("slidersSection");
