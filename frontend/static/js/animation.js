@@ -63,7 +63,7 @@ scene.add(ambientLight);
 
 
 // Background
-const fondTexture = new THREE.TextureLoader().load('fond_retro.jpg');
+const fondTexture = new THREE.TextureLoader().load('/static/animation/fond_retro.jpg');
 scene.background = fondTexture;
 
 const TEXTURE_PATH = "https://res.cloudinary.com/dg5nsedzw/image/upload/v1641657168/blog/vaporwave-threejs-textures/grid.png";
@@ -97,7 +97,7 @@ for (var i = 0; i < 5; i++){ // Ajout de 4 plans
 // Voiture
 let car;
 const loaderMtl = new MTLLoader();
-loaderMtl.load('car.mtl', function(materials) {
+loaderMtl.load('/static/animation/car.mtl', function(materials) {
   materials.preload();
   const loader = new OBJLoader();
 
@@ -105,7 +105,7 @@ loaderMtl.load('car.mtl', function(materials) {
 
   loader.load(
     // chemin vers votre fichier .obj
-    'car.obj',
+    '/static/animation/car.obj',
     // fonction de rappel appelée lorsque le chargement est terminé
     function ( objet ) {
       // ajoutez l'objet à votre scène
@@ -168,7 +168,7 @@ loader.load(
 
 
 // LBR
-const lbrTexture = new THREE.TextureLoader().load('lbr.png');
+const lbrTexture = new THREE.TextureLoader().load('/static/animation/lbr.png');
 const lbr = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.5, 0.5), new THREE.MeshBasicMaterial({ map: lbrTexture }));
 scene.add(lbr);
 lbr.position.z = -5;
@@ -184,7 +184,7 @@ const loaderText = new FontLoader();
 function loadText(text){
   return new Promise(resolve => {
     let textObj;
-    loaderText.load( 'font.json', function ( font ) {
+    loaderText.load( '/static/animation/font.json', function ( font ) {
       const geometry = new TextGeometry(text , {
         font: font,
         size: 300,
@@ -253,7 +253,7 @@ loadText(fin).then(obj => {
 // Nuages
 let cloudParticles = [];
 let loaderCloud = new THREE.TextureLoader();
-loaderCloud.load("smoke.png", function(texture){
+loaderCloud.load("/static/animation/smoke.png", function(texture){
   console.log("Texture smoke chargée");
   let cloudGeo = new THREE.PlaneBufferGeometry(20,20);
   let cloudMaterial = new THREE.MeshLambertMaterial({
@@ -431,7 +431,7 @@ function animate() {
 
           // Lance l'animation et la transition vers la nouvelle page HTML après 5 secondes
           //setTimeout(() => {
-            window.location.href = "contact.html";
+            window.location.href = "index";
           //}, 5000);
         }
       }
