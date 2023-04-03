@@ -105,6 +105,16 @@ def get_user(idCompte):
     conn.close()
     return jsonify(compte_dict)
 
+# Récupérer l'id d'un compte en fonction de son token
+@admin_bp.route('/user/<string:token>')
+def get_user_id(token):
+    conn = sqlite3.connect(URI_DATABASE)
+    c = conn.cursor()
+    c.execute("SELECT idCompte FROM COMPTE NATURAL JOIN TOKEN WHERE auth_token = ?", (token,))
+    row = c.fetchone()
+    conn.close()
+    return jsonify(row[0])
+
 
 # Renvoie si le token est admin
 @admin_bp.route('/users/<string:token>/isadmin')
@@ -140,6 +150,20 @@ def get_trajets(typeTrajet):
 
         #On reformate la date
         trajet['dateDepart'] = datetime.strptime(trajet['dateDepart'], '%Y%m%d').strftime('%d %B, %Y')
+
+        # Convertir le mois de la date en français
+        trajet['dateDepart'] = trajet['dateDepart'].replace('January', 'Janvier')
+        trajet['dateDepart'] = trajet['dateDepart'].replace('February', 'Février')
+        trajet['dateDepart'] = trajet['dateDepart'].replace('March', 'Mars')
+        trajet['dateDepart'] = trajet['dateDepart'].replace('April', 'Avril')
+        trajet['dateDepart'] = trajet['dateDepart'].replace('May', 'Mai')
+        trajet['dateDepart'] = trajet['dateDepart'].replace('June', 'Juin')
+        trajet['dateDepart'] = trajet['dateDepart'].replace('July', 'Juillet')
+        trajet['dateDepart'] = trajet['dateDepart'].replace('August', 'Août')
+        trajet['dateDepart'] = trajet['dateDepart'].replace('September', 'Septembre')
+        trajet['dateDepart'] = trajet['dateDepart'].replace('October', 'Octobre')
+        trajet['dateDepart'] = trajet['dateDepart'].replace('November', 'Novembre')
+        trajet['dateDepart'] = trajet['dateDepart'].replace('December', 'Décembre')
 
         # Remplacement des ID des villes par leurs noms
         c.execute("SELECT nomVille FROM VILLE WHERE idVille = ?", (row[10],))

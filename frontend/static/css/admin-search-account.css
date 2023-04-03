@@ -62,7 +62,6 @@
     background-repeat: no-repeat;
   }
   .rating-value {
-    z-index: 99;
     position: relative;
     padding-left: 5px;
     font-size: 16px;
