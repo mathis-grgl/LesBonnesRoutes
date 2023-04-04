@@ -24,10 +24,9 @@
 }
 
 .imgtailleprofile{
-  width: 10%;
-  height: auto;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
-  clip-path: circle(50%);
 }
 
 .card-body {
