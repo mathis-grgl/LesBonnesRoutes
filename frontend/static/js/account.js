@@ -34,15 +34,7 @@ function applyData() {
                 let notif = user.notificationMail;
                 let nbnotes = user.nbnotes;
                 let nbtrajets = user.nbtrajets;
-                let photo = user.photo;
-                // Cas de la photo
-                /*if (photo != null) {
-                    fetch(photo)
-                    .then(response => response.blob())
-                    .then(blob => {
-                        document.querySelector("img[id=image]").src = URL.createObjectURL(blob); // Modification à apporter
-                    });
-                }*/
+
                 if (data.photo != null) {
                     // Convertir la photo encodée en base64 en objet Image
                     const img = new Image();
@@ -133,3 +125,11 @@ function onModify() {
     history.pushState(null, null, document.URL);
 }
 
+function openPopUp(event) {
+    event.preventDefault();
+    document.getElementById("popup-container").style.display = "block";
+}
+
+function closePopup() {
+    document.getElementById("popup-container").style.display = "none";
+}

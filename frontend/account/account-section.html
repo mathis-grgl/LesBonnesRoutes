@@ -60,6 +60,9 @@
                     <i class="fa fa-star" aria-hidden="true" id="rating-star-4"></i>
                     <i class="fa fa-star"  aria-hidden="true"id="rating-star-5"></i>
 
+                    <!-- Les lignes en dessous permettent d'afficher tout les avis -->
+                    <a href="#" onclick="openPopUp(event)">&nbsp;&nbsp;voir les avis</a>
+
                     <!-- Les lignes en dessous permettent d'afficher le numéro -->
                     <div id="telephone">
                       06 00 00 00 00
@@ -82,3 +85,63 @@
         </div>
     </div>
   </section>
+
+  <div id="avis">
+    <!-- Ne pas supprimer, sert pour le js -->
+    <div id="popup-container">
+      <div id="popup">
+          <div class="form_control_container__time" id="texte">17 avis d'utilisateurs</div><br>
+          <div class="note">
+            <p>5&nbsp;★&nbsp;&nbsp;</p>
+            <div class="rating">
+              <div class="stars" style="width: 50%">
+                <span></span>
+              </div>
+              <span class="rating-value">2 avis</span>
+            </div>
+          </div>
+
+          <div class="note">
+            <p>4&nbsp;★&nbsp;&nbsp;</p>
+            <div class="rating">
+              <div class="stars" style="width: 0%">
+                <span></span>
+              </div>
+              <span class="rating-value">0 avis</span>
+            </div>
+          </div>
+
+          <div class="note">
+            <p>3&nbsp;★&nbsp;&nbsp;</p>
+            <div class="rating">
+              <div class="stars" style="width: 0%">
+                <span></span>
+              </div>
+              <span class="rating-value">0 avis</span>
+            </div>
+          </div>
+
+          <div class="note">
+            <p>2&nbsp;★&nbsp;&nbsp;</p>
+            <div class="rating">
+              <div class="stars" style="width: 0%">
+                <span></span>
+              </div>
+              <span class="rating-value">0 avis</span>
+            </div>
+          </div>
+
+          <div class="note">
+            <p>1&nbsp;★&nbsp;&nbsp;</p>
+            <div class="rating">
+              <div class="stars" style="width: 0%">
+                <span></span>
+              </div>
+              <span class="rating-value">0 avis</span>
+            </div>
+          </div>
+          
+          <button class="btn btn-success btn-block text-white" onclick="closePopup()">Fermer</button>
+      </div>
+    </div>
+  </div>
