@@ -284,7 +284,7 @@ function displayParticipants(data, container) {
         text = "Cet utilisateur n'a pas encore de note.";
 
     } else {
-        text = 'Cet utilisateur a une note de ' + data.noteCompte + ' étoiles.';
+        text = 'Cet utilisateur a une note de ' + data.noteCompte.toFixed(1) + ' étoiles.';
     }
 
     let cardNote = $("<p>").addClass("card-text").text(text);
