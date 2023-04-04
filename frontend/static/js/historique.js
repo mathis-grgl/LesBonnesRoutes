@@ -116,18 +116,18 @@ function getPassagers(idHistorique, nomConducteur, prenomConducteur, idConducteu
     })
     .then(data => {
         if (!conducteur){
-            const note = Object.values(element)[Object.keys(element).indexOf("note")];
+            const note = Object.values(data)[Object.keys(data).indexOf("note")];
             // Ajoute le contenu HTML final à l'élément avec l'ID 'notation'*/
             document.getElementById("notation").innerHTML = 
             `<div id="popup-container">` +
                 `<div id="popup">` +
                     `<div class="form_control_container__time" id="texte">Noter un conducteur : </div><br>` +
                     `<div class="rating" id="${idConducteur}">` +
-                            `<a href="#" onclick="noter(event, 5, ${idConducteur}, ${idHistorique})">★</a>` +
-                            `<a href="#" onclick="noter(event, 4, ${idConducteur}, ${idHistorique})">★</a>` +
-                            `<a href="#" onclick="noter(event, 3, ${idConducteur}, ${idHistorique})">★</a>` +
-                            `<a href="#" onclick="noter(event, 2, ${idConducteur}, ${idHistorique})">★</a>` +
-                            `<a href="#" onclick="noter(event, 1, ${idConducteur}, ${idHistorique})">★</a>` +
+                            `<a href="#" onclick="noter(event, 5, ${idConducteur}, ${idHistorique}, '${nomConducteur}', '${prenomConducteur}')">★</a>` +
+                            `<a href="#" onclick="noter(event, 4, ${idConducteur}, ${idHistorique}, '${nomConducteur}', '${prenomConducteur}')">★</a>` +
+                            `<a href="#" onclick="noter(event, 3, ${idConducteur}, ${idHistorique}, '${nomConducteur}', '${prenomConducteur}')">★</a>` +
+                            `<a href="#" onclick="noter(event, 2, ${idConducteur}, ${idHistorique}, '${nomConducteur}', '${prenomConducteur}')">★</a>` +
+                            `<a href="#" onclick="noter(event, 1, ${idConducteur}, ${idHistorique}, '${nomConducteur}', '${prenomConducteur}')">★</a>` +
                             `<div class="infos" name="infos-${idConducteur}">${note !== undefined ? `${note}/5` : 'Non noté'} : ${nomConducteur} ${prenomConducteur}</div>` +
                         "</div>" +
                     `<button class="btn btn-success btn-block text-white" onclick="closePopup()">Fermer</button>` +
@@ -144,11 +144,11 @@ function getPassagers(idHistorique, nomConducteur, prenomConducteur, idConducteu
                 // Ajoute le contenu HTML final à l'élément avec l'ID 'notation'*/
                 popUpContainer +=
                 `<div class="rating" id="${value[key.indexOf("idCompte")]}">` +
-                    `<a href="#" onclick="noter(event, 5, ${value[key.indexOf("idCompte")]}, ${idHistorique})">★</a>` +
-                    `<a href="#" onclick="noter(event, 4, ${value[key.indexOf("idCompte")]}, ${idHistorique})">★</a>` +
-                    `<a href="#" onclick="noter(event, 3, ${value[key.indexOf("idCompte")]}, ${idHistorique})">★</a>` +
-                    `<a href="#" onclick="noter(event, 2, ${value[key.indexOf("idCompte")]}, ${idHistorique})">★</a>` +
-                    `<a href="#" onclick="noter(event, 1, ${value[key.indexOf("idCompte")]}, ${idHistorique})">★</a>` +
+                    `<a href="#" onclick="noter(event, 5, ${value[key.indexOf("idCompte")]}, ${idHistorique}, '${value[key.indexOf("nomCompte")]}', '${value[key.indexOf("prenomCompte")]}')">★</a>` +
+                    `<a href="#" onclick="noter(event, 4, ${value[key.indexOf("idCompte")]}, ${idHistorique}, '${value[key.indexOf("nomCompte")]}', '${value[key.indexOf("prenomCompte")]}')">★</a>` +
+                    `<a href="#" onclick="noter(event, 3, ${value[key.indexOf("idCompte")]}, ${idHistorique}, '${value[key.indexOf("nomCompte")]}', '${value[key.indexOf("prenomCompte")]}')">★</a>` +
+                    `<a href="#" onclick="noter(event, 2, ${value[key.indexOf("idCompte")]}, ${idHistorique}, '${value[key.indexOf("nomCompte")]}', '${value[key.indexOf("prenomCompte")]}')">★</a>` +
+                    `<a href="#" onclick="noter(event, 1, ${value[key.indexOf("idCompte")]}, ${idHistorique}, '${value[key.indexOf("nomCompte")]}', '${value[key.indexOf("prenomCompte")]}')">★</a>` +
                     `<div class="infos" name="infos-${value[key.indexOf("idCompte")]}">${note !== undefined ? `${note}/5` : 'Non noté'} : ${value[key.indexOf("nomCompte")]} ${value[key.indexOf("prenomCompte")]}</div>` +
                 "</div>";
             });
@@ -187,7 +187,7 @@ function closePopup() {
     document.getElementById("popup-container").style.display = "none";
 }
 
-function noter(event, note, idCompte, idHistorique){
+function noter(event, note, idCompte, idHistorique, nom, prenom){
     event.preventDefault();
 
     fetch(`/trajet/noter/${getCookieToken()}/${idHistorique}/${idCompte}/${note}`)
@@ -199,9 +199,8 @@ function noter(event, note, idCompte, idHistorique){
     })
     .then(data => {
         console.log("Résultat requete noter : " + Object.values(data));
-        if (!document.querySelector("div[name='infos-" + idCompte + "']").innerHTML.includes("✔️")){
-            document.querySelector("div[name='infos-" + idCompte + "']").innerHTML += "✔️";
-        }
+        document.querySelector("div[name='infos-" + idCompte + "']").innerHTML = 
+            `${note !== undefined ? `${note}/5` : 'Non noté'} : ${nom} ${prenom} ✔️`;
     })
     .catch(error => {
         console.error('Erreur : ', error);

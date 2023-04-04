@@ -2,10 +2,10 @@ import * as THREE from 'three';
 import { TWEEN } from 'https://unpkg.com/three@0.149/examples/jsm/libs/tween.module.min.js'
 //import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { TextGeometry } from 'https://unpkg.com/three@0.149/examples/jsm/geometries/TextGeometry.js';
-import { OBJLoader } from 'https://unpkg.com/three@0.149/examples/jsm/loaders/OBJLoader.js';
 import { FontLoader } from 'https://unpkg.com/three@0.149/examples/jsm/loaders/FontLoader.js';
-import { MTLLoader } from 'https://unpkg.com/three@0.149/examples/jsm/loaders/MTLLoader.js';
 import { GLTFLoader } from 'https://unpkg.com/three@0.149/examples/jsm/loaders/GLTFLoader.js';
+import { OBJLoader } from 'https://unpkg.com/three@0.149/examples/jsm/loaders/OBJLoader.js';
+import { MTLLoader } from 'https://unpkg.com/three@0.149/examples/jsm/loaders/MTLLoader.js';
 
 // Setup de tout
 const bienvenueHeader = document.querySelector('header[name="bienvenue"]');
@@ -94,10 +94,43 @@ for (var i = 0; i < 5; i++){ // Ajout de 4 plans
   scene.add(plane[i]);
 }
 
+/*
+// Créer une instance de Worker avec le chemin vers votre fichier de worker
+let car;
+const carWorker = new Worker('/static/animation/car.worker.js');
 
+carWorker.postMessage("loadCar");
+
+carWorker.onmessage = function(event) {
+  if (event.data.type === 'carLoaded') {
+    const carData = event.data.data;
+    car = carData.obj;
+    car.scale.set(0.06, 0.05, 0.05);
+    car.position.set(0, 0, -0.3);
+    car.rotation.y += Math.PI;
+    car.rotation.x += Math.PI/2 + 0.1;
+    scene.add(car);
+  }
+};*/
 
 // Voiture
-let car;
+// Créer une texture avec l'image que vous souhaitez afficher
+const textureLoader1 = new THREE.TextureLoader();
+const texture = textureLoader1.load('/static/animation/delorean.png');
+
+// Créer un matériau qui utilise cette texture
+const material1 = new THREE.MeshBasicMaterial({ map: texture });
+
+// Créer un objet géométrique avec ce matériau
+
+const image = new THREE.Mesh(geometry, material1);
+image.setX(0);
+image.setZ(-0.3);
+// Ajouter cet objet à votre scène
+scene.add(image);
+
+
+/*let car;
 const loaderMtl = new MTLLoader();
 loaderMtl.load('/static/animation/car.mtl', function(materials) {
   materials.preload();
@@ -108,39 +141,41 @@ loaderMtl.load('/static/animation/car.mtl', function(materials) {
   loader.load(
     // chemin vers votre fichier .obj
     '/static/animation/car.obj',
+    
     // fonction de rappel appelée lorsque le chargement est terminé
     function ( objet ) {
       // ajoutez l'objet à votre scène
       scene.add( objet );
-
+  
       // Appliquer un changement d'échelle
       objet.scale.set(0.06, 0.05, 0.05);
-
+  
       // Modifier la position de l'objet
       objet.position.set(0, 0, -0.3); //x négatif vers <= , y positif vers haut, z positif vers moi
       objet.rotation.y += Math.PI;
       objet.rotation.x += Math.PI/2 + 0.1;
-
+  
       car = objet;
     },
     
     // fonction de rappel appelée pendant le chargement
     function ( xhr ) {
-      console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded car' );
+      const percentComplete = xhr.loaded / xhr.total * 100;
+      console.log( percentComplete.toFixed(2) + '% loaded' );
     },
     
     // fonction de rappel appelée en cas d'erreur de chargement
     function ( error ) {
-      console.log( 'An error happened' );
+      console.log( 'Une erreur est survenue' );
     }
   );
-});
+});*/
 
 /*const loader = new GLTFLoader();
 
 loader.load(
   // Chemin vers le fichier .gltf
-  'car.gltf',
+  '/static/animation/car.gltf',
   // Fonction de rappel appelée lorsque le chargement est terminé
   function ( gltf ) {
     // Récupérer la scène de l'objet chargé
@@ -153,21 +188,20 @@ loader.load(
     car.scale.set(0.06, 0.05, 0.05);
 
     // Modifier la position de l'objet
-    car.position.set(0, 0, -0.3); // x négatif vers <= , y positif vers haut, z positif vers moi
-    /*car.rotation.y += Math.PI;
-    car.rotation.x += Math.PI/2 + 0.1;*/
-  /*},
+    car.position.set(0, 0.5, -3.3); // x négatif vers <= , y positif vers haut, z positif vers moi
+    car.rotation.y += Math.PI;
+    car.rotation.x += Math.PI/2 + 0.1;
+  },
   // Fonction de rappel appelée pendant le chargement
   function ( xhr ) {
-    console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded car' );
+    const percentComplete = xhr.loaded / xhr.total * 100;
+    console.log( percentComplete.toFixed(2) + '% loaded car' );
   },
   // Fonction de rappel appelée en cas d'erreur de chargement
   function ( error ) {
-    console.log( 'An error happened' );
+    console.log( 'Une erreur est survenue dans le chargement de la voiture' );
   }
 );*/
-
-
 
 // LBR
 const lbrTexture = new THREE.TextureLoader().load('/static/animation/lbr.png');
