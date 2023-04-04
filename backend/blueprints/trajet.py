@@ -1143,7 +1143,6 @@ def getListeANoter(token, idHistorique):
         return jsonify({'message': 'Vous n\'êtes pas autorisé à noter'}), 403
 
     conn.close()
-    print(result)
     return jsonify(result), 200
     
 

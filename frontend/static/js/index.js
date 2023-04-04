@@ -1,8 +1,8 @@
 // Vérification de l'existence du cookie
-if (document.cookie.indexOf("premier") < 0) {
-  // Le cookie n'existe pas, rediriger vers /three
-  window.location.href = "/three";
-}
+// if (document.cookie.indexOf("premier") < 0) {
+//   // Le cookie n'existe pas, rediriger vers /three
+//   window.location.href = "/three";
+// }
 
 const token = getCookieToken();
 const search = document.querySelector("div[id=next]");
