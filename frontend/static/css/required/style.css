@@ -141,6 +141,14 @@ textarea.form-control {
   position: relative;
 }
 
+.site-header.scrolled .bell-icon{
+  filter: invert(0);
+}
+
+.site-header.scrolled .icon-wrapper{
+  top: 10px;
+}
+
 .site-header.scrolled .site-menu-toggle span {
   background: #000;
 }
