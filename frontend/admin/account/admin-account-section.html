@@ -60,6 +60,9 @@
                 <i class="fa fa-star" aria-hidden="true" id="rating-star-4"></i>
                 <i class="fa fa-star" aria-hidden="true" id="rating-star-5"></i>
 
+                <!-- Les lignes en dessous permettent d'afficher tout les avis -->
+                <a href="#" onclick="openPopUp(event)">&nbsp;&nbsp;Voir les avis</a>
+
                 <!-- Les lignes en dessous permettent d'afficher le numéro -->
                 <div id="telephone">
                   06 00 00 00 00
@@ -75,6 +78,65 @@
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+  <div id="avis">
+    <!-- Ne pas supprimer, sert pour le js -->
+    <div id="popup-container">
+      <div id="popup">
+          <div class="form_control_container__time" id="nbAvis">0 avis d'utilisateurs</div><br>
+          <div class="note">
+            <p>5&nbsp;★&nbsp;&nbsp;</p>
+            <div class="rating">
+              <div id="star5" class="stars" style="width: 0%">
+                <span></span>
+              </div>
+              <span id="nbAvis5" class="rating-value">0 avis</span>
+            </div>
+          </div>
+
+          <div class="note">
+            <p>4&nbsp;★&nbsp;&nbsp;</p>
+            <div class="rating">
+              <div id="star4" class="stars" style="width: 0%">
+                <span></span>
+              </div>
+              <span id="nbAvis4" class="rating-value">0 avis</span>
+            </div>
+          </div>
+
+          <div class="note">
+            <p>3&nbsp;★&nbsp;&nbsp;</p>
+            <div class="rating">
+              <div id="star3" class="stars" style="width: 0%">
+                <span></span>
+              </div>
+              <span id="nbAvis3" class="rating-value">0 avis</span>
+            </div>
+          </div>
+
+          <div class="note">
+            <p>2&nbsp;★&nbsp;&nbsp;</p>
+            <div class="rating">
+              <div id="star2" class="stars" style="width: 0%">
+                <span></span>
+              </div>
+              <span id="nbAvis2" class="rating-value">0 avis</span>
+            </div>
+          </div>
+
+          <div class="note">
+            <p>1&nbsp;★&nbsp;&nbsp;</p>
+            <div class="rating">
+              <div id="star1" class="stars" style="width: 0%">
+                <span></span>
+              </div>
+              <span id="nbAvis1" class="rating-value">0 avis</span>
+            </div>
+          </div>
+          
+          <button class="btn btn-success btn-block text-white" onclick="closePopup()">Fermer</button>
       </div>
     </div>
   </div>
