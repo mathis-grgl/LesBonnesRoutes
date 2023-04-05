@@ -127,7 +127,7 @@ $(document).ready(function () {
 
                 // On modifie le tableau des notes pour les barres
                 for (i = 0; i < notes[0]; i++){
-                    indexNotes =  notes[i+1].note -1;
+                    indexNotes =  5- notes[i+1].note;
                     console.log(nbNotesNb);
                     nbNotesNb[indexNotes] = nbNotesNb[indexNotes] + 1;
                 }
