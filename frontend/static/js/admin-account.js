@@ -127,18 +127,17 @@ $(document).ready(function () {
 
                 // On modifie le tableau des notes pour les barres
                 for (i = 0; i < notes[0]; i++){
-                    indexNotes =  5- notes[i+1].note;
-                    console.log(nbNotesNb);
+                    indexNotes =  5 - notes[i+1].note;
                     nbNotesNb[indexNotes] = nbNotesNb[indexNotes] + 1;
                 }
                 
                 // On modifie les barres et les notes en fonction du nombre d'avis
-                for (i = 0; i < 5; i++){
-                    $('#nbAvis' + i).text(nbNotesNb[i] + " avis");
-                    if (nbNotesNb[i] == null) nbNotesNb[i] = 0;
-                    else nbNotesNb[i] = (nbNotesNb[i] * 100) / notes[0];
-                    $('#star' + i).css('width', nbNotesNb[i] + "%");
-                    console.log(5-i + " " + nbNotesNb[i] + "%");
+                for (i = 1; i < 6; i++){
+                    iTab = 5 - i;
+                    $('#nbAvis' + i).text(nbNotesNb[iTab] + " avis");
+                    if (nbNotesNb[iTab] == null) nbNotesNb[i] = 0;
+                    else nbNotesNb[iTab] = (nbNotesNb[iTab] * 100) / notes[0];
+                    $('#star' + i).css('width', nbNotesNb[iTab] + "%");
                 }
             });
     }
