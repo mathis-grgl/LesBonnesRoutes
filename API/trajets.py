@@ -64,3 +64,4 @@ def delete_trajet(user_info: UserInfo, trajet_id: int) -> tuple[Response, int]:
     if code in (403, 404):
         abort(code)
     return jsonify(resp), 204
+

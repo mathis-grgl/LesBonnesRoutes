@@ -147,6 +147,7 @@ def delete_trajet(user_info: UserInfo, trajet_id: int) -> tuple[json_dict, int]:
     connection.close()
     return {}, 204
 
+
 def add_passengers(user_info: UserInfo, trajet_id: int, data: json_dict) -> tuple[json_dict, int]:
     trajet = get_trajet(trajet_id, partial=True)
     if trajet is None:
@@ -171,3 +172,39 @@ def add_passengers(user_info: UserInfo, trajet_id: int, data: json_dict) -> tupl
     connection.close()
 
     return get_trajet(trajet_id), 200
+
+
+def get_trajet_user(user_info: UserInfo, user_id: int) -> tuple[json_dict, int]:
+
+    if user_info.user is None:
+        return {}, 404
+
+    connection = sqlite3.connect(DATABASE_NAME)
+    cursor = connection.cursor()
+
+    query = """
+    SELECT idTrajet
+    FROM TRAJET
+    WHERE idConducteur = ?"""
+
+    cursor.execute(query, (user_id,))
+    rows = cursor.fetchall()
+    conducteur = []
+    for id in rows:
+        conducteur.append(get_trajet(id[0], partial=False))
+
+    query = """
+    SELECT idTrajet
+    FROM TRAJET_EN_COURS_PASSAGER
+    WHERE idCompte = ?"""
+
+    cursor.execute(query, (user_id,))
+    rows = cursor.fetchall()
+    passager = []
+    for id in rows:
+        passager.append(get_trajet(id[0], partial=True))
+
+    connection.close()
+
+    return {"conducteur": conducteur, "passager": passager}, 200
+

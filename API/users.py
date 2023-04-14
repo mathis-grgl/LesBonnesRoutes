@@ -5,7 +5,7 @@ from flask import jsonify, Response, request, abort
 
 from __main__ import app, check_datas
 from connection_info import UserInfo
-from database_manager import userManager
+from database_manager import userManager, trajetManager
 
 @app.route("/api/v1/user", methods=['PUT'])
 @check_datas(authentified=False)
@@ -67,3 +67,11 @@ def get_user(user_info: UserInfo, user_id: int) -> tuple[Response, int]:
     if user is None:
         abort(404)
     return jsonify(user), 200
+
+@app.route("/api/v1/user/<int:user_id>/trajets", methods=['GET'])
+@check_datas()
+def get_trajet_user(user_info: UserInfo, user_id: int) -> tuple[Response, int]:
+    resp, code = trajetManager.get_trajet_user(user_info, user_id)
+    if code == 404:
+        abort(404)
+    return jsonify(resp), code
