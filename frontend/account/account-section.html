@@ -60,6 +60,9 @@
                     <i class="fa fa-star" aria-hidden="true" id="rating-star-4"></i>
                     <i class="fa fa-star"  aria-hidden="true"id="rating-star-5"></i>
 
+                    <!-- Les lignes en dessous permettent d'afficher tout les avis -->
+                    <a href="#" onclick="openPopUp(event)">&nbsp;&nbsp;voir les avis</a>
+
                     <!-- Les lignes en dessous permettent d'afficher le numéro -->
                     <div id="telephone">
                       06 00 00 00 00
@@ -82,3 +85,12 @@
         </div>
     </div>
   </section>
+
+  <div id="avis">
+    <div id="popup-container">
+      <div id="popup">
+          <div class="form_control_container__time" id="texte"></div><br>
+           <!-- Ne pas supprimer, sert pour le js -->
+      </div>
+    </div>
+  </div>

@@ -57,11 +57,9 @@ $(document).ready(function () {
 
                 // Cas du nombre de notes
                 document.getElementById("nbnotes").innerHTML = nbnotes + document.getElementById("nbnotes").innerHTML;
-                console.log(nbnotes);
 
                 // Cas du nombre de trajets
                 document.getElementById("nbtrajets").innerHTML = nbtrajets + document.getElementById("nbtrajets").innerHTML;
-                console.log(nbtrajets);
 
                 // Cas de la notification et de l'email
                 switch (notif) {
@@ -110,13 +108,44 @@ $(document).ready(function () {
                     $('#rating-star-' + i).css('color', '#f8ce0b');
                 }
             });
+        fetch('/admin/recupNotes/' + token + '/' + id)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Récupération des notes
+                let notes = data;
 
+                // Affichage du nombre d'avis total
+                $('#nbAvis').text(notes[0] + " avis d'utilisateurs");
+
+                // Initialisation du tableau des notes pour les barres
+                nbNotesNb = [0,0,0,0,0];
+
+                // On modifie le tableau des notes pour les barres
+                for (i = 0; i < notes[0]; i++){
+                    indexNotes =  5 - notes[i+1].note;
+                    nbNotesNb[indexNotes] = nbNotesNb[indexNotes] + 1;
+                }
+                
+                // On modifie les barres et les notes en fonction du nombre d'avis
+                for (i = 1; i < 6; i++){
+                    iTab = 5 - i;
+                    $('#nbAvis' + i).text(nbNotesNb[iTab] + " avis");
+                    if (nbNotesNb[iTab] == null) nbNotesNb[i] = 0;
+                    else nbNotesNb[iTab] = (nbNotesNb[iTab] * 100) / notes[0];
+                    $('#star' + i).css('width', nbNotesNb[iTab] + "%");
+                }
+            });
     }
 });
 
 
 
-
+// Fonction pour supprimer l'utilisateur
 function onDelete() {
     if (window.confirm("Are you sure you want to delete your account?")) {
         fetch(urlDelete, {
@@ -136,8 +165,17 @@ function onDelete() {
     }
 }
 
+// Fonction pour modifier les données de l'utilisateur
 function onModify() {
     location.replace('/modifier');
     history.pushState(null, null, document.URL);
 }
 
+function openPopUp(event) {
+    event.preventDefault();
+    document.getElementById("popup-container").style.display = "block";
+}
+
+function closePopup() {
+    document.getElementById("popup-container").style.display = "none";
+}

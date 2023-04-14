@@ -1116,14 +1116,28 @@ def getListeANoter(token, idHistorique):
     passagers = jsonTrajet['passagers']
     for p in passagers:
         passager_dict = {'idCompte': p['idCompte'], 'nomCompte': p['nomCompte'], 'prenomCompte': p['prenomCompte'], 'type': 'passager'}
+        #On vérifie si la note existe déjà
+        c.execute("SELECT note FROM NOTE WHERE idHistorique = ? AND idCompteNotant = ? AND idCompteNote = ?", (idHistorique, idCompte, p['idCompte']))
+        note = c.fetchone()
+        if note:
+            passager_dict['note'] = note[0]
         liste_a_noter.append(passager_dict)
 
     #On recupere le conducteur
     conducteur = {'idCompte': jsonTrajet['idConducteur'], 'nomCompte': jsonTrajet['nomConducteur'], 'prenomCompte': jsonTrajet['prenomConducteur'], 'type': 'conducteur'}
+    #On vérifie si la note existe déjà
+    c.execute("SELECT note FROM NOTE WHERE idHistorique = ? AND idCompteNotant = ? AND idCompteNote = ?", (idHistorique, idCompte, jsonTrajet['idConducteur']))
+    note = c.fetchone()
+    if note:
+        conducteur['note'] = note[0]
+
     liste_a_noter.append(conducteur)
 
     #On vérifie que le compte fait bien parti des personnes autorisées à noter et on l'enleve
-    result = [p for p in passagers if p['idCompte'] != idCompte]
+    result = []
+    for p in liste_a_noter:
+        if p['idCompte'] != idCompte :
+            result.append(p)
     if len(result) == len(liste_a_noter):
         conn.close()
         return jsonify({'message': 'Vous n\'êtes pas autorisé à noter'}), 403

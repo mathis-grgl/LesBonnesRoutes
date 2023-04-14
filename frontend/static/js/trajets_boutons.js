@@ -209,7 +209,7 @@ $(document).on('click', '.confirm-btn', function () {
                         window.location.href = '/trajet/mes_trajets';
                     })
             } else {
-                alert("Un trajet ne peut pas être annulé moins de 24h avant son départ");
+                alert("Un trajet ne peut pas être terminé alors qu'il n'a pas encore débuté.s");
             }
 
         });

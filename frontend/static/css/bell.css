@@ -3,7 +3,7 @@
     height: 30px;
     position: absolute; /*Nice craft ahahah*/
     right: 8em;
-    top: 0em;
+    top: -0.25em;
 }
 
 .icon-wrapper:not([data-number="0"])::after{
@@ -29,6 +29,7 @@
 
 .bell-icon{
     max-width: 100%;
+    filter: invert(1);
 }
 
 .icon-wrapper:hover .bell-icon{

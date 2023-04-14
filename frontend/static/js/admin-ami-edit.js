@@ -11,7 +11,9 @@ if (token == null) {
 } else {
     // get last character of url
     let urlLink = window.location.href;
-    id = urlLink.charAt(urlLink.length - 1);
+    id = urlLink.substr(urlLink.lastIndexOf('/') + 1);
+    // Marche pour le site hebergé mais pas en local
+    //id = urlLink.replace(/[^0-9]/g, '');
 
     // Si l'id de l'utilisateur est null, on affiche une alerte et on redirige vers la page de gestion des comptes
     if (!id.match(/^[0-9]+$/)) {
@@ -96,6 +98,8 @@ function charger_membres() {
     fetch(getMembres)
         .then(reponse => {
             if (!reponse.ok) {
+                alert("Le groupe n'existe pas"); //Bug éventuel où l'erreur se produit malgré que l'utilisateur existe
+                location.href = "../../search-ami";
                 throw new Error(reponse.statusText);
             }
             return reponse.json();

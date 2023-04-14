@@ -2,6 +2,9 @@ let token = getCookieToken();
 const url = 'compte/getInfoCompte/' + token;
 const urlDelete = 'compte/deleteCompte/' + token;
 
+// Récuperer les avis/notes
+getNotes();
+
 function applyData() {
     if(token == null) {
         location.href = "login_signup";
@@ -34,15 +37,7 @@ function applyData() {
                 let notif = user.notificationMail;
                 let nbnotes = user.nbnotes;
                 let nbtrajets = user.nbtrajets;
-                let photo = user.photo;
-                // Cas de la photo
-                /*if (photo != null) {
-                    fetch(photo)
-                    .then(response => response.blob())
-                    .then(blob => {
-                        document.querySelector("img[id=image]").src = URL.createObjectURL(blob); // Modification à apporter
-                    });
-                }*/
+
                 if (data.photo != null) {
                     // Convertir la photo encodée en base64 en objet Image
                     const img = new Image();
@@ -133,3 +128,59 @@ function onModify() {
     history.pushState(null, null, document.URL);
 }
 
+function openPopUp(event) {
+    event.preventDefault();
+    document.getElementById("popup-container").style.display = "block";
+}
+
+function closePopup() {
+    document.getElementById("popup-container").style.display = "none";
+}
+
+function getNotes(){
+    fetch(`/compte/recupNotes/${getCookieToken()}`)
+    .then(response => {
+        if (!response.ok) {
+        throw new Error('Erreur lors de l\'appel à la requete recupNotes');
+        }
+        return response.json();
+    })
+    .then(data => {
+        var notes = [0, 0, 0, 0, 0];
+        var content = "";
+
+        data.forEach(element => {
+            const key = Object.keys(element);
+            const value = Object.values(element);
+            var etoiles = "";
+            console.log("Résultat requete noter : " + value[key.indexOf("compteNotant")] + " " + value[key.indexOf("note")]);
+            for (var i = 0; i < value[key.indexOf("note")]; i++){
+                etoiles += "★";
+            }
+            content += `<div>${value[key.indexOf("compteNotant")]} : ${etoiles}</div>`;
+            notes[value[key.indexOf("note")] - 1]++;
+        });
+
+        console.log(notes);
+        const nbNotes = notes[0] + notes[1] + notes[2] + notes[3] + notes[4];
+        document.getElementById("texte").innerHTML = `${nbNotes} avis d'utilisateurs`;
+        for (var i = 4; i >= 0; i--){
+            document.getElementById("popup").innerHTML +=
+                `<div class="note">
+                    <p>${i + 1}&nbsp;★&nbsp;&nbsp;</p>
+                    <div class="rating">
+                        <div class="stars" style="width: ${100 * notes[i] / nbNotes}%">
+                        <span></span>
+                        </div>
+                        <span class="rating-value">${notes[i]} avis</span>
+                    </div>
+                </div>`;
+        }
+
+        document.getElementById("popup").innerHTML += content;
+        document.getElementById("popup").innerHTML += `<button class="btn btn-success btn-block text-white" onclick="closePopup()">Fermer</button>`;
+    })
+    .catch(error => {
+        console.error('Erreur : ', error);
+    });
+}

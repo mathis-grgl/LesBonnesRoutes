@@ -22,10 +22,10 @@ const prixSuperieur = document.querySelector("input[name=higher-prices]");
 // Offre du moment
 const offres = document.querySelector("div[id=next]");
 
+
 function displayOffer(event){
     const titreOffre = document.querySelector("[name='title-offer']");
     const descriptionOffres = document.querySelector("[name='description-offer']");
-
     event.preventDefault(); // Prevent the default behavior of the button click
     // Retirer l'attribut 'onclick' du bouton recherche pour eviter bug
     btnResearch.removeAttribute('onclick');
@@ -55,6 +55,11 @@ function displayOffer(event){
     .then(async data => {
         if (data.length === 0){
           titreOffre.innerHTML = "Aucun trajet correspondant";
+          descriptionOffres.innerHTML = "Voulez vous recevoir une notification dès qu'un trajet est disponible ?" +
+            `<div>` +
+              `<input type="radio" name="attente" value="oui" oninput="rechercheEnAttente('oui')"> Oui&nbsp;&nbsp;&nbsp;&nbsp;` +
+              `<input type="radio" name="attente" value="non" checked> Non` +
+            "</div>";
         } else {
           titreOffre.innerHTML = "Trajets correspondants";
           descriptionOffres.innerHTML = "Retrouvez ici les offres de trajets correspondantes.";
@@ -73,6 +78,42 @@ function displayOffer(event){
         titreOffre.innerHTML = "Aucun trajet correspondant";
         console.error('Erreur : ' + error.message);
     });
+}
+
+function rechercheEnAttente(reponse){
+  const descriptionOffres = document.querySelector("[name='description-offer']");
+  if (reponse === "oui"){
+    fetch(`/trajet/rechercheEnAttente/${getCookieToken()}`, {
+      method: 'POST',
+      headers: {
+      'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+      'city-start': villeDepart.value,
+      'city-end': villeArrivee.value,
+      'date': date.value,
+      'places': places.value,
+      'lower-prices': prixInferieur.value,
+      'higher-prices': prixSuperieur.value
+      })
+  })
+  .then(response => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error('Erreur : ' + response.status);
+      }
+  })
+  .then(data => {
+    if (!descriptionOffres.innerHTML.includes("Paramètre enregistré")) {
+      descriptionOffres.innerHTML += "Paramètre enregistré";
+    }    
+    document.querySelector("input[value='oui']").checked = true;
+  })
+  .catch(error => {
+      console.error('Erreur : ' + error.message);
+  });
+  }
 }
 
 

@@ -137,8 +137,16 @@ textarea.form-control {
 }
 
 .site-header.scrolled .site-menu-toggle {
-  top: 10px;
+  top: 15px;
   position: relative;
+}
+
+.site-header.scrolled .bell-icon{
+  filter: invert(0);
+}
+
+.site-header.scrolled .icon-wrapper{
+  top: 10px;
 }
 
 .site-header.scrolled .site-menu-toggle span {

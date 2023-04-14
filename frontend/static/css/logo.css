@@ -8,6 +8,7 @@
   display: flex;
   justify-content: space-between;
   width: 450px;
+  padding-top: 15px;
   align-items: center;
   list-style-type: none;
 }
@@ -16,8 +17,8 @@
   position: relative;
   display: grid;
   place-items: center;
-  width: 100px;
-  height: 100px;
+  width: 70px;
+  height: 70px;
 }
 
 li .base {
@@ -43,9 +44,9 @@ li .base {
 li .base::after {
   position: absolute;
   content: "";
-  width: 20px;
-  height: 20px;
-  top: 5px;
+  width: 10px;
+  height: 10px;
+  top: 2px;
   left: 5px;
   border-radius: 50%;
   background-color: var(--color);
@@ -95,7 +96,7 @@ li .icon {
 }
 
 .base:hover + .title + .icon {
-  transform: rotateY(30deg) skewY(-24deg) translateY(-130px);
+  transform: rotateY(30deg) skewY(-24deg) translateY(130px);
   color: var(--color);
   filter: drop-shadow(0 0 3px var(--color));
   animation: wave 1s ease-in-out infinite;
@@ -103,7 +104,8 @@ li .icon {
 
 .base:hover + .title {
   color: var(--color);
-  transform: rotateY(30deg) skewY(-24deg) translateY(-50px);
+  color: black;
+  transform: rotateY(30deg) skewY(-24deg) translateY(50px);
   text-shadow: 0 0 3px var(--color);
   transition-delay: 0.1s;
   opacity: 1;
@@ -113,120 +115,6 @@ li .icon {
 
 .imglbr {
     width: 50px;
-    
 }
 
 /* @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap");
-
-.ullbr {
-  position: absolute;
-  display: flex;
-  justify-content: space-between;
-  width: 400px; /* largeur réduite 
-  align-items: center;
-  list-style-type: none;
-}
-
-.ullbr .lilbr {
-  position: relative;
-  display: grid;
-  place-items: center;
-  width: 100px; /* largeur réduite 
-  height: 100px; /* hauteur réduite 
-}
-
-li .base {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  border: 4px solid var(--color); /* bordure réduite 
-  border-left: 4px solid transparent; /* bordure réduite 
-  animation: spin 8s linear infinite;
-  filter: drop-shadow(0 0 10px var(--color)); /* ombre réduite 
-}
-
-@keyframes spin {
-  0% {
-    transform: rotateX(60deg) rotateZ(0);
-  }
-  100% {
-    transform: rotateX(60deg) rotateZ(-360deg);
-  }
-}
-
-li .base::after {
-  position: absolute;
-  content: "";
-  width: 20px; /* taille réduite 
-  height: 20px; /* taille réduite 
-  top: 5px; /* position ajustée 
-  left: 5px; /* position ajustée 
-  border-radius: 50%;
-  background-color: var(--color);
-}
-
-li .base,
-li .title,
-li .icon {
-  position: absolute;
-  color: #b5b5b5;
-  transform: rotateX(60deg) rotateZ(-45deg);
-  cursor: pointer;
-  transition: 0.5s ease-in-out;
-}
-
-li .title {
-  text-transform: uppercase;
-  font-size: 12px; /* taille réduite 
-  font-weight: 700;
-  letter-spacing: 1px; /* espacement réduit 
-  transform: rotateY(30deg) skewY(-24deg) translateY(0px);
-  opacity: 0;
-  pointer-events: none;
-}
-
-li .icon {
-  display: grid;
-  place-items: center;
-  font-size: 40px; /* taille réduite 
-  height: 100%;
-  pointer-events: none;
-}
-
-@keyframes wave {
-  0%,
-  100% {
-    margin-bottom: 0;
-  }
-  50% {
-    margin-bottom: 5px; /* hauteur réduite 
-  }
-}
-
-.base:hover {
-  filter: drop-shadow(0 0 5px var(--color)); /* ombre réduite 
-  animation-play-state: paused;
-}
-
-.base:hover + .title + .icon {
-  transform: rotateY(30deg) skewY(-24deg) translateY(-65px); /* hauteur réduite 
-  color: var(--color);
-  filter: drop-shadow(0 0 2px var(--color)); /* ombre réduite 
-  animation: wave 1s ease-in-out infinite;
-}
-
-.base:hover + .title {
-  color: var(--color);
-  transform: rotateY(30deg) skewY(-24deg) translateY(-50px);
-  text-shadow: 0 0 3px var(--color);
-  transition-delay: 0.1s;
-  opacity: 1;
-  animation: wave 1s ease-in-out infinite;
-}
-
-
-.imglbr {
-    width: 50px;
-    
-}  */

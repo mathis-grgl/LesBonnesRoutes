@@ -83,8 +83,10 @@ function historique() {
                                 $('<td>').append(
                                     $('<div>').addClass('div-container')
                                         .append(
-                                            $('<button>').addClass('signup-btn').attr('id', trajet.idTrajet)
-                                                .html("Noter le conducteur")
+                                            $('<button>').addClass('signup-btn').attr({
+                                                id: trajet.idTrajet,
+                                                name: "btn-noter"
+                                             }).html("Noter le conducteur")                                          
                                         )
                                 )
                             );
@@ -94,7 +96,7 @@ function historique() {
                         });
                 }
 
-                getPassagers(data[i].idHistorique);
+                getPassagers(data[i].idHistorique, data[i].nomConducteur, data[i].prenomConducteur, data[i].idConducteur);
             }
             table.append(tbody);
         })
@@ -104,68 +106,68 @@ function historique() {
 
 }
 
-function getPassagers(idHistorique){
+function getPassagers(idHistorique, nomConducteur, prenomConducteur, idConducteur){
     fetch(`/trajet/getListeANoter/${getCookieToken()}/${idHistorique}`)
     .then(response => {
         if (!response.ok) {
-        throw new Error('Erreur lors de l\'appel à la requete getPassagers');
+        throw new Error(response.status);
         }
         return response.json();
     })
     .then(data => {
-        Object.keys(data).forEach(element =>{
-            console.log("Résultat requete getPassagers : " + Object.values(element) + " " + element);
-        });
-        
-        
-        /*let popupContent = "";
-        if (conducteur){
-            // On crée un pop up pour chaque trajet, on note des passagers          
-            const tmpKeys = Object.keys(data[i].passagers);
-            const tmpValues = Object.values(data[i].passagers);
-
-            tmpKeys.forEach(element => {
-                const key = Object.keys(tmpValues[tmpKeys.indexOf(element)]);
-                const value = Object.values(tmpValues[tmpKeys.indexOf(element)]);
-                // Ajoute le contenu HTML à la variable popupContent
-                popupContent +=
-                    `<div class="rating" id="${value[key.indexOf("idCompte")]}">` +
-                        `<a href="#" onclick="noter(event, 5, ${value[key.indexOf("idCompte")]}, ${idHistorique})">★</a>` +
-                        `<a href="#" onclick="noter(event, 4, ${value[key.indexOf("idCompte")]}, ${idHistorique})">★</a>` +
-                        `<a href="#" onclick="noter(event, 3, ${value[key.indexOf("idCompte")]}, ${idHistorique})">★</a>` +
-                        `<a href="#" onclick="noter(event, 2, ${value[key.indexOf("idCompte")]}, ${idHistorique})">★</a>` +
-                        `<a href="#" onclick="noter(event, 1, ${value[key.indexOf("idCompte")]}, ${idHistorique})">★</a>` +
-                        `<div class="infos"> : ${value[key.indexOf("nomCompte")]} ${value[key.indexOf("prenomCompte")]}</div>` +
-                    "</div>";
-            });
+        if (!conducteur){
+            const note = Object.values(data)[Object.keys(data).indexOf("note")];
+            // Ajoute le contenu HTML final à l'élément avec l'ID 'notation'*/
+            document.getElementById("notation").innerHTML = 
+            `<div id="popup-container">` +
+                `<div id="popup">` +
+                    `<div class="form_control_container__time" id="texte">Noter un conducteur : </div><br>` +
+                    `<div class="rating" id="${idConducteur}">` +
+                            `<a href="#" onclick="noter(event, 5, ${idConducteur}, ${idHistorique}, '${nomConducteur}', '${prenomConducteur}')">★</a>` +
+                            `<a href="#" onclick="noter(event, 4, ${idConducteur}, ${idHistorique}, '${nomConducteur}', '${prenomConducteur}')">★</a>` +
+                            `<a href="#" onclick="noter(event, 3, ${idConducteur}, ${idHistorique}, '${nomConducteur}', '${prenomConducteur}')">★</a>` +
+                            `<a href="#" onclick="noter(event, 2, ${idConducteur}, ${idHistorique}, '${nomConducteur}', '${prenomConducteur}')">★</a>` +
+                            `<a href="#" onclick="noter(event, 1, ${idConducteur}, ${idHistorique}, '${nomConducteur}', '${prenomConducteur}')">★</a>` +
+                            `<div class="infos" name="infos-${idConducteur}">${note !== undefined ? `${note}/5` : 'Non noté'} : ${nomConducteur} ${prenomConducteur}</div>` +
+                        "</div>" +
+                    `<button class="btn btn-success btn-block text-white" onclick="closePopup()">Fermer</button>` +
+                `</div>` +
+            `</div>`;
         } else {
-                // On note un conducteur
-                const key = Object.keys(data[i]);
-                const value = Object.values(data[i]);
+            let popUpContainer = "";
+            Object.values(data).forEach(element =>{
+                const note = Object.values(element)[Object.keys(element).indexOf("note")];
+                //console.log("Résultat requete getPassagers : " + Object.values(element) + " " + Object.keys(element));
+                const key = Object.keys(element);
+                const value = Object.values(element);
 
-                popupContent +=
-                    `<div class="rating" id="${value[key.indexOf("idConducteur")]}">` +
-                        `<a href="#" onclick="noter(event, 5, ${value[key.indexOf("idConducteur")]}, ${idHistorique})">★</a>` +
-                        `<a href="#" onclick="noter(event, 4, ${value[key.indexOf("idConducteur")]}, ${idHistorique})">★</a>` +
-                        `<a href="#" onclick="noter(event, 3, ${value[key.indexOf("idConducteur")]}, ${idHistorique})">★</a>` +
-                        `<a href="#" onclick="noter(event, 2, ${value[key.indexOf("idConducteur")]}, ${idHistorique})">★</a>` +
-                        `<a href="#" onclick="noter(event, 1, ${value[key.indexOf("idConducteur")]}, ${idHistorique})">★</a>` +
-                        `<div class="infos"> : ${value[key.indexOf("nomConducteur")]} ${value[key.indexOf("prenomConducteur")]}</div>` +
-                    "</div>";
+                // Ajoute le contenu HTML final à l'élément avec l'ID 'notation'*/
+                popUpContainer +=
+                `<div class="rating" id="${value[key.indexOf("idCompte")]}">` +
+                    `<a href="#" onclick="noter(event, 5, ${value[key.indexOf("idCompte")]}, ${idHistorique}, '${value[key.indexOf("nomCompte")]}', '${value[key.indexOf("prenomCompte")]}')">★</a>` +
+                    `<a href="#" onclick="noter(event, 4, ${value[key.indexOf("idCompte")]}, ${idHistorique}, '${value[key.indexOf("nomCompte")]}', '${value[key.indexOf("prenomCompte")]}')">★</a>` +
+                    `<a href="#" onclick="noter(event, 3, ${value[key.indexOf("idCompte")]}, ${idHistorique}, '${value[key.indexOf("nomCompte")]}', '${value[key.indexOf("prenomCompte")]}')">★</a>` +
+                    `<a href="#" onclick="noter(event, 2, ${value[key.indexOf("idCompte")]}, ${idHistorique}, '${value[key.indexOf("nomCompte")]}', '${value[key.indexOf("prenomCompte")]}')">★</a>` +
+                    `<a href="#" onclick="noter(event, 1, ${value[key.indexOf("idCompte")]}, ${idHistorique}, '${value[key.indexOf("nomCompte")]}', '${value[key.indexOf("prenomCompte")]}')">★</a>` +
+                    `<div class="infos" name="infos-${value[key.indexOf("idCompte")]}">${note !== undefined ? `${note}/5` : 'Non noté'} : ${value[key.indexOf("nomCompte")]} ${value[key.indexOf("prenomCompte")]}</div>` +
+                "</div>";
+            });
+
+            document.getElementById("notation").innerHTML = 
+            `<div id="popup-container">` +
+                `<div id="popup">` +
+                    `<div class="form_control_container__time" id="texte">Noter un conducteur : </div><br>` +
+                    popUpContainer +
+                    `<button class="btn btn-success btn-block text-white" onclick="closePopup()">Fermer</button>` +
+                `</div>` +
+            `</div>`;
         }
-
-        // Ajoute le contenu HTML final à l'élément avec l'ID 'notation'*/
-        document.getElementById("notation").innerHTML = 
-        `<div id="popup-container">` +
-            `<div id="popup">` +
-                `<div class="form_control_container__time" id="texte">Noter un conducteur : </div><br>` +
-                //popupContent +
-                `<button class="btn btn-success btn-block text-white" onclick="closePopup()">Fermer</button>` +
-            `</div>` +
-        `</div>`;
     })
     .catch(error => {
         console.error('Erreur : ', error);
+        if (error.message){
+            document.querySelector("button[name='btn-noter']").prop('disabled', true);
+        }
     });
 }
 
@@ -185,7 +187,7 @@ function closePopup() {
     document.getElementById("popup-container").style.display = "none";
 }
 
-function noter(event, note, idCompte, idHistorique){
+function noter(event, note, idCompte, idHistorique, nom, prenom){
     event.preventDefault();
 
     fetch(`/trajet/noter/${getCookieToken()}/${idHistorique}/${idCompte}/${note}`)
@@ -197,7 +199,8 @@ function noter(event, note, idCompte, idHistorique){
     })
     .then(data => {
         console.log("Résultat requete noter : " + Object.values(data));
-        document.getElementById(idCompte).innerHTML = "<div class='infos'>! Merci pour votre avis</div>";
+        document.querySelector("div[name='infos-" + idCompte + "']").innerHTML = 
+            `${note !== undefined ? `${note}/5` : 'Non noté'} : ${nom} ${prenom} ✔️`;
     })
     .catch(error => {
         console.error('Erreur : ', error);

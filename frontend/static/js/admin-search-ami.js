@@ -52,8 +52,10 @@ $(document).ready(function () {
 
         let btnEdit = document.createElement("a");
         btnEdit.classList.add("btn", "btn-primary", "btn-xs");
- 
-        btnEdit.setAttribute("onclick", "onModifyGroupe(" + i+1 + ")");
+        
+        let idd = parseInt(i)+1;
+        btnEdit.setAttribute("onclick", "onModifyGroupe(" + idd + ")");
+        console.log("onModifyGroupe(" + idd + ")");
         btnEdit.setAttribute("data-title", "Edit");
         btnEdit.setAttribute("data-toggle", "modal");
         btnEdit.setAttribute("data-target", "#edit");

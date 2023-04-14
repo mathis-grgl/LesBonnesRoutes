@@ -808,6 +808,16 @@ def recupNotes(token, idCompte):
 
     notesJson = []
 
+    #On récupère le nombre de notes
+    c.execute("SELECT COUNT(*) FROM NOTE WHERE idCompteNote = ?", (idCompte,))
+    nbNotes = c.fetchone()
+    if not nbNotes:
+        conn.close()
+        return jsonify({'message': 'note inexistant'}), 404
+    
+    nbNote = nbNotes[0]
+    notesJson.append(nbNote)
+
     for row in rows:
         idCompteNotant = row[0]
         jsonTrajet = json.loads(row[1])

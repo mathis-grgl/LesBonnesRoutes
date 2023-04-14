@@ -25,6 +25,7 @@ python3.10 -m pip install flask-mail==0.9.1
 
 ```bash
 git clone https://github.com/ElDjeee/Les-Bonnes-Routes.git
+python3 backend/install_db/install_db.py
 ```
 
 ## Démarrage du serveur en local (localhost:8080)
